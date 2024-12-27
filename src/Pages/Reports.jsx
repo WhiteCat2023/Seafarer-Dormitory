@@ -3,6 +3,5 @@ export default function Reports(){
         <>
             <div>This is Reports</div>
         </>
-
     );
 }

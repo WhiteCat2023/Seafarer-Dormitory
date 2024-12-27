@@ -1,10 +1,10 @@
 import './App.css'
-import Login from './Components/Login'
-import Apartments from './Components/Apartments'
-import Tenants from './Components/Tenants'
-import TransactionHistory from './Components/TransactionHistory'
-import Reports from './Components/Reports'
-import Nav from './Components/Nav'
+import Login from './Pages/Login'
+import Apartments from './Pages/Apartments'
+import Tenants from './Pages/Tenants'
+import TransactionHistory from './Pages/TransactionHistory'
+import Reports from './Pages/Reports'
+import Nav from './Pages/Nav'
 import { createBrowserRouter, RouterProvider } from 'react-router-dom'
 
 
