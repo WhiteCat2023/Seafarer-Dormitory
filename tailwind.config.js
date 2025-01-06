@@ -14,7 +14,8 @@ export default {
         outfit: ["Outfit", "sans-serif"]
       },
       colors: {
-        primary: "#6B8DE0"
+        primary: "#6B8DE0",
+        purple: "#595BD4"
       }
     },
   },

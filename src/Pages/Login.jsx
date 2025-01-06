@@ -7,7 +7,7 @@ import Spinner from "./components/Spinner"
 import Swal from 'sweetalert2'
 import withReactContent from 'sweetalert2-react-content'
 import Cookies from "js-cookie"
-import ForgotPassword from "./components/ForgotPassword"
+import ForgotPassword from "./components/Modals/ForgotPassword"
 
 
 export default function Login(){
