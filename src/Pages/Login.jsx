@@ -20,15 +20,10 @@ export default function Login(){
 
 
 
-    const openModal = () => {
-        setIsModalOpen(true);
-        console.log(isModalOpen)
-    }
+    const openModal = () => setIsModalOpen(true);
 
-    const closeModal = () => {
-        setIsModalOpen(false);
-        console.log(isModalOpen)
-    }
+
+    const closeModal = () => setIsModalOpen(false);
 
 
     const handleCheckBoxChange = () => {
