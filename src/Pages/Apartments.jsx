@@ -1,39 +1,52 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import NewApartments from './components/Modals/NewApartments';
 import { BiClinic, BiSearchAlt, BiMap } from "react-icons/bi";
 import axios from 'axios';
+import ContentViewer from './components/ConteNtViewer';
 
 export default function Apartments(){
 
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [items, setItems] = useState([]);
-    const [isClicked, setIsClicked] = useState(false);
+    const [isItemClicked, setIsItemClicked] = useState(false);
+    const [isListVisible, setIsListVisible] = useState(true);
+    const apartmentList = useRef(null);
+    const [itemKey, setItemKey] = useState('');
+    const selectedItem = items.find(item => item.id === itemKey);
 
+    // fetch data async function
     const fetchData = async () => {
         try{
             const response = await axios.get('https://seafarerdorm.scarlet2.io/Apartments/apartments.php');
             setItems(response.data);
-        }catch{
+        }catch(error){
             console.error(error);
 
         }
     }
 
+    // useEffect for fetching data
     useEffect(() => { 
         fetchData()
-    }, ['https://seafarerdorm.scarlet2.io/Apartments/apartments.php'])
+    }, [])
 
-    // useEffect(() => {
-    //     axios.get('https://seafarerdorm.scarlet2.io/Apartments/apartments.php').then(response => {
-    //         setItems(response.data);
-    //     }).catch(error => {
-    //         console.error(error.message);
-    //     })
-    // }, []);
-
+    //function for opening the modal
     const openModal = () => setIsModalOpen(true);
 
+    //function for closing the modal   
     const closeModal = () => setIsModalOpen(false);
+
+    const handleItemClick = (key) => {
+        setIsItemClicked(true);
+        setIsListVisible(false);
+        setItemKey(key);
+    }
+
+    const handleBackBtnClick = () => {
+        setIsItemClicked(false);
+        setIsListVisible(true);
+    }
+
 
     return(
         <>
@@ -63,9 +76,11 @@ export default function Apartments(){
                             <i className='p-1 rounded-full hover:bg-blue-100 cursor-pointer flex justify-center'><box-icon name='chevron-right' type='solid' ></box-icon></i>
                         </div>
                     </div>
-                    <ul className='h-full w-full bg-red'>
+                    <ul className='h-full w-full' id='apartment-li' ref={apartmentList} style={{ display: isListVisible ? 'block': 'none'}}>
+
+                        {/* function responsible for displaying the list ayaw lang sa ni hilabti */}
                         {items.map(item => (
-                            <li className='flex justify-between items-center p-4 text-black border-b cursor-pointer' key={item.id} onClick={() => setIsClicked(true)}>
+                            <li className='flex justify-between items-center p-4 text-black border-b cursor-pointer' key={item.id} onClick={() => handleItemClick(item.id)}>
                                 <span className='flex-grow'>
                                     <p className='font-semibold text-start'>{item.apartment_name}</p>
                                     <span className='flex flex-col ps-2 text-start text-xs'>
@@ -75,25 +90,10 @@ export default function Apartments(){
                                     
                                 </span>
                                 {item.isAvailable == 1 ? <p className='text-green-700'>Available</p>: <p className='text-gray-400'>Unavailable</p>}
-                                {/* <span className='flex-row-reverse flex'>
-                                    {item.isAvailable == 1 ? <p className='text-green-700'>Available</p>: <p className='text-gray-400'>Unavailable</p>}
-                                    
-
-                                    <div class="flex items-center">
-                                        <svg class="w-4 h-4 text-yellow-300 me-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 22 20">
-                                            <path d="M20.924 7.625a1.523 1.523 0 0 0-1.238-1.044l-5.051-.734-2.259-4.577a1.534 1.534 0 0 0-2.752 0L7.365 5.847l-5.051.734A1.535 1.535 0 0 0 1.463 9.2l3.656 3.563-.863 5.031a1.532 1.532 0 0 0 2.226 1.616L11 17.033l4.518 2.375a1.534 1.534 0 0 0 2.226-1.617l-.863-5.03L20.537 9.2a1.523 1.523 0 0 0 .387-1.575Z"/>
-                                        </svg>
-                                        <p class="ms-2 text-sm font-bold text-gray-900">4.95</p>
-                                        <span class="w-1 h-1 mx-1.5 bg-gray-500 rounded-full dark:bg-gray-400"></span>
-                                        <a href="#" class="text-sm font-medium text-gray-900 underline hover:no-underline">73 reviews</a>
-                                    </div>
-                                </span> */}
-                                
-
-                                {/* <p>{item.description}</p> */}
                             </li>
                         ))}
                     </ul>
+                    {isItemClicked && <ContentViewer isOpen={isItemClicked} onClose={handleBackBtnClick} item={selectedItem}/>}
                 </div>
             </div>
             {isModalOpen && (<NewApartments isOpen={isModalOpen} onClose={closeModal}/>)}
