@@ -79,7 +79,7 @@ export default function Apartments(){
 
     return(
         <>
-            <div className="container mx-auto lg:mt-10 lg:px-8 " style={{height: 'calc(100% - 64px)'}}>
+            <div className="container mx-auto lg:pt-10 lg:px-8 " style={{height: 'calc(100% - 64px)'}}>
                 <div className={`lg:flex items-center justify-between lg:mb-5 flex-col md:flex-row ${isListVisible ? 'flex' : 'hidden' }`}>
                     <nav className="flex items-center mb-4 md:mb-0 flex-grow md:flex-grow-0 w-full px-3 lg:px-0">
                         <h1 className="md:text-5xl font-outfit font-semibold text-3xl text-gray-600">Apartments</h1>
