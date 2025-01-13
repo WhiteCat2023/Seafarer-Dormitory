@@ -13,7 +13,6 @@ export default function Apartments(){
     const [isListVisible, setIsListVisible] = useState(true);
     const apartmentList = useRef(null); 
     const [loading, setLoading] = useState(false);
-
     const [itemKey, setItemKey] = useState('');
     const selectedItem = items.find(item => item.id === itemKey);
 
@@ -56,7 +55,7 @@ export default function Apartments(){
         }
         try{
             return items.length > 0 ? (items.map(item => (
-                <li className='flex justify-between items-center p-4 text-black border-b cursor-pointer hover:bg-blue-50' key={item.id} onClick={() => handleItemClick(item.id)}>
+                <li className='flex justify-between items-center p-4 text-black border-b cursor-pointer hover:bg-blue-50' key={item.apartment_name} onClick={() => handleItemClick(item.id)}>
                     <span className='flex-grow'>
                         <p className='font-semibold text-start text-gray-800'>{item.apartment_name}</p>
                         <span className='flex flex-col ps-2 text-start text-xs'>
