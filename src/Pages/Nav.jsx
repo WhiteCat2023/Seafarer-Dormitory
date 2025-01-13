@@ -22,9 +22,9 @@ export default function Nav(){
                         <NavLink 
                             key={item.name} 
                             to={item.href} 
-                            className={(isActive) => {
+                            className={({isActive}) => {
                                 return "transition-all duration-150 font-outfit text-balance  px-2 py-1 " + 
-                                (isActive ? 'focus:bg-primary focus:text-white hover:bg-primary hover:text-white rounded-xl' : '')
+                                (!isActive ? 'hover:bg-primary hover:text-white rounded-xl' : 'bg-primary text-white rounded-xl')
                             }}>
                                 {item.name}
                         </NavLink>
