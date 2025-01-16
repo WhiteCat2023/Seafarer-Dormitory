@@ -8,8 +8,6 @@ import Reports from './Pages/Reports'
 import Nav from './Pages/Nav'
 import Root from './Pages/Root'
 import { createBrowserRouter, RouterProvider, createRoutesFromElements, Route } from 'react-router-dom'
-
-
 // const router = createBrowserRouter([
 //   {
 //     path: '/',
@@ -56,7 +54,6 @@ import { createBrowserRouter, RouterProvider, createRoutesFromElements, Route } 
 //     )
 //   }
 // ])
-
 const router = createBrowserRouter(
   createRoutesFromElements(
     <Route path='/' element={<Root/>}>

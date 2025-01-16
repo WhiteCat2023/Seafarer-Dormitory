@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import { Dialog, DialogBackdrop, DialogPanel, DialogTitle } from '@headlessui/react'
 import axios from 'axios'
 import { useState } from 'react';
@@ -100,4 +101,8 @@ export default function EditApartments({isOpen, onClose, key}){
             </Dialog> 
         </>
     );
+=======
+export default function EditApartment(){
+    
+>>>>>>> 0fd30116158601b6c81c0e79db8b30a66069a9ea
 }
