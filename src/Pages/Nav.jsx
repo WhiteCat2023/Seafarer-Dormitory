@@ -7,10 +7,10 @@ export default function Nav(){
     const [isMenuOpen, setIsMenuOpen] = useState(false);  
     
     const navigation = [
-        {name: 'Apartments', href: '/'},
-        {name: 'Tenants', href: '/Tenants'},
-        {name: 'History', href: '/History'},
-        {name: 'Reports', href: '/Reports'},
+        {name: 'Apartments', href: '/Nav/Apartments'},
+        {name: 'Tenants', href: '/Nav/Tenants'},
+        {name: 'History', href: '/Nav/History'},
+        {name: 'Reports', href: '/Nav/Reports'},
     ]
 
     return(

@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import NewApartments from './components/Modals/NewApartments';
 import { BiClinic, BiSearchAlt, BiMap } from "react-icons/bi";
 import axios from 'axios';
-import ContentViewer from './components/ConteNtViewer';
+import CVApartments from './components/CVApartments';
 import Spinner from './components/Spinner';
 
 export default function Apartments(){
@@ -109,7 +109,7 @@ export default function Apartments(){
                             {displayList()}
                         </ul>
                     </div>
-                    {isItemClicked && <ContentViewer isOpen={isItemClicked} onClose={handleBackBtnClick} item={selectedItem}/>}
+                    {isItemClicked && <CVApartments isOpen={isItemClicked} onClose={handleBackBtnClick} item={selectedItem}/>}
                 </div>
             </div>
             {isModalOpen && (<NewApartments isOpen={isModalOpen} onClose={closeModal}/>)}

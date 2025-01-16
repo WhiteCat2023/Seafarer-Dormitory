@@ -6,6 +6,7 @@ import Tenants from './Pages/Tenants'
 import TransactionHistory from './Pages/TransactionHistory'
 import Reports from './Pages/Reports'
 import Nav from './Pages/Nav'
+import Root from './Pages/Root'
 import { createBrowserRouter, RouterProvider, createRoutesFromElements, Route } from 'react-router-dom'
 
 
@@ -58,11 +59,15 @@ import { createBrowserRouter, RouterProvider, createRoutesFromElements, Route } 
 
 const router = createBrowserRouter(
   createRoutesFromElements(
-    <Route path='/' element={<Nav/>}>
-      <Route index element={<Apartments/>}/>
-      <Route path='/Tenants' element={<Tenants/>}/>
-      <Route path='/History' element={<TransactionHistory/>}/>
-      <Route path='/Reports' element={<Reports/>}/>
+    <Route path='/' element={<Root/>}>
+      <Route index element={<Home/>}/>
+      <Route path='/Login' element={<Login/>}/>
+      <Route path='/Nav' element={<Nav/>}>
+        <Route index path='/Nav/Apartments' element={<Apartments/>}/>
+        <Route path='/Nav/Tenants' element={<Tenants/>}/>
+        <Route path='/Nav/History' element={<TransactionHistory/>}/>
+        <Route path='/Nav/Reports' element={<Reports/>}/>
+      </Route>
     </Route>
   )
 )

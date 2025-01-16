@@ -1,13 +1,23 @@
+import { useState } from "react";
 import { BiArrowBack, BiMap, BiEdit, BiTrash } from "react-icons/bi";
+import EditApartments from "./Modals/EditApartments";
+
 
 export default function ContentViewer({isOpen, onClose, item}){
+
+    const [isModalOpen, setIsModalOpen] = useState(false);
+
+    const openModal = () => setIsModalOpen(true);
+   
+    const closeModal = () => setIsModalOpen(false);
+    
     return(
         <>
             <div className='w-full text-start h-full text-gray-600' style={{display: isOpen ? 'block': 'none'}} id={'item-id-' + item.id}>
                 <div className='p-4 pb-1 flex justify-between text-2xl'>
                     <i onClick={onClose} className="rounded-full hover:bg-blue-100 p-1"><BiArrowBack/></i>
                     <div className="flex w-24 justify-evenly">
-                        <i className="rounded-full hover:bg-blue-100 p-1"><BiEdit/></i>
+                        <button onClick={openModal} className="rounded-full hover:bg-blue-100 p-1"><BiEdit/></button>
                         <i className="rounded-full hover:bg-blue-100 p-1"><BiTrash/></i>
                     </div>
                 </div>
@@ -15,7 +25,7 @@ export default function ContentViewer({isOpen, onClose, item}){
                     <div className="lg:w-2/4 h-full flex justify-center p-4">
                         <img className="h-full rounded-2xl" src="https://www.tollbrothersapartmentliving.com/wp-content/uploads/2023/03/005_Toll_4_11_19_UnionPl-983x720-1.jpg"/>
                     </div>
-                    <div className="lg:w-2/4 lg:overflow-y-auto h-full mx-4 lg:me-0 pt-4 lg:px-8 ">
+                    <div className="lg:w-2/4 w-full lg:overflow-y-auto h-full lg:me-0 pt-4 px-4 lg:px-8 ">
                         <span className="flex items-center">
                             <p className="font-semibold text-gray-700 text-2xl">{item.apartment_name}<span className="text-sm text-gray-400"> ({item.isAvailable == 1? 'Available' : 'Unavailable'})</span></p>
                         </span>
@@ -26,6 +36,7 @@ export default function ContentViewer({isOpen, onClose, item}){
                     
                 </div>
             </div>
+            <EditApartments isOpen={isModalOpen} onClose={closeModal} key={item.id}/>
         </>
     );
 }

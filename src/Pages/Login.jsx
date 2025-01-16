@@ -43,7 +43,7 @@ export default function Login(){
             axios.post("https://seafarerdorm.scarlet2.io/Login/signin.php", inputs).then((response) => {
                 if(response.data.status === "success"){
                     Cookies.set('session', inputs.email, { expires: rememberMe ? 7 : null }); 
-                    navigate('/Apartments');
+                    navigate('/Nav/Apartments');
                 }else{
                     console.error(response.data.message);
                     withReactContent(Swal).fire({
