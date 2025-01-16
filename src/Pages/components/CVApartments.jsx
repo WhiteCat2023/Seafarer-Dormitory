@@ -36,7 +36,7 @@ export default function ContentViewer({isOpen, onClose, item}){
                     
                 </div>
             </div>
-            <EditApartments isOpen={isModalOpen} onClose={closeModal} key={item.id}/>
+            <EditApartments isOpen={isModalOpen} onClose={closeModal} item={item}/>
         </>
     );
 }

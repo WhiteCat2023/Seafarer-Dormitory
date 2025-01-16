@@ -44,7 +44,7 @@ export default function NewApartments({isOpen, onClose}){
         fd.append('price', inputs.price);
         fd.append('action', inputs.action);        
         
-        console.log(inputs.files)
+        console.log(inputs)
 
 
         axios.post('https://seafarerdorm.scarlet2.io/Apartments/apartments.php', fd).then((response) => {
@@ -87,7 +87,7 @@ export default function NewApartments({isOpen, onClose}){
                     <div className="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0 ">
                     <DialogPanel
                             transition
-                            className="relative w-full transform overflow-hidden rounded-3xl bg-white text-left shadow-xl transition-all data-[closed]:translate-y-4 data-[closed]:opacity-0 data-[enter]:duration-300 data-[leave]:duration-200 data-[enter]:ease-out data-[leave]:ease-in sm:my-8 sm:w-full sm:max-w-3xl data-[closed]:sm:translate-y-0 data-[closed]:sm:scale-95"
+                            className="relative w-full transform overflow-hidden rounded-3xl bg-white text-left shadow-xl transition-all data-[closed]:translate-y-4 data-[closed]:opacity-0 data-[enter]:duration-300 data-[leave]:duration-200 data-[enter]:ease-out data-[leave]:ease-in sm:my-8 sm:w-full sm:max-w-5xl data-[closed]:sm:translate-y-0 data-[closed]:sm:scale-95"
                         >
                             <div className="bg-white px-2 pb-4 pt-5 sm:pb-4">
                                 <div className="sm:flex sm:items-start flex-col ">
@@ -97,10 +97,10 @@ export default function NewApartments({isOpen, onClose}){
                                         </DialogTitle>
                                         <form className="p-4 md:p-5" onSubmit={handleAddNewApartment} name='add' encType="multipart/form-data">
                                             <div className='flex gap-5 flex-col lg:flex-row overflow-auto'>
-                                                <div className="grid gap-4 mb-4 grid-cols-2">
+                                                <div className="grid gap-4 mb-4 grid-cols-2 lg:w-2/4">
                                                     <div className="col-span-2">
                                                         <label className="block mb-2 text-sm font-medium text-gray-900 text-start">Apartment Name</label>
-                                                        <input onChange={handleChange} type="text" name="apartmentName" className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 " placeholder="Type apartment name" required=""/>
+                                                        <input onChange={handleChange} type="text" name="apartmentName" className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 " placeholder="Type apartment name" required/>
                                                     </div>
                                                     <div className="col-span-2">
                                                         <label className="block mb-2 text-sm font-medium text-gray-900 text-start">Number of rooms #</label>
@@ -108,30 +108,30 @@ export default function NewApartments({isOpen, onClose}){
                                                     </div>
                                                     <div className="col-span-2">
                                                         <label className="block mb-2 text-sm font-medium text-gray-900 text-start">Location</label>
-                                                        <input onChange={handleChange} type="text" name="location" className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 " placeholder="Type location" required=""/>
+                                                        <input onChange={handleChange} type="text" name="location" className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 " placeholder="Type location" required/>
                                                     </div>
                                                     <div className='col-span-2 flex'>
                                                         <div className="flex-grow-1 me-4">
                                                             <label className="block mb-2 text-sm font-medium text-gray-900 text-start">Price</label>
-                                                            <input onChange={handleChange} type="number" name="price" className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 " placeholder="0" required=""/>
+                                                            <input onChange={handleChange} type="number" name="price" className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 " placeholder="0" required/>
                                                         </div>
                                                         <div className="flex-grow-1">
                                                             <label className="block mb-2 text-sm font-medium text-gray-900 text-start">per:</label>
-                                                            <select onChange={handleChange} type="number" name="stayType" className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 " placeholder="0" required="">
-                                                                <optgroup label='Select'>
-                                                                    <option value="days">Night</option>
+                                                            <select onChange={handleChange} name="stayType" className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 " required>
+                                                                    <option value="">Select</option>
+                                                                    <option value="days" act>Night</option>
                                                                     <option value="months">Months</option>
-                                                                </optgroup>
+                                                                
                                                             </select>
                                                         </div>
                                                     </div>
                                                     
                                                     <div className="col-span-2">
                                                         <label className="block mb-2 text-sm font-medium text-gray-900 text-start">Apartment Description</label>
-                                                        <textarea onChange={handleChange} id="description" name='description' rows="4" className="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500" placeholder="Write apartment description here"></textarea>                    
+                                                        <textarea onChange={handleChange} id="description" name='description' rows="8" className="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500" placeholder="Write apartment description here"></textarea>                    
                                                     </div>
                                                 </div>
-                                                <div>
+                                                <div className='lg:w-2/4 '>
                                                     <input name='file' onChange={handleChange} type='file' multiple/>
                                                 </div>
                                             </div>
