@@ -32,6 +32,7 @@ export default function Apartments(){
 
     useEffect(() => { 
         fetchData()
+        displayList()
     }, [])
 
     const openModal = () => setIsModalOpen(true);
@@ -64,7 +65,7 @@ export default function Apartments(){
                         </span>
                         
                     </span>
-                    {item.isAvailable == 1 ? <p className='text-green-700'>Available</p>: <p className='text-gray-400'>Unavailable</p>}
+                    {item.isAvailable == 'Available' ? <p className='text-green-700'>Available</p>: <p className='text-gray-400'>Unavailable</p>}
                 </li>
             ))) : (
                 <p className='h-full w-full flex items-center justify-center text-gray-500'>No apartments available</p>

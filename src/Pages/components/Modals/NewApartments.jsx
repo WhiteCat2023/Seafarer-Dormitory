@@ -7,7 +7,7 @@ import withReactContent from 'sweetalert2-react-content'
 
 export default function NewApartments({isOpen, onClose}){
 
-    const [inputs, setInputs] = useState({apartmentName: '', numberOfRooms: 0, location: '', description: '', action: '', files: [], stayType: '', price: ''});
+    const [inputs, setInputs] = useState({apartmentName: '', numberOfRooms: 0, location: '', description: '', files: [], stayType: '', price: ''});
     
 
     const handleChange = (event) => {
@@ -41,9 +41,8 @@ export default function NewApartments({isOpen, onClose}){
         fd.append('location', inputs.location);
         fd.append('description', inputs.description);
         fd.append('stayType', inputs.stayType);
-        fd.append('price', inputs.price);
-        fd.append('action', inputs.action);        
-        
+        fd.append('price', inputs.price);      
+        fd.append('actionType', 'add');
         console.log(inputs)
 
 
@@ -95,7 +94,7 @@ export default function NewApartments({isOpen, onClose}){
                                         <DialogTitle as="h3" className="text-3xl text-center font-outfit w-full font-bold text-gray-900">
                                             New Apartment
                                         </DialogTitle>
-                                        <form className="p-4 md:p-5" onSubmit={handleAddNewApartment} name='add' encType="multipart/form-data">
+                                        <form className="p-4 md:p-5" onSubmit={handleAddNewApartment} encType="multipart/form-data">
                                             <div className='flex gap-5 flex-col lg:flex-row overflow-auto'>
                                                 <div className="grid gap-4 mb-4 grid-cols-2 lg:w-2/4">
                                                     <div className="col-span-2">
@@ -119,7 +118,8 @@ export default function NewApartments({isOpen, onClose}){
                                                             <label className="block mb-2 text-sm font-medium text-gray-900 text-start">per:</label>
                                                             <select onChange={handleChange} name="stayType" className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 " required>
                                                                     <option value="">Select</option>
-                                                                    <option value="days" act>Night</option>
+                                                                    <option value="days">Day</option>
+                                                                    <option value="weeks">Weeks</option>
                                                                     <option value="months">Months</option>
                                                                 
                                                             </select>

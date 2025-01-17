@@ -7,15 +7,13 @@ import withReactContent from 'sweetalert2-react-content'
 
 export default function EditApartments({isOpen, onClose, item}){
 
-    const [inputs, setInputs] = useState({apartmentName: '', numberOfRooms: 0, location: '', description: '', action: '', files: [], stayType: '', price: '', id: 0});
+    const [inputs, setInputs] = useState({apartmentName: '', numberOfRooms: 0, location: '', description: '', files: [], stayType: '', price: '', availability: ''});
 
     const handleChange = (event) => {
         const name = event.target.name;
         const value = event.target.value;
         if(event.target.type == 'file'){
             setInputs(values => ({...values, files: Array.from(event.target.files)}));
-        }else if(event.target){
-
         }else{
             setInputs(values => ({...values, [name]: value}));
         }
@@ -34,7 +32,6 @@ export default function EditApartments({isOpen, onClose, item}){
             return;
         }
         setInputs(prev => ({...prev, action: event.target.name}));
-        setInputs(ids => ({...ids, id: item.id}));
         const fd = new FormData();
         inputs.files.forEach(file => fd.append('files[]', file));
         fd.append('apartmentName', inputs.apartmentName);
@@ -43,9 +40,13 @@ export default function EditApartments({isOpen, onClose, item}){
         fd.append('description', inputs.description);
         fd.append('stayType', inputs.stayType);
         fd.append('price', inputs.price); 
+        fd.append('actionType', 'update');
+        fd.append('availability', inputs.availability);
+        fd.append('id', item.id);
 
         console.log(inputs)
-        axios.post('https://seafarerdorm.scarlet2.io/Apartments/apartments.php?action=update', fd).then((response) => {
+        console.log(fd)
+        axios.post('https://seafarerdorm.scarlet2.io/Apartments/apartments.php', fd).then((response) => {
             if(response.data.status == 'success'){
                 withReactContent(Swal).fire({
                     icon: "success",
@@ -93,7 +94,7 @@ export default function EditApartments({isOpen, onClose, item}){
                                         <DialogTitle as="h3" className="text-3xl text-center font-outfit w-full font-bold text-gray-900">
                                             Edit Apartment
                                         </DialogTitle>
-                                        <form className="p-4 md:p-5" onSubmit={handleAddNewApartment} name='update'>
+                                        <form className="p-4 md:p-5" onSubmit={handleAddNewApartment} encType="multipart/form-data">
                                             <div className='flex gap-5 flex-col lg:flex-row overflow-auto'>
                                                 <div className="grid gap-4 mb-4 grid-cols-2 lg:w-2/4">
                                                     <div className="col-span-2">
@@ -125,16 +126,16 @@ export default function EditApartments({isOpen, onClose, item}){
                                                         <div className="flex-grow-1">
                                                             <label className="block mb-2 text-sm font-medium text-gray-900 text-start">per:</label>
                                                             <select onChange={handleChange} name="stayType" className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 " placeholder="0" required="">
-                                                                <optgroup label='Select'>
-                                                                    <option value="days">Night</option>
+                                                                    <option value="">Select</option>
+                                                                    <option value="days">Day</option>
+                                                                    <option value="weeks">Weeks</option>
                                                                     <option value="months">Months</option>
-                                                                </optgroup>
                                                             </select>
                                                         </div>
                                                     </div>
                                                     <div className="col-span-2">
                                                         <label className="block mb-2 text-sm font-medium text-gray-900 text-start">Apartment Description</label>
-                                                        <textarea onChange={handleChange} id="description" name='description' rows="8" className="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500" placeholder="Write apartment description here" value={item.description}></textarea>                    
+                                                        <textarea onChange={handleChange} id="description" name='description' rows="8" className="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500" placeholder={item.description}></textarea>                    
                                                     </div>
                                                     
                                                 </div>
