@@ -4,7 +4,7 @@ export default function Card({src, name, availability, price}){
     
     return(
         <>
-            <div className="w-96 border rounded-3xl overflow-hidden shadow-xl" key={name}>
+            <div className="w-40 md:w-52 lg:w-96 border rounded-3xl overflow-hidden shadow-xl cursor-pointer" key={name}>
                 <img src={src} alt="#" className="rounded-3xl"/>
                 <div className="text-start w-full p-4 pt-2 text-gray-400">
                     <p className="flex justify-between"><span className="font-bold text-black">{name}</span><span>{availability}</span></p>

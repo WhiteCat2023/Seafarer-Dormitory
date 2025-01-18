@@ -20,7 +20,8 @@ export default function Home() {
         try{
             
             const response = await axios.get('https://seafarerdorm.scarlet2.io/Apartments/apartments.php');
-            setItems(response.data);
+            const apartmentArray = Object.values(response.data);
+            setItems(apartmentArray);
         }catch(error){
             console.error(error);
 
@@ -39,7 +40,7 @@ export default function Home() {
         }
         try{
             return items.length > 0 ? (items.map(item => (
-              <Card src="https://static.vecteezy.com/system/resources/previews/001/840/612/non_2x/picture-profile-icon-male-icon-human-or-people-sign-and-symbol-free-vector.jpg" name={item.apartment_name} price={item.price} availability={item.isAvailable}/>
+              <Card src='https://www.tollbrothersapartmentliving.com/wp-content/uploads/2023/03/005_Toll_4_11_19_UnionPl-983x720-1.jpg' key={item.id} name={item.apartment_name} price={item.price} availability={item.isAvailable}/>
             ))) : (
                 <p className='h-full w-full flex items-center justify-center text-gray-500'>No apartments available</p>
             )
@@ -51,7 +52,7 @@ export default function Home() {
   return (
     <>
       <TopNavUser navItem={navigation}/>
-      <div className='w-5/6 mx-auto flex flex-wrap gap-x-3.5 gap-y-3.5 mt-24 justify-center'>
+      <div className='w-full px-4 lg:w-5/6 mx-auto flex flex-wrap gap-x-3.5 gap-y-3.5 mt-5 lg:mt-24 justify-center'>
         {displayList()}
       </div>
       

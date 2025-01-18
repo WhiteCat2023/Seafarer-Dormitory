@@ -19,9 +19,9 @@ export default function Apartments(){
     const fetchData = async () => {
         setLoading(true);
         try{
-            
             const response = await axios.get('https://seafarerdorm.scarlet2.io/Apartments/apartments.php');
-            setItems(response.data);
+            const apartmentArray = Object.values(response.data);
+            setItems(apartmentArray);
         }catch(error){
             console.error(error);
 
