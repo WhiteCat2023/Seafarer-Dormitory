@@ -67,7 +67,7 @@ export default function Home() {
     <>
       <TopNavUser navItem={navigation}/>
       
-      <div className={` w-full lg:w-5/6 px-4 lg:px-0  mx-auto flex-col mt-5 lg:mt-24`} style={{display: isListVisible ? 'flex': 'none'}}>
+      <div className={` w-full lg:w-5/6 px-4 lg:px-0  mx-auto flex-col mt-5 lg:mt-24 `} style={{display: isListVisible ? 'flex': 'none'}}>
         <div>Categories</div>
         <hr className='my-4'></hr>
         <div className='w-full'>
