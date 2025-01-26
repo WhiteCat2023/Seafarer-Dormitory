@@ -2,7 +2,7 @@ import { useState } from "react"
 import Logo from "./assets/Logo.png"
 import ShowCase from "./assets/showcase.jpg"
 import axios from "axios"
-import { useNavigate, Link } from "react-router-dom"
+import { useNavigate } from "react-router-dom"
 import Spinner from "./components/Spinner"
 import Swal from 'sweetalert2'
 import withReactContent from 'sweetalert2-react-content'

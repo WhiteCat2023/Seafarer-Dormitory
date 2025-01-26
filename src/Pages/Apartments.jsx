@@ -79,7 +79,7 @@ export default function Apartments(){
 
     return(
         <>
-            <div className="container mx-auto lg:pt-10 lg:px-8 " style={{height: 'calc(100% - 64px)'}}>
+            <div className="container mx-auto sm:pt-10 sm:px-4 h-full">
                 <div className={`lg:flex items-center justify-between lg:mb-5 flex-col md:flex-row`} style={{display: isListVisible ? 'flex' : 'hidden' }}>
                     <nav className="flex items-center mb-4 md:mb-0 flex-grow md:flex-grow-0 w-full px-3 lg:px-0">
                         <h1 className="md:text-5xl font-outfit font-semibold text-3xl text-gray-600">Apartments</h1>
@@ -94,7 +94,7 @@ export default function Apartments(){
                         <i className='absolute lg:left-3 left-5 top-3 -translate-y-1 text-2xl flex justify-center'><BiSearchAlt/></i>
                     </div>
                 </div>
-                <div className='lg:border-2 lg:h-3/4 h-full lg:rounded-3xl lg:border-blue-500 relative overflow-auto'>
+                <div className=' relative'>
                     <div style={{ display: isListVisible ? 'block': 'none', height: 'calc(100% - 50px)'}}>
                         <div className='border-b-2 border-blue-500 justify-between flex items-center px-4 pb-1 pt-3 sticky top-0 left-0 bg-white'>
                             <i className='p-1 rounded-full hover:bg-blue-100 cursor-pointer flex justify-center'><box-icon name='loader'></box-icon></i>

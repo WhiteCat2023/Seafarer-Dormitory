@@ -1,28 +1,74 @@
 import Logo from "./assets/Logo.png";
 import { NavLink } from 'react-router-dom';
 import { useState } from "react";
+import { BiObjectsVerticalBottom, BiSolidDashboard, BiSolidUserRectangle, BiSolidBuilding, BiBuildingHouse, BiLogOut, BiSolidUserDetail } from "react-icons/bi";
 
 export default function TopNavAdmin({navItem}){
 
     const [isMenuOpen, setIsMenuOpen] = useState(false); 
+
+    const renderNameIcon = (name) =>{
+        switch(name){
+            case 'Users':
+                return <span className="flex items-center gap-x-3"><BiSolidUserRectangle className="w-5 h-5"/> {name}</span>;
+            case 'Apartments':
+                return <span className="flex items-center gap-x-3"><BiSolidBuilding className="w-5 h-5"/> {name}</span>;
+            case 'Rooms':
+                return <span className="flex items-center gap-x-3"><BiBuildingHouse className="w-5 h-5"/> {name}</span>
+        }
+    }
     return(
         <>
-            <div className="flex justify-between items-center p-4 bg-white z-50 h-16">
-                <img src={Logo} alt="" className="lg:w-40 w-24 "/>
-                <div className="flex hidden lg:flex w-1/4 justify-evenly ">
+            <div className="flex sm:flex-col p-4 bg-white w-full justify-between sm:justify-start sm:w-60 z-50 sm:h-full border-e sticky top-0 left-0 sm:shadow">
+                <img src={Logo} alt="" className="sm:w-26 w-24 mb-4"/>
+
+                {/* Main */}
+                <div className="flex hidden lg:flex flex-col w-full justify-evenly text-start">
+                    <p className="font-bold text-gray-400 mb-2">Main</p>
+                    <NavLink 
+                        className="transition-all duration-150 font-outfit text-balance  px-2 py-1 hover:bg-primary hover:text-white rounded-xl">
+                         <span className="flex items-center gap-x-3"><BiSolidDashboard className="w-5 h-5"/> DashBoard</span>
+                    </NavLink>
+                </div>
+                <hr className="my-2"/>
+
+                {/* Lists */}
+                <div className="flex hidden lg:flex flex-col w-full justify-evenly text-start gap-y-2">
+                    <p className="font-bold text-gray-400">Lists</p>
                     {navItem.map((item) => (
                         <NavLink 
                             key={item.name} 
                             to={item.href} 
-                            className={({isActive}) => {
-                                return "transition-all duration-150 font-outfit text-balance  px-2 py-1 " + 
-                                (!isActive ? 'hover:bg-primary hover:text-white rounded-xl' : 'bg-primary text-white rounded-xl')
-                            }}>
-                                {item.name}
+                            className="transition-all duration-150 font-outfit text-balance  px-2 py-1 hover:bg-primary hover:text-white rounded-xl">
+                                {renderNameIcon(item.name)}
                         </NavLink>
                     ))}     
                 </div>
-                <NavLink to="/" className="border-2 py-2 px-10 rounded-3xl font-outfit bg-primary text-white lg:block hidden">Profile</NavLink>
+
+                {/* Useful */}
+                <hr className="my-4"/>
+                <div className="flex hidden lg:flex flex-col w-full justify-evenly text-start ">
+                    <p className="font-bold text-gray-400 mb-2">Useful</p>
+                    <NavLink 
+                        className="transition-all duration-150 font-outfit text-balance  px-2 py-1 hover:bg-primary hover:text-white rounded-xl">
+                        <span className="flex items-center gap-x-3"><BiObjectsVerticalBottom className="w-5 h-5"/> Stats</span>
+                    </NavLink>
+                </div>
+                <hr className="my-4"/>
+
+                {/* Users */}
+                <div className="flex hidden lg:flex flex-col w-full justify-evenly text-start gap-y-2">
+                    <p className="font-bold text-gray-400 mb-2">User</p>
+                    <NavLink 
+                        className="transition-all duration-150 font-outfit text-balance  px-2 py-1 hover:bg-primary hover:text-white rounded-xl">
+                        <span className="flex items-center gap-x-3"><BiSolidUserDetail className="w-5 h-5"/> Profile</span>
+                    </NavLink>
+                    <NavLink 
+                        to="/"
+                        className="transition-all duration-150 font-outfit text-balance  px-2 py-1 hover:bg-primary hover:text-white rounded-xl">
+                        <span className="flex items-center gap-x-3"><BiLogOut className="w-5 h-5"/> Logout</span>
+                    </NavLink>
+                </div>
                 <i className="bx bx-menu-alt-right lg:hidden block text-2xl lg:text-3xl" onClick={() => setIsMenuOpen(!isMenuOpen)}></i>
             </div>
             <div className={`w-full bg-white lg:hidden absolute h-3/5 left-0 flex flex-col gap-2 px-2 ${isMenuOpen ? "top-16": "-top-full"} transition-all duration-200 z-50`}>

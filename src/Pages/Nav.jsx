@@ -4,16 +4,18 @@ import TopNavAdmin from "./components/TopNavAdmin";
 export default function Nav(){ 
     
     const navigation = [
+        {name: 'Users', href: '/Nav/Tenants'},
         {name: 'Apartments', href: '/Nav/Apartments'},
-        {name: 'Tenants', href: '/Nav/Tenants'},
-        {name: 'History', href: '/Nav/History'},
+        {name: 'Rooms', href: '/Nav/History'},
         {name: 'Reports', href: '/Nav/Reports'},
     ]
 
     return(
         <>
-            <TopNavAdmin navItem={navigation}/>
-            <Outlet/>   
+            <div className="sm:flex h-dvh">
+                <TopNavAdmin navItem={navigation}/>
+                <Outlet/>   
+            </div>
         </>
     );
 }
