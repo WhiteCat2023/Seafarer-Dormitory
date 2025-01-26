@@ -77,11 +77,11 @@ export default function ContentViewer({isOpen, onClose, item}){
                         <button onClick={deleteItem} className="rounded-full hover:bg-blue-100 p-1"><BiTrash/></button>
                     </div>
                 </div>
-                <div className="lg:ps-8 pb-8 flex overflow-auto lg:overflow-hidden flex-col items-center lg:flex-row" style={{height:'calc(100% - 56px)'}}>
+                <div className="flex overflow-auto lg:overflow-hidden items-center flex-col w-full" style={{height:'calc(100% - 56px)'}}>
                     <div className="lg:w-2/4 h-full flex justify-center p-4">
                         <img className="h-full rounded-2xl" src="https://www.tollbrothersapartmentliving.com/wp-content/uploads/2023/03/005_Toll_4_11_19_UnionPl-983x720-1.jpg"/>
                     </div>
-                    <div className="lg:w-2/4 w-full lg:overflow-y-auto h-full lg:me-0 pt-4 px-4 lg:px-8 ">
+                    <div className=" w-full lg:overflow-y-auto h-full lg:me-0 pt-4 px-4 lg:px-8 ">
                         <span className="flex items-center">
                             <p className="font-semibold text-gray-700 text-2xl">{item.apartment_name}<span className="text-sm text-gray-400"> ({item.isAvailable == 'Available'? 'Available' : 'Unavailable'})</span></p>
                         </span>

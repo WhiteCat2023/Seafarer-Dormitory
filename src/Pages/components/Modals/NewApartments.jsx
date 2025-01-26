@@ -5,7 +5,7 @@ import { LuPlus} from "react-icons/lu";
 import Swal from 'sweetalert2'
 import withReactContent from 'sweetalert2-react-content'
 
-export default function NewApartments({isOpen, onClose}){
+export default function NewApartments({isOpen, onClose, onAdd}){
 
     const [inputs, setInputs] = useState({apartmentName: '', numberOfRooms: 0, location: '', description: '', files: [], stayType: '', price: ''});
     
@@ -17,11 +17,9 @@ export default function NewApartments({isOpen, onClose}){
             setInputs(values => ({...values, files: Array.from(event.target.files)}));
         }else{
             setInputs(values => ({...values, [name]: value}));
-        }
-        
+        } 
     }
-
-    const handleAddNewApartment = (event) => {
+    const handleAddNewApartment = async (event) => {
         event.preventDefault();
         if(inputs.files.length === 0){
             console.log('No file selected');
@@ -45,32 +43,61 @@ export default function NewApartments({isOpen, onClose}){
         fd.append('actionType', 'add');
         console.log(inputs)
 
-
-        axios.post('https://seafarerdorm.scarlet2.io/Apartments/apartments.php', fd).then((response) => {
-            if(response.data.status == 'success'){
+        try{
+            const response = await axios.post('https://seafarerdorm.scarlet2.io/Apartments/apartments.php', fd);
+            if (response.data.status === 'success') {
                 withReactContent(Swal).fire({
                     icon: "success",
                     title: "Success",
                     text: response.data.message,
                     confirmButtonColor: "#3085d6",
                 });
-            }else if(response.data.status == 'error'){
+                onAdd(); // Call onAdd to refresh the apartment list
+                onClose(); // Close the modal
+            } else if (response.data.status === 'error') {
                 withReactContent(Swal).fire({
                     icon: "error",
                     title: "Error",
                     text: response.data.message,
                     confirmButtonColor: "#3085d6",
-                })
+                });
             }
-        }).catch((error) => {
+        } catch (error) {
             console.error(error.message);
             withReactContent(Swal).fire({
                 icon: "error",
-                title: "Somethings not right!",
+                title: "Something's not right!",
                 text: error.message,
                 confirmButtonColor: "#3085d6",
-            })
-        })
+            });
+        }
+
+
+        // axios.post('https://seafarerdorm.scarlet2.io/Apartments/apartments.php', fd).then((response) => {
+        //     if(response.data.status == 'success'){
+        //         withReactContent(Swal).fire({
+        //             icon: "success",
+        //             title: "Success",
+        //             text: response.data.message,
+        //             confirmButtonColor: "#3085d6",
+        //         });
+        //     }else if(response.data.status == 'error'){
+        //         withReactContent(Swal).fire({
+        //             icon: "error",
+        //             title: "Error",
+        //             text: response.data.message,
+        //             confirmButtonColor: "#3085d6",
+        //         })
+        //     }
+        // }).catch((error) => {
+        //     console.error(error.message);
+        //     withReactContent(Swal).fire({
+        //         icon: "error",
+        //         title: "Somethings not right!",
+        //         text: error.message,
+        //         confirmButtonColor: "#3085d6",
+        //     })
+        // })
     }
 
     

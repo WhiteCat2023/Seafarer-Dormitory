@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import NewApartments from './components/Modals/NewApartments';
-import { BiClinic, BiSearchAlt, BiMap } from "react-icons/bi";
+import { BiClinic, BiSearchAlt, BiMap, BiTrash } from "react-icons/bi";
 import axios from 'axios';
 import CVApartments from './components/CVApartments';
 import Spinner from './components/Spinner';
@@ -35,6 +35,11 @@ export default function Apartments(){
         displayList()
     }, [])
 
+
+    const handleAddApartment = () => {
+        fetchData(); // Refresh the list after adding a new apartment
+    }
+
     const openModal = () => setIsModalOpen(true);
    
     const closeModal = () => setIsModalOpen(false);
@@ -50,23 +55,29 @@ export default function Apartments(){
         setIsListVisible(true);
     }
 
+
     function displayList(){
         if(loading){
             return <Spinner/>; //buhatanan ug centered na spinner
         }
         try{
             return items.length > 0 ? (items.map(item => (
-                <li className='flex justify-between items-center p-4 text-black border-b cursor-pointer hover:bg-blue-50' key={item.id} onClick={() => handleItemClick(item.id)}>
-                    <span className='flex-grow'>
-                        <p className='font-semibold text-start text-gray-800'>{item.apartment_name}</p>
-                        <span className='flex flex-col ps-2 text-start text-xs'>
-                            <span className='flex items-center text-gray-400'><BiMap/><p>{item.location}</p></span>
-                            <p className='text-gray-400'># of rooms : {item.number_of_rooms}</p>
-                        </span>
+                <div className='flex items-center border-b hover:bg-blue-50'>
+                    <input type="checkbox" className='mx-3'/>
+                    <li className='flex justify-between items-center p-4 text-black flex-grow cursor-pointer ' key={item.id} onClick={() => handleItemClick(item.id)}>
                         
-                    </span>
-                    {item.isAvailable == 'Available' ? <p className='text-green-700'>Available</p>: <p className='text-gray-400'>Unavailable</p>}
-                </li>
+                        <span className='flex-grow'>
+                            <p className='font-semibold text-start text-gray-800'>{item.apartment_name}</p>
+                            <span className='flex flex-col ps-2 text-start text-xs'>
+                                <span className='flex items-center text-gray-400'><BiMap/><p>{item.location}</p></span>
+                                <p className='text-gray-400'># of rooms : {item.number_of_rooms}</p>
+                            </span>
+                            
+                        </span>
+                        {item.isAvailable == 'Available' ? <p className='text-green-700'>Available</p>: <p className='text-gray-400'>Unavailable</p>}
+                    </li>
+                </div>
+                
             ))) : (
                 <p className='h-full w-full flex items-center justify-center text-gray-500'>No apartments available</p>
             )
@@ -97,7 +108,11 @@ export default function Apartments(){
                 <div className=' relative'>
                     <div style={{ display: isListVisible ? 'block': 'none', height: 'calc(100% - 50px)'}}>
                         <div className='border-b-2 border-blue-500 justify-between flex items-center px-4 pb-1 pt-3 sticky top-0 left-0 bg-white'>
-                            <i className='p-1 rounded-full hover:bg-blue-100 cursor-pointer flex justify-center'><box-icon name='loader'></box-icon></i>
+                            <div className='flex items-center gap-x-6'>
+                                <input type="checkbox" />
+                                <i className='p-1 rounded-full hover:bg-blue-100 cursor-pointer flex justify-center' onClick={() => fetchData()}><box-icon name='loader'></box-icon></i>
+                                <BiTrash className='text-3xl p-1 rounded-full hover:bg-blue-100 cursor-pointer flex justify-center'/>
+                            </div>
                             <div className='flex items-center'>
                                 <i className='p-1 rounded-full hover:bg-blue-100 cursor-pointer flex justify-center'><box-icon type='solid' name='chevron-left'></box-icon></i>
                                 <i className='p-1 rounded-full hover:bg-blue-100 cursor-pointer flex justify-center'><box-icon name='chevrons-left' ></box-icon></i>
@@ -113,7 +128,7 @@ export default function Apartments(){
                     {isItemClicked && <CVApartments isOpen={isItemClicked} onClose={handleBackBtnClick} item={selectedItem}/>}
                 </div>
             </div>
-            {isModalOpen && (<NewApartments isOpen={isModalOpen} onClose={closeModal}/>)}
+            {isModalOpen && (<NewApartments isOpen={isModalOpen} onClose={closeModal} onAdd={handleAddApartment}/>)}
         </>      
     );
 }

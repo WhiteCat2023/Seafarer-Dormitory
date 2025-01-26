@@ -19,11 +19,11 @@ export default function TopNavAdmin({navItem}){
     }
     return(
         <>
-            <div className="flex sm:flex-col p-4 bg-white w-full justify-between sm:justify-start sm:w-60 z-50 sm:h-full border-e sticky top-0 left-0 sm:shadow">
+            <div className="flex sm:flex-col p-4 bg-white w-full justify-between sm:justify-start sm:w-60 z-1 sm:h-full border-e sticky top-0 left-0 sm:shadow">
                 <img src={Logo} alt="" className="sm:w-26 w-24 mb-4"/>
 
                 {/* Main */}
-                <div className="flex hidden lg:flex flex-col w-full justify-evenly text-start">
+                <div className=" hidden lg:flex flex-col w-full justify-evenly text-start">
                     <p className="font-bold text-gray-400 mb-2">Main</p>
                     <NavLink 
                         className="transition-all duration-150 font-outfit text-balance  px-2 py-1 hover:bg-primary hover:text-white rounded-xl">
@@ -33,7 +33,7 @@ export default function TopNavAdmin({navItem}){
                 <hr className="my-2"/>
 
                 {/* Lists */}
-                <div className="flex hidden lg:flex flex-col w-full justify-evenly text-start gap-y-2">
+                <div className=" hidden lg:flex flex-col w-full justify-evenly text-start gap-y-2">
                     <p className="font-bold text-gray-400">Lists</p>
                     {navItem.map((item) => (
                         <NavLink 
@@ -47,7 +47,7 @@ export default function TopNavAdmin({navItem}){
 
                 {/* Useful */}
                 <hr className="my-4"/>
-                <div className="flex hidden lg:flex flex-col w-full justify-evenly text-start ">
+                <div className=" hidden lg:flex flex-col w-full justify-evenly text-start ">
                     <p className="font-bold text-gray-400 mb-2">Useful</p>
                     <NavLink 
                         className="transition-all duration-150 font-outfit text-balance  px-2 py-1 hover:bg-primary hover:text-white rounded-xl">
@@ -57,7 +57,7 @@ export default function TopNavAdmin({navItem}){
                 <hr className="my-4"/>
 
                 {/* Users */}
-                <div className="flex hidden lg:flex flex-col w-full justify-evenly text-start gap-y-2">
+                <div className="hidden lg:flex flex-col w-full justify-evenly text-start gap-y-2">
                     <p className="font-bold text-gray-400 mb-2">User</p>
                     <NavLink 
                         className="transition-all duration-150 font-outfit text-balance  px-2 py-1 hover:bg-primary hover:text-white rounded-xl">
