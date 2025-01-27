@@ -1,13 +1,14 @@
 import { useEffect, useRef, useState } from 'react';
-import NewApartments from '../components/Modals/NewApartments';
+// import NewApartments from '../components/Modals/NewApartments';
 import { BiClinic, BiSearchAlt, BiMap, BiTrash } from "react-icons/bi";
 import axios from 'axios';// 2nd option if firebase wont work by berndt
 import CVApartments from '../components/CV/CVApartments';
 import Spinner from '../components/Spinner/Spinner';
+import AddApartment from '../components/SubPage/AddApartment';
 
 export default function Apartments(){
 
-    const [isModalOpen, setIsModalOpen] = useState(false);
+    // const [isModalOpen, setIsModalOpen] = useState(false);
     const [items, setItems] = useState([]);
     const [isItemClicked, setIsItemClicked] = useState(false);
     const [isListVisible, setIsListVisible] = useState(true);
@@ -15,6 +16,7 @@ export default function Apartments(){
     const [loading, setLoading] = useState(false);
     const [itemKey, setItemKey] = useState('');
     const selectedItem = items.find(item => item.id === itemKey);
+    const [newBtn, setNewBtn] = useState(false);
 
     // STRICTLY DO NOT ERASE KAY BAKA ERASON KA NI LORD
     // Part ni sa 
@@ -42,9 +44,17 @@ export default function Apartments(){
         fetchData(); // Refresh the list after adding a new apartment
     }
 
-    const openModal = () => setIsModalOpen(true);
+    const addNew = () => {
+        setNewBtn(true)
+        setIsListVisible(false);
+    };
+    const closeNew = () => {
+        setNewBtn(false)
+        setIsListVisible(true);
+    };
+    // const openModal = () => setIsModalOpen(true);
    
-    const closeModal = () => setIsModalOpen(false);
+    // const closeModal = () => setIsModalOpen(false);
 
     const handleItemClick = (key) => {
         setIsItemClicked(true);
@@ -96,7 +106,8 @@ export default function Apartments(){
                 <div className={`lg:flex items-center justify-between lg:mb-5 flex-col md:flex-row`} style={{display: isListVisible ? 'flex' : 'hidden' }}>
                     <nav className="flex items-center mb-4 md:mb-0 flex-grow md:flex-grow-0 w-full px-3 lg:px-0">
                         <h1 className="md:text-5xl font-outfit font-semibold text-3xl text-gray-600">Apartments</h1>
-                        <button onClick={openModal} className="bg-primary px-2 py-2 lg:px-3 lg:py-2 rounded-xl text-white ms-4 hover:bg-transparent hover:border-2 hover:border-blue-500 hover:text-blue-500 border-2 border-transparent flex justify-center text-sm lg:text-base" style={{ display: isListVisible ? 'flex': 'none'}}>
+                        {/* New Apartment button should be openModal() if firestore database went wrong */}
+                        <button onClick={addNew}  className="bg-primary px-2 py-2 lg:px-3 lg:py-2 rounded-xl text-white ms-4 hover:bg-transparent hover:border-2 hover:border-blue-500 hover:text-blue-500 border-2 border-transparent flex justify-center text-sm lg:text-base" style={{ display: isListVisible ? 'flex': 'none'}}>
                             <i className='lg:text-2xl text-xl me-1 lg:me-2 flex justify-center'>
                                 <BiClinic />
                             </i>
@@ -128,9 +139,10 @@ export default function Apartments(){
                         </ul>
                     </div>
                     {isItemClicked && <CVApartments isOpen={isItemClicked} onClose={handleBackBtnClick} item={selectedItem}/>}
+                    {newBtn && <AddApartment isOpen={newBtn} onBack={closeNew}/>}
                 </div>
             </div>
-            {isModalOpen && (<NewApartments isOpen={isModalOpen} onClose={closeModal} onAdd={handleAddApartment}/>)}
+            {/* {isModalOpen && (<NewApartments isOpen={isModalOpen} onClose={closeModal} onAdd={handleAddApartment}/>)} */}
         </>      
     );
 }

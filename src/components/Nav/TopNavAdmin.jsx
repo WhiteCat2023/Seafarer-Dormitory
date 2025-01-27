@@ -36,7 +36,7 @@ export default function TopNavAdmin({navItem}){
 
                 {/* Main */}
                 <div className=" hidden lg:flex flex-col w-full justify-evenly text-start">
-                    <p className="font-bold text-gray-400 mb-2">Main</p>
+                    <p className="font-bold text-xs text-gray-400 mb-2">Main</p>
                     <NavLink 
                         className="transition-all duration-150 font-outfit text-balance  px-2 py-1 hover:bg-primary hover:text-white rounded-xl">
                          <span className="flex items-center gap-x-3"><BiSolidDashboard className="w-5 h-5"/> DashBoard</span>
@@ -46,7 +46,7 @@ export default function TopNavAdmin({navItem}){
 
                 {/* Lists */}
                 <div className=" hidden lg:flex flex-col w-full justify-evenly text-start gap-y-2">
-                    <p className="font-bold text-gray-400">Lists</p>
+                    <p className="font-bold text-gray-400 text-xs">Lists</p>
                     {navItem.map((item) => (
                         <NavLink 
                             key={item.name} 
@@ -60,7 +60,7 @@ export default function TopNavAdmin({navItem}){
                 {/* Useful */}
                 <hr className="my-4"/>
                 <div className=" hidden lg:flex flex-col w-full justify-evenly text-start ">
-                    <p className="font-bold text-gray-400 mb-2">Useful</p>
+                    <p className="font-bold text-gray-400 mb-2 text-xs">Useful</p>
                     <NavLink 
                         className="transition-all duration-150 font-outfit text-balance  px-2 py-1 hover:bg-primary hover:text-white rounded-xl">
                         <span className="flex items-center gap-x-3"><BiObjectsVerticalBottom className="w-5 h-5"/> Stats</span>
@@ -70,7 +70,7 @@ export default function TopNavAdmin({navItem}){
 
                 {/* Users */}
                 <div className="hidden lg:flex flex-col w-full justify-evenly text-start gap-y-2">
-                    <p className="font-bold text-gray-400 mb-2">User</p>
+                    <p className="font-bold text-gray-400 mb-2 text-xs">User</p>
                     <NavLink 
                         className="transition-all duration-150 font-outfit text-balance  px-2 py-1 hover:bg-primary hover:text-white rounded-xl">
                         <span className="flex items-center gap-x-3"><BiSolidUserDetail className="w-5 h-5"/> Profile</span>

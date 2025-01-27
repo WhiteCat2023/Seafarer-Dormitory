@@ -8,7 +8,7 @@ export default function TopNavUser({navItem}){
         <>
             <div className="flex justify-between items-center p-4 bg-white z-50 h-16">
                 <img src={Logo} alt="" className="lg:w-40 w-24 "/>
-                <div className="flex hidden lg:flex w-1/4 justify-evenly ">
+                <div className="flex  lg:flex w-1/4 justify-evenly ">
                     {navItem.map((item) => (
                         <NavLink 
                             key={item.name} 
