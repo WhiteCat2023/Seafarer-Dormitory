@@ -1,5 +1,5 @@
 
-import Carousel from './CardCarousel';
+import Carousel from '../Carousel/CardCarousel';
 
 export default function Card({ src, name, availability, price, onClick}){
     const newSrc = Object.values(src);

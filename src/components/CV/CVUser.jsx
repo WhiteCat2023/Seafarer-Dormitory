@@ -1,5 +1,5 @@
 import { BiArrowBack } from 'react-icons/bi';
-import CardCarousel from './CardCarousel';
+import CardCarousel from '../Carousel/CardCarousel';
 
 export default function CVUser({isOpen, onClose, item}){
     const src = Object.values(item.files);

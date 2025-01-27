@@ -1,5 +1,5 @@
 import { Outlet} from "react-router-dom";
-import TopNavAdmin from "./components/TopNavAdmin";
+import TopNavAdmin from "../components/Nav/TopNavAdmin";
 
 export default function Nav(){ 
     

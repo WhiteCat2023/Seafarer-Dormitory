@@ -1,11 +1,15 @@
-import Logo from "./assets/Logo.png";
+import Logo from "../../assets/Logo.png";
 import { NavLink } from 'react-router-dom';
 import { useState } from "react";
+import { signOut } from "firebase/auth";
 import { BiObjectsVerticalBottom, BiSolidDashboard, BiSolidUserRectangle, BiSolidBuilding, BiBuildingHouse, BiLogOut, BiSolidUserDetail } from "react-icons/bi";
+import { auth } from "../../config/firebase";
+import { useNavigate } from "react-router-dom";
 
 export default function TopNavAdmin({navItem}){
 
     const [isMenuOpen, setIsMenuOpen] = useState(false); 
+    const navigate = useNavigate();
 
     const renderNameIcon = (name) =>{
         switch(name){
@@ -15,6 +19,14 @@ export default function TopNavAdmin({navItem}){
                 return <span className="flex items-center gap-x-3"><BiSolidBuilding className="w-5 h-5"/> {name}</span>;
             case 'Rooms':
                 return <span className="flex items-center gap-x-3"><BiBuildingHouse className="w-5 h-5"/> {name}</span>
+        }
+    }
+    const logout = async () => {
+        try{
+            await signOut(auth);
+            navigate("/Login");
+        }catch(err){
+            console.error(err);
         }
     }
     return(
@@ -63,11 +75,11 @@ export default function TopNavAdmin({navItem}){
                         className="transition-all duration-150 font-outfit text-balance  px-2 py-1 hover:bg-primary hover:text-white rounded-xl">
                         <span className="flex items-center gap-x-3"><BiSolidUserDetail className="w-5 h-5"/> Profile</span>
                     </NavLink>
-                    <NavLink 
-                        to="/"
+                    <button 
+                        onClick={logout}
                         className="transition-all duration-150 font-outfit text-balance  px-2 py-1 hover:bg-primary hover:text-white rounded-xl">
                         <span className="flex items-center gap-x-3"><BiLogOut className="w-5 h-5"/> Logout</span>
-                    </NavLink>
+                    </button>
                 </div>
                 <i className="bx bx-menu-alt-right lg:hidden block text-2xl lg:text-3xl" onClick={() => setIsMenuOpen(!isMenuOpen)}></i>
             </div>

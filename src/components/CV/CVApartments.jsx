@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { BiArrowBack, BiMap, BiEdit, BiTrash } from "react-icons/bi";
-import EditApartments from "./Modals/EditApartments";
+import EditApartments from "../Modals/EditApartments";
 import withReactContent from 'sweetalert2-react-content';
 import Swal from 'sweetalert2';
 import axios from 'axios';

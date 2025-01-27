@@ -1,9 +1,9 @@
-import TopNavUser from './components/TopNavUser';
-import Card from './components/Card'
+import TopNavUser from '../components/Nav/TopNavUser';
+import Card from '../components/Cards/Card'
 import { useState, useEffect } from "react";
 import axios from 'axios';
-import Spinner from './components/Spinner';
-import CVUser from './components/CVUser';
+import Spinner from '../components/Spinner/Spinner';
+import CVUser from '../components/CV/CVUser';
 
 export default function Home() {
 

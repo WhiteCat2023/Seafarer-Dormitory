@@ -1,9 +1,9 @@
 import { useEffect, useRef, useState } from 'react';
-import NewApartments from './components/Modals/NewApartments';
+import NewApartments from '../components/Modals/NewApartments';
 import { BiClinic, BiSearchAlt, BiMap, BiTrash } from "react-icons/bi";
-import axios from 'axios';
-import CVApartments from './components/CVApartments';
-import Spinner from './components/Spinner';
+import axios from 'axios';// 2nd option if firebase wont work by berndt
+import CVApartments from '../components/CV/CVApartments';
+import Spinner from '../components/Spinner/Spinner';
 
 export default function Apartments(){
 
@@ -16,6 +16,8 @@ export default function Apartments(){
     const [itemKey, setItemKey] = useState('');
     const selectedItem = items.find(item => item.id === itemKey);
 
+    // STRICTLY DO NOT ERASE KAY BAKA ERASON KA NI LORD
+    // Part ni sa 
     const fetchData = async () => {
         setLoading(true);
         try{
@@ -62,7 +64,7 @@ export default function Apartments(){
         }
         try{
             return items.length > 0 ? (items.map(item => (
-                <div className='flex items-center border-b hover:bg-blue-50'>
+                <div className='flex items-center border-b hover:bg-blue-50' key={item.id}>
                     <input type="checkbox" className='mx-3'/>
                     <li className='flex justify-between items-center p-4 text-black flex-grow cursor-pointer ' key={item.id} onClick={() => handleItemClick(item.id)}>
                         
