@@ -10,7 +10,7 @@ export default function Tenants(){
                 <div className={`lg:flex items-center justify-between lg:mb-5 flex-col md:flex-row flex`} >
                     <nav className="flex items-center mb-4 md:mb-0 flex-grow md:flex-grow-0 w-full px-3 lg:px-0">
                         <h1 className="md:text-5xl font-outfit font-semibold text-3xl text-gray-600">Users</h1>
-                        <button  className="bg-primary px-2 py-2 lg:px-3 lg:py-2 rounded-xl text-white ms-4 hover:bg-transparent hover:border-2 hover:border-blue-500 hover:text-blue-500 border-2 border-transparent flex justify-center text-sm lg:text-base flex" >
+                        <button  className="bg-primary px-2 py-2 lg:px-3 lg:py-2 rounded-xl text-white ms-4 hover:bg-transparent hover:border-2 hover:border-blue-500 hover:text-blue-500 border-2 border-transparent flex justify-center text-sm lg:text-base" >
                             <i className='lg:text-2xl text-xl me-1 lg:me-2 flex justify-center'>
                                 <BiClinic />
                             </i>
