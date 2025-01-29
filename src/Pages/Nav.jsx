@@ -5,9 +5,7 @@ export default function Nav(){
     
     const navigation = [
         {name: 'Users', href: '/Nav/Tenants'},
-        {name: 'Apartments', href: '/Nav/Apartments'},
-        {name: 'Rooms', href: '/Nav/History'},
-        {name: 'Reports', href: '/Nav/Reports'},
+        {name: 'Rooms', href: '/Nav/Rooms'},
     ]
 
     return(

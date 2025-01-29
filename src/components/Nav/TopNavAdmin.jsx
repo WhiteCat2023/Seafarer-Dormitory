@@ -1,9 +1,7 @@
 import Logo from "../../assets/Logo.png";
 import { NavLink } from 'react-router-dom';
 import { useState } from "react";
-import { signOut } from "firebase/auth";
 import { BiObjectsVerticalBottom, BiSolidDashboard, BiSolidUserRectangle, BiSolidBuilding, BiBuildingHouse, BiLogOut, BiSolidUserDetail } from "react-icons/bi";
-import { auth } from "../../config/firebase";
 import { useNavigate } from "react-router-dom";
 
 export default function TopNavAdmin({navItem}){
@@ -15,10 +13,8 @@ export default function TopNavAdmin({navItem}){
         switch(name){
             case 'Users':
                 return <span className="flex items-center gap-x-3"><BiSolidUserRectangle className="w-5 h-5"/> {name}</span>;
-            case 'Apartments':
-                return <span className="flex items-center gap-x-3"><BiSolidBuilding className="w-5 h-5"/> {name}</span>;
             case 'Rooms':
-                return <span className="flex items-center gap-x-3"><BiBuildingHouse className="w-5 h-5"/> {name}</span>
+                return <span className="flex items-center gap-x-3"><BiBuildingHouse className="w-5 h-5"/> {name}</span>;
         }
     }
     const logout = async () => {

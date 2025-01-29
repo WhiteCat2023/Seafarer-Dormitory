@@ -15,7 +15,6 @@
     "@material-tailwind/react": "^2.1.10",
     "axios": "^1.7.9",
     "boxicons": "^2.1.4",
-    "firebase": "^11.2.0",
     "js-cookie": "^3.0.5",
     "lineicons-react": "^2.0.0",
     "react": "^18.3.1",
