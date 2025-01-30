@@ -22,7 +22,7 @@ export default function CardCarousel({items}) {
           {items.map((item, index) => (
               <img
               key={index}
-              src={`https://seafarerdorm.scarlet2.io/Apartments/${item}`}
+              src={`https://seafarerdorm.scarlet2.io/Rooms/${item}`}
               className="h-full w-full object-cover"
               />
           ))}

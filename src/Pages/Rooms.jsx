@@ -3,6 +3,20 @@ import AddRoom from "../components/SubPage/AddRoom";
 import { useState, useEffect } from "react";
 import axios from "axios";
 import { Spinner } from "@material-tailwind/react";
+import CVRoom from "../components/CV/CVRoom";
+
+
+// *NOTE* 
+
+
+
+// // kulang nalang design sa CVRoom, 
+// // AddRoom, ug placements sa list items
+// WORKING PA SA LIST ITEMS SA HOME
+
+
+
+
 
 export default function Rooms(){
 
@@ -12,6 +26,12 @@ export default function Rooms(){
     const [loading, setLoading] = useState(false);
     const [selectAll, setSelectAll] = useState(false);
     const [selectedItems, setSelectedItems] = useState(new Set());
+    const [currentPage, setCurrentPage] = useState(1);
+    const [totalItems, setTotalItems] = useState(0);
+    const itemsPerPage = 20;
+    const [isItemClicked, setItemClicked] = useState(false);
+    const [key, setKey] = useState(0);
+    const selectedItem = items.find(item => item.id === key);
 
     const openAddRoom = () =>{
         setIsButtonClicked(true);
@@ -27,8 +47,14 @@ export default function Rooms(){
     const fetchData = async () => {
         setLoading(true);
         try{
-            const response = await axios.get('https://seafarerdorm.scarlet2.io/Rooms/retrieve-rooms.php');
-            const apartmentArray = Object.values(response.data);
+            const fd = new FormData();
+            fd.append('page', currentPage);
+            fd.append('limit', itemsPerPage);
+            const response = await axios.get('https://seafarerdorm.scarlet2.io/Rooms/retrieve-rooms.php', fd);
+            // const apartmentArray = Object.values(response.data);
+           
+            setTotalItems(response.data.total); 
+            const apartmentArray = Object.values(response.data.data);
             setItems(apartmentArray);
         }catch(error){
             console.error(error);
@@ -41,56 +67,74 @@ export default function Rooms(){
     useEffect(() => { 
         fetchData()
         console.log(items)
-    }, []);
+    }, [currentPage]);
+
+    const handlePageChange = (newPage) => {
+        if(newPage > 0 && newPage <= totalPages){
+            setCurrentPage(newPage);
+        }
+    };
+
+    const totalPages = Math.ceil(totalItems / itemsPerPage); // Calculate total pages
 
 
-    const handleAddRoom = () => {
-        fetchData(); 
-    }
-
-    // const handleSelectAllChange = () => {
-    //     setSelectAll(event.target.checked);
-    // }
 
     const handleSelectAllChange = (event) => {
         const checked = event.target.checked;
         setSelectAll(checked);
         if (checked) {
-            const allIds = new Set(items.map(item => item.id)); // Select all item IDs
+            const allIds = new Set(items.map(item => item.id)); 
             setSelectedItems(allIds);
         } else {
-            setSelectedItems(new Set()); // Deselect all
+            setSelectedItems(new Set()); 
         }
     };
 
     const handleCheckboxChange = (id) => {
         const newSelectedItems = new Set(selectedItems);
         if (newSelectedItems.has(id)) {
-            newSelectedItems.delete(id); // Deselect if already selected
+            newSelectedItems.delete(id); 
         } else {
-            newSelectedItems.add(id); // Select if not selected
+            newSelectedItems.add(id); 
         }
         setSelectedItems(newSelectedItems);
-        setSelectAll(newSelectedItems.size === items.length); // Update "Select All" checkbox
+        setSelectAll(newSelectedItems.size === items.length); 
     };
 
     const handleDeleteSelected = async () => {
-        if (selectedItems.size === 0) return; // Do nothing if no items are selected
+        if (selectedItems.size === 0) return; 
 
         try {
             // Send delete request to the backend for each selected item
-            await Promise.all(Array.from(selectedItems).map(id => 
-                axios.delete(`https://seafarerdorm.scarlet2.io/Rooms/delete-room.php?id=${id}`)
-            ));
-            // Refresh the list after deletion
+            const fd = new FormData();
+            fd.append('ids', Array.from(selectedItems).join(','));
+            
+            const response = await axios.post('https://seafarerdorm.scarlet2.io/Rooms/delete-room.php', fd);
+            if(response.data.status == 'success'){
+                console.log(response.data.status);
+            }else{
+                console.log(response.data.status);
+            }
+            
             fetchData();
-            setSelectedItems(new Set()); // Clear selected items
-            setSelectAll(false); // Reset "Select All" checkbox
+            setSelectedItems(new Set()); 
+            setSelectAll(false); 
         } catch (error) {
             console.error("Error deleting items:", error);
         }
     };
 
+    const handleClickItem = (key) => {
+        setItemClicked(true);
+        setIsListVisible(false);
+        setKey(key);
+    }
+
+    const closeCV = () =>{
+        setItemClicked(false)
+        setIsListVisible(true);
+        setKey(0);
+    }
     function displayList(){
 
         if(loading){
@@ -101,7 +145,7 @@ export default function Rooms(){
         }
         try{
             return items.length > 0 ? (items.map((item, index) => (
-                <div className='flex items-center border-b hover:bg-blue-50' key={index}>
+                <div onClick={() => handleClickItem(item.id)} className='flex items-center border-b hover:bg-blue-50' key={index}>
                     <input type="checkbox" className='mx-3' checked={selectedItems.has(item.id)} onChange={() => handleCheckboxChange(item.id)} id={item.id} />
                     <li className='flex justify-between items-center p-4 text-black flex-grow cursor-pointer '>
                         <span className='flex-grow'>
@@ -110,7 +154,6 @@ export default function Rooms(){
                                 <span className='flex items-center text-gray-400'><BiMap/><p>{item.tower}</p></span>
                                 <p className='text-gray-400'># of rooms : {item.roomNumber}</p>
                             </span>
-                                
                         </span>
                     </li>
                 </div>
@@ -124,9 +167,9 @@ export default function Rooms(){
     }
     // Deletion of the items is still under construction also the pagination select all and individual selection are done
     // Things to do:
-    // 1.  Implement the deletion of items from the backend
+    // 1.  Implement the deletion of items from the backend /
     // 2.  Implement the pagination functionality
-    // 3.  Implement the "Select All" checkbox functionality
+    // 3.  Implement the "Select All" checkbox functionality /
     // 4.  Implement the content viewer functionality and the content editor functionality
 
     //By Berndt Dennis F. Canaya
@@ -153,22 +196,23 @@ export default function Rooms(){
                             <div className='flex items-center gap-x-6'>
                                 <input type="checkbox" onChange={handleSelectAllChange} checked={selectAll}/>
                                 <i className='p-1 rounded-full hover:bg-blue-100 cursor-pointer flex justify-center' onClick={() => fetchData()} ><box-icon name='loader'></box-icon></i>
-                                <BiTrash className='text-3xl p-1 rounded-full hover:bg-blue-100 cursor-pointer flex justify-center'/>
+                                <BiTrash onClick={handleDeleteSelected} className='text-3xl p-1 rounded-full hover:bg-blue-100 cursor-pointer flex justify-center'/>
                             </div>
 
                             <div className='flex items-center'>
-                                <i className='p-1 rounded-full hover:bg-blue-100 cursor-pointer flex justify-center'><box-icon type='solid' name='chevron-left'></box-icon></i>
-                                <i className='p-1 rounded-full hover:bg-blue-100 cursor-pointer flex justify-center'><box-icon name='chevrons-left' ></box-icon></i>
-                                <p className='mx-2'>1</p>
-                                <i className='p-1 rounded-full hover:bg-blue-100 cursor-pointer flex justify-center'><box-icon name='chevrons-right' ></box-icon></i>
-                                <i className='p-1 rounded-full hover:bg-blue-100 cursor-pointer flex justify-center'><box-icon name='chevron-right' type='solid' ></box-icon></i>
+                                <i onClick={() => handlePageChange(currentPage - 1)} disabled={currentPage === 1} className='p-1 rounded-full hover:bg-blue-100 cursor-pointer flex justify-center'><box-icon type='solid' name='chevron-left'></box-icon></i>
+                                <i onClick={() => handlePageChange(currentPage - 1)} disabled={currentPage === 1} className='p-1 rounded-full hover:bg-blue-100 cursor-pointer flex justify-center'><box-icon name='chevrons-left' ></box-icon></i>
+                                <p className='mx-2'>{currentPage}</p>
+                                <i onClick={() => handlePageChange(currentPage + 1)} disabled={currentPage === totalPages} className='p-1 rounded-full hover:bg-blue-100 cursor-pointer flex justify-center'><box-icon name='chevrons-right' ></box-icon></i>
+                                <i onClick={() => handlePageChange(currentPage + 1)} disabled={currentPage === totalPages} className='p-1 rounded-full hover:bg-blue-100 cursor-pointer flex justify-center'><box-icon name='chevron-right' type='solid' ></box-icon></i>
                             </div>
                         </div>
                         <ul className=' w-full' id='apartment-li'>             
                             {displayList()}
                         </ul>
                     </div>
-                    {isBtnClicked && <AddRoom isOpen={isBtnClicked} onClose={closeAddRoom} onAdd={handleAddRoom}/>}
+                    {isItemClicked && <CVRoom isOpen={isItemClicked} onClose={closeCV} item={selectedItem}/>}
+                    {isBtnClicked && <AddRoom isOpen={isBtnClicked} onClose={closeAddRoom} onAdd={() => fetchData()}/>}
                 </div>
             </div>
         </>
