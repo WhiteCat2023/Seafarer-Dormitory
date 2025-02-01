@@ -14,6 +14,7 @@ import BookingInfo from '../components/Modals/BookingInfo';
     // 3.  Implement the "Select All" checkbox functionality / (complete)
     // 4.  Implement the content viewer functionality and the content editor functionality / (NA)
     // 5.  Implement filter / (pending)
+    // 6.  Implement accept/delete reservation request backend / (pending)
 
     //By Berndt Dennis F. Canaya
 

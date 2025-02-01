@@ -4,6 +4,17 @@ import { useState } from 'react';
 import BookRoom from '../Modals/BookRoom';
 import Logo from "../../assets/Logo.png";
 
+//Note:
+    // Ang pagtarung nalang sa design igkahuman sa things to do
+    //Wala nay CV sa Reservations kay gamay ra kaayu details ibutang need modal
+
+// Things to do:
+    // 1.  Implement calendar / (pending)
+    // 2.  Implement check reservations per room / (pending)
+    // 3.  Polish design / (pending/undecided wether ibutang ba sa home or sa diri na page)
+
+    //By Berndt Dennis F. Canaya
+
 export default function CVUser({isOpen, onClose, item}){
     const src = Object.values(item.files);
     const [isModalOpen, setIsModalOpen] = useState(false);
