@@ -9,10 +9,13 @@ import BookingInfo from '../components/Modals/BookingInfo';
     //Wala nay CV sa Reservations kay gamay ra kaayu details ibutang need modal
 
 // Things to do:
-    // 1.  Implement the deletion of items from the backend / (pending)
+    // 1.  Implement the deletion of items from the backend / (complete)
     // 2.  Implement the pagination functionality / (pending)
-    // 3.  Implement the "Select All" checkbox functionality / (pending)
+    // 3.  Implement the "Select All" checkbox functionality / (complete)
     // 4.  Implement the content viewer functionality and the content editor functionality / (NA)
+    // 5.  Implement filter / (pending)
+
+    //By Berndt Dennis F. Canaya
 
 export default function Reservations() {
 
@@ -26,11 +29,12 @@ export default function Reservations() {
     const selectedItem = items.find(item => item.id === key);
     const [isInfoBtnClicked, setIsInfoBtnClicked] = useState(false);
 
+    //Need pa ni e-modify paras pagination STRICTLY DO NOT TOUCH
     const fetchData = async () => {
         setLoading(true);
         try{
             
-            const response = await axios.get('https://seafarerdorm.scarlet2.io/Reservations/reservations.php');
+            const response = await axios.get('https://seafarerdorm.scarlet2.io/Reservations/retrieve-reservations.php');
             // const apartmentArray = Object.values(response.data);
             setItems(response.data.data);
         }catch(error){
@@ -45,21 +49,60 @@ export default function Reservations() {
         fetchData()
     }, [])
 
-    function handleSelectAllChange(){
-
-    }
-
-    function handleDeleteSelected(){
-
-    }
     function openModal(key){
         setIsInfoBtnClicked(true);
         setKey(key);
     }
+
     function closeModal(){
         setIsInfoBtnClicked(false);
         setKey(0)
     }
+
+    const handleSelectAllChange = (event) => {
+        const checked = event.target.checked;
+        setSelectAll(checked);
+        if (checked) {
+            const allIds = new Set(items.map(item => item.id)); 
+            setSelectedItems(allIds);
+        } else {
+            setSelectedItems(new Set()); 
+        }
+    };
+
+    const handleCheckboxChange = (id) => {
+        const newSelectedItems = new Set(selectedItems);
+        if (newSelectedItems.has(id)) {
+            newSelectedItems.delete(id); 
+        } else {
+            newSelectedItems.add(id); 
+        }
+        setSelectedItems(newSelectedItems);
+        setSelectAll(newSelectedItems.size === items.length); 
+    };
+
+    const handleDeleteSelected = async () => {
+        if (selectedItems.size === 0) return; 
+
+        try {
+            // Send delete request to the backend for each selected item
+            const fd = new FormData();
+            fd.append('ids', Array.from(selectedItems).join(','));
+            
+            const response = await axios.post('https://seafarerdorm.scarlet2.io/Reservations/delete-reservation.php', fd);
+            if(response.data.status == 'success'){
+                console.log(response.data.status);
+            }else{
+                console.log(response.data.status);
+            }
+            
+            fetchData();
+            setSelectedItems(new Set()); 
+            setSelectAll(false); 
+        } catch (error) {
+            console.error("Error deleting items:", error);
+        }
+    };
 
     function displayList(){
         if(loading){
@@ -71,7 +114,7 @@ export default function Reservations() {
         try{
             return items.length > 0 ? (items.map((item, index) => (
                 <div className='flex items-center border-b' key={index}>
-                    <input type="checkbox" className='hover:bg-blue-50 p-2 rounded mx-3 cursor-pointer' onChange={() => handleCheckboxChange(item.id)} id={item.id} />
+                    <input type="checkbox" className=' p-2 rounded mx-3 cursor-pointer' checked={selectedItems.has(item.id)} onChange={() => handleCheckboxChange(item.id)} id={item.id} />
                     <li className='flex justify-between items-center p-4 text-black flex-grow'>
                         <span className='flex-grow text-start'>
                             <p className='font-semibold text-gray-800'>{item.cName}</p>
@@ -88,7 +131,7 @@ export default function Reservations() {
                     </div>
                 </div>
             ))) : (
-                <p className='h-96 w-full flex items-center justify-center text-gray-500'>No Reservations available</p>
+                <p className='h-96 w-full flex items-center justify-center text-gray-500'>No Reservations Available</p>
             )
         }catch(error){
             console.error(error);
@@ -117,7 +160,7 @@ export default function Reservations() {
                     <div style={{ display: 'block', height: 'calc(100% - 50px)'}}>
                         <div className='border-b-2 border-blue-500 justify-between flex items-center px-4 pb-1 pt-3 sticky top-0 left-0 bg-white'>
                             <div className='flex items-center gap-x-6'>
-                                <input type="checkbox" onChange={handleSelectAllChange} checked={selectAll} className='hover:bg-blue-50 p-2 rounded cursor-pointer'/>
+                                <input type="checkbox" onChange={handleSelectAllChange} checked={selectAll} className=' p-2 rounded cursor-pointer'/>
                                 <i className='p-1 rounded-full hover:bg-blue-100 cursor-pointer flex justify-center' onClick={() => fetchData()} ><box-icon name='loader'></box-icon></i>
                                 <BiTrash onClick={handleDeleteSelected} className='text-3xl p-1 rounded-full hover:bg-blue-100 cursor-pointer flex justify-center'/>
                             </div>

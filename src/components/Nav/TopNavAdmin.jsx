@@ -5,6 +5,14 @@ import { BiObjectsVerticalBottom, BiSolidDashboard, BiSolidUserRectangle, BiBuil
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
+//Note:
+    // Ang pagtarung nalang sa design igkahuman sa things to do
+    // Profile nga naa sa top sa side pending pa still figuring it out 
+// Things to do:
+    // 1.  Implement profile tab-view / (pending)
+
+    //By Berndt Dennis F. Canaya
+
 export default function TopNavAdmin({navItem}){
 
     const [isMenuOpen, setIsMenuOpen] = useState(false); 
@@ -12,7 +20,7 @@ export default function TopNavAdmin({navItem}){
     const [userSession, setUserSession] = useState({name: '', email: ''});
 
 
-    //under construction
+    //under construction DO NOT TOUCH by Berndt
     // const fetchUserSession = async () =>{
     //     try {
     //         const response  = await axios.get("https://seafarerdorm.scarlet2.io/Login/nav-profile.php");

@@ -1,8 +1,30 @@
 import 'boxicons'
+import { useState } from 'react';
 import { BiClinic, BiSearchAlt} from "react-icons/bi";
+import { BiTrash } from 'react-icons/bi';
 
-export default function Tenants(){
-    
+//Note:
+    // Ang pagtarung nalang sa design igkahuman sa things to do
+ 
+// Things to do:
+    // 1.  Implement the deletion of items from the backend / (pending)
+    // 2.  Implement the pagination functionality / (pending)
+    // 3.  Implement the "Select All" checkbox functionality / (pending)
+    // 4.  Implement the content viewer functionality and the content editor functionality / (pending/undecided)
+    // 5.  Implement filter / (pending)
+
+    //By Berndt Dennis F. Canaya
+
+export default function Users(){
+    const [selectAll, setSelectAll] = useState(0);
+    function handleCheckboxChange(){
+
+    }
+    function handleSelectAllChange(){
+    }
+    function handleDeleteSelected(){
+
+    }
     return(
         <>
             <div className="container mx-auto sm:pt-10 sm:px-4 h-full">
@@ -23,8 +45,11 @@ export default function Tenants(){
                 <div className=' relative'>
                     <div style={{ display: 'block', height: 'calc(100% - 50px)'}}>
                         <div className='border-b-2 border-blue-500 justify-between flex items-center px-4 pb-1 pt-3 sticky top-0 left-0 bg-white'>
-                            <i className='p-1 rounded-full hover:bg-blue-100 cursor-pointer flex justify-center'><box-icon name='loader'></box-icon></i>
-                            <div className='flex items-center'>
+                            <div className='flex items-center gap-x-6'>
+                                <input className=' p-2 rounded cursor-pointer' type="checkbox" onChange={handleSelectAllChange} checked={selectAll}/>
+                                <i className='p-1 rounded-full hover:bg-blue-100 cursor-pointer flex justify-center' onClick={() => fetchData()} ><box-icon name='loader'></box-icon></i>
+                                <BiTrash onClick={handleDeleteSelected} className='text-3xl p-1 rounded-full hover:bg-blue-100 cursor-pointer flex justify-center'/>
+                            </div>                            <div className='flex items-center'>
                                 <i className='p-1 rounded-full hover:bg-blue-100 cursor-pointer flex justify-center'><box-icon type='solid' name='chevron-left'></box-icon></i>
                                 <i className='p-1 rounded-full hover:bg-blue-100 cursor-pointer flex justify-center'><box-icon name='chevrons-left' ></box-icon></i>
                                 <p className='mx-2'>1</p>

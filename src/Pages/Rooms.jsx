@@ -5,17 +5,17 @@ import axios from "axios";
 import { Spinner } from "@material-tailwind/react";
 import CVRoom from "../components/CV/CVRoom";
 
-// *NOTE* 
+//Note: 
     // kulang nalang design sa CVRoom, 
     // AddRoom, ug placements sa list items
     // WORKING PA SA LIST ITEMS SA HOME
 
-// Deletion of the items is still under construction also the pagination select all and individual selection are done
-    // Things to do:
+// Things to do:
     // 1.  Implement the deletion of items from the backend / (completed)
     // 2.  Implement the pagination functionality / (completed)
     // 3.  Implement the "Select All" checkbox functionality / (completed)
     // 4.  Implement the content viewer functionality and the content editor functionality / (completed)
+    // 5.  Implement filter / (pending)
 
     //By Berndt Dennis F. Canaya
 
@@ -78,8 +78,6 @@ export default function Rooms(){
 
     const totalPages = Math.ceil(totalItems / itemsPerPage); // Calculate total pages
 
-
-
     const handleSelectAllChange = (event) => {
         const checked = event.target.checked;
         setSelectAll(checked);
@@ -136,6 +134,7 @@ export default function Rooms(){
         setIsListVisible(true);
         setKey(0);
     }
+    
     function displayList(){
 
         if(loading){
@@ -146,9 +145,9 @@ export default function Rooms(){
         }
         try{
             return items.length > 0 ? (items.map((item, index) => (
-                <div onClick={() => handleClickItem(item.id)} className='flex items-center border-b hover:bg-blue-50' key={index}>
-                    <input type="checkbox" className='hover:bg-blue-50 p-2 rounded mx-3 cursor-pointer' checked={selectedItems.has(item.id)} onChange={() => handleCheckboxChange(item.id)} id={item.id} />
-                    <li className='flex justify-between items-center p-4 text-black flex-grow cursor-pointer '>
+                <div className='flex items-center border-b hover:bg-blue-50' key={index}>
+                    <input type="checkbox" className=' p-2 rounded mx-3 cursor-pointer' checked={selectedItems.has(item.id)} onChange={() => handleCheckboxChange(item.id)} id={item.id} />
+                    <li onClick={() => handleClickItem(item.id)} className='flex justify-between items-center p-4 text-black flex-grow cursor-pointer '>
                         <span className='flex-grow'>
                             <p className='font-semibold text-start text-gray-800'>{item.name}</p>
                             <span className='flex flex-col ps-2 text-start text-xs'>
@@ -159,7 +158,7 @@ export default function Rooms(){
                     </li>
                 </div>
             ))) : (
-                <p className='h-96 w-full flex items-center justify-center text-gray-500'>No rooms available</p>
+                <p className='h-96 w-full flex items-center justify-center text-gray-500'>No Rooms Available</p>
             )
         }catch(error){
             console.error(error);
@@ -188,7 +187,7 @@ export default function Rooms(){
                     <div style={{ display: isListVisible ? 'block': 'none', height: 'calc(100% - 50px)'}}>
                         <div className='border-b-2 border-blue-500 justify-between flex items-center px-4 pb-1 pt-3 sticky top-0 left-0 bg-white'>
                             <div className='flex items-center gap-x-6'>
-                                <input className='hover:bg-blue-50 p-2 rounded cursor-pointer' type="checkbox" onChange={handleSelectAllChange} checked={selectAll}/>
+                                <input className=' p-2 rounded cursor-pointer' type="checkbox" onChange={handleSelectAllChange} checked={selectAll}/>
                                 <i className='p-1 rounded-full hover:bg-blue-100 cursor-pointer flex justify-center' onClick={() => fetchData()} ><box-icon name='loader'></box-icon></i>
                                 <BiTrash onClick={handleDeleteSelected} className='text-3xl p-1 rounded-full hover:bg-blue-100 cursor-pointer flex justify-center'/>
                             </div>
