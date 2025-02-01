@@ -22,7 +22,7 @@ export default function ForgotPassword({isOpen, onClose}){
         console.log(event.target.name)
         if(event.target.name == "reset_password"){
             setLoading(true)
-            axios.post("https://seafarerdorm.scarlet2.io/Login/signin.php", inputs).then((response) => {
+            axios.post("https://seafarerdorm.scarlet2.io/Login/forgot-password.php", inputs).then((response) => {
                 if(response.data.status == 'success'){
                     console.log(response.data.status);
                     withReactContent(Swal).fire({

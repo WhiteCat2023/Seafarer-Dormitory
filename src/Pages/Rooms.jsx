@@ -5,18 +5,19 @@ import axios from "axios";
 import { Spinner } from "@material-tailwind/react";
 import CVRoom from "../components/CV/CVRoom";
 
-
 // *NOTE* 
+    // kulang nalang design sa CVRoom, 
+    // AddRoom, ug placements sa list items
+    // WORKING PA SA LIST ITEMS SA HOME
 
+// Deletion of the items is still under construction also the pagination select all and individual selection are done
+    // Things to do:
+    // 1.  Implement the deletion of items from the backend / (completed)
+    // 2.  Implement the pagination functionality / (completed)
+    // 3.  Implement the "Select All" checkbox functionality / (completed)
+    // 4.  Implement the content viewer functionality and the content editor functionality / (completed)
 
-
-// // kulang nalang design sa CVRoom, 
-// // AddRoom, ug placements sa list items
-// WORKING PA SA LIST ITEMS SA HOME
-
-
-
-
+    //By Berndt Dennis F. Canaya
 
 export default function Rooms(){
 
@@ -146,7 +147,7 @@ export default function Rooms(){
         try{
             return items.length > 0 ? (items.map((item, index) => (
                 <div onClick={() => handleClickItem(item.id)} className='flex items-center border-b hover:bg-blue-50' key={index}>
-                    <input type="checkbox" className='mx-3' checked={selectedItems.has(item.id)} onChange={() => handleCheckboxChange(item.id)} id={item.id} />
+                    <input type="checkbox" className='hover:bg-blue-50 p-2 rounded mx-3 cursor-pointer' checked={selectedItems.has(item.id)} onChange={() => handleCheckboxChange(item.id)} id={item.id} />
                     <li className='flex justify-between items-center p-4 text-black flex-grow cursor-pointer '>
                         <span className='flex-grow'>
                             <p className='font-semibold text-start text-gray-800'>{item.name}</p>
@@ -165,27 +166,20 @@ export default function Rooms(){
             return <p className='h-96 w-full flex items-center justify-center text-gray-500'>Error occurred</p>
         }
     }
-    // Deletion of the items is still under construction also the pagination select all and individual selection are done
-    // Things to do:
-    // 1.  Implement the deletion of items from the backend /
-    // 2.  Implement the pagination functionality
-    // 3.  Implement the "Select All" checkbox functionality /
-    // 4.  Implement the content viewer functionality and the content editor functionality
-
-    //By Berndt Dennis F. Canaya
+    
     return(
         <>
             <div className="container mx-auto sm:pt-10 sm:px-4 h-full">
                 <div className={`lg:flex items-center justify-between lg:mb-5 flex-col md:flex-row flex`} >
                     <nav className="flex items-center mb-4 md:mb-0 flex-grow md:flex-grow-0 w-full px-3 lg:px-0">
                         <h1 className="md:text-5xl font-outfit font-semibold text-3xl text-gray-600">Rooms</h1>
-                        <button onClick={openAddRoom}  className="bg-primary px-2 py-2 lg:px-3 lg:py-2 rounded-xl text-white ms-4 hover:bg-transparent hover:border-2 hover:border-blue-500 hover:text-blue-500 border-2 border-transparent justify-center text-sm lg:text-base flex" >
+                        <button onClick={openAddRoom}  className={`bg-primary px-2 py-2 lg:px-3 lg:py-2 rounded-xl text-white ms-4 hover:bg-transparent hover:border-2 hover:border-blue-500 hover:text-blue-500 border-2 border-transparent justify-center text-sm lg:text-base ${isListVisible ? 'flex': 'hidden'}`} >
                         <i className='lg:text-2xl text-xl me-1 lg:me-2 flex justify-center'>
                             <BiClinic />
                         </i>
                             New Apartment</button>
                     </nav>
-                    <div className="relative w-full md:w-1/4 flex-grow md:flex-grow-0 px-2 lg:px-0 block" >
+                    <div className={`relative w-full md:w-1/4 flex-grow md:flex-grow-0 px-2 lg:px-0 ${isListVisible ? 'block': 'hidden'}`} >
                         <input className="rounded-full w-full ps-10 border-blue-500 border-2" type="search" placeholder="Search"/>
                         <i className='absolute lg:left-3 left-5 top-3 -translate-y-1 text-2xl flex justify-center'><BiSearchAlt/></i>
                     </div>
@@ -194,7 +188,7 @@ export default function Rooms(){
                     <div style={{ display: isListVisible ? 'block': 'none', height: 'calc(100% - 50px)'}}>
                         <div className='border-b-2 border-blue-500 justify-between flex items-center px-4 pb-1 pt-3 sticky top-0 left-0 bg-white'>
                             <div className='flex items-center gap-x-6'>
-                                <input type="checkbox" onChange={handleSelectAllChange} checked={selectAll}/>
+                                <input className='hover:bg-blue-50 p-2 rounded cursor-pointer' type="checkbox" onChange={handleSelectAllChange} checked={selectAll}/>
                                 <i className='p-1 rounded-full hover:bg-blue-100 cursor-pointer flex justify-center' onClick={() => fetchData()} ><box-icon name='loader'></box-icon></i>
                                 <BiTrash onClick={handleDeleteSelected} className='text-3xl p-1 rounded-full hover:bg-blue-100 cursor-pointer flex justify-center'/>
                             </div>

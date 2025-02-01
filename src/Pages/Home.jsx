@@ -22,9 +22,9 @@ export default function Home() {
         setLoading(true);
         try{
             
-            const response = await axios.get('https://seafarerdorm.scarlet2.io/Apartments/apartments.php');
-            const apartmentArray = Object.values(response.data);
-            setItems(apartmentArray);
+            const response = await axios.get('https://seafarerdorm.scarlet2.io/Rooms/retrieve-rooms.php');
+            // const apartmentArray = Object.values(response.data);
+            setItems(response.data.data);
         }catch(error){
             console.error(error);
 
@@ -53,7 +53,7 @@ export default function Home() {
         try{
             return items.length > 0 ? (items.map(item => (
               
-              <Card src={item.files} key={item.id} name={item.apartment_name} price={item.price} availability={item.isAvailable} onClick={() => handleItemClick(item.id)}/>
+              <Card src={item.files} key={item.id} name={item.name} price={item.price} availability={item.isAvailable} onClick={() => handleItemClick(item.id)}/>
               
             ))) : (
                 <p className='h-full w-full flex items-center justify-center text-gray-500'>No apartments available</p>
@@ -65,7 +65,10 @@ export default function Home() {
     }
   return (
     <>
-      <TopNavUser navItem={navigation}/>
+      <div style={{display: isClicked ? 'none': 'block'}}>
+        <TopNavUser navItem={navigation}/>
+      </div>
+      
       
       <div className={` w-full lg:w-5/6 px-4 lg:px-0  mx-auto flex-col mt-5 lg:mt-24 `} style={{display: isListVisible ? 'flex': 'none'}}>
         <div>Categories</div>

@@ -6,6 +6,7 @@ export default function Nav(){
     const navigation = [
         {name: 'Users', href: '/Nav/Tenants'},
         {name: 'Rooms', href: '/Nav/Rooms'},
+        {name: 'Reservations', href: '/Nav/Reservations'},
     ]
 
     return(

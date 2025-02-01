@@ -1,13 +1,34 @@
 import Logo from "../../assets/Logo.png";
 import { NavLink } from 'react-router-dom';
-import { useState } from "react";
-import { BiObjectsVerticalBottom, BiSolidDashboard, BiSolidUserRectangle, BiSolidBuilding, BiBuildingHouse, BiLogOut, BiSolidUserDetail } from "react-icons/bi";
+import { useEffect, useState } from "react";
+import { BiObjectsVerticalBottom, BiSolidDashboard, BiSolidUserRectangle, BiBuildingHouse, BiLogOut, BiSolidUserDetail, BiCalendar } from "react-icons/bi";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
 
 export default function TopNavAdmin({navItem}){
 
     const [isMenuOpen, setIsMenuOpen] = useState(false); 
     const navigate = useNavigate();
+    const [userSession, setUserSession] = useState({name: '', email: ''});
+
+
+    //under construction
+    // const fetchUserSession = async () =>{
+    //     try {
+    //         const response  = await axios.get("https://seafarerdorm.scarlet2.io/Login/nav-profile.php");
+    //         if(response.data.status === "success"){
+    //             setUserSession({name: response.data.name, email: response.data.email});
+    //         }else{
+    //             navigate("/login");
+    //         }
+    //     } catch (error) {
+    //         console.log(error.message);
+    //     }
+    // }
+
+    // useEffect(() => {
+    //     fetchUserSession();
+    // }, []);
 
     const renderNameIcon = (name) =>{
         switch(name){
@@ -15,6 +36,8 @@ export default function TopNavAdmin({navItem}){
                 return <span className="flex items-center gap-x-3"><BiSolidUserRectangle className="w-5 h-5"/> {name}</span>;
             case 'Rooms':
                 return <span className="flex items-center gap-x-3"><BiBuildingHouse className="w-5 h-5"/> {name}</span>;
+            case 'Reservations':
+                return <span className="flex items-center gap-x-3"><BiCalendar className="w-5 h-5"/> {name}</span>;
         }
     }
     const logout = async () => {
@@ -29,7 +52,11 @@ export default function TopNavAdmin({navItem}){
         <>
             <div className="flex sm:flex-col p-4 bg-white w-full justify-between sm:justify-start sm:w-60 z-1 sm:h-full border-e sticky top-0 left-0 sm:shadow">
                 <img src={Logo} alt="" className="sm:w-26 w-24 mb-4"/>
-
+                {/* User div*/}
+                <div>
+                    <p>{userSession.name}</p>
+                    <p>{userSession.email}</p>
+                </div>
                 {/* Main */}
                 <div className=" hidden lg:flex flex-col w-full justify-evenly text-start">
                     <p className="font-bold text-xs text-gray-400 mb-2">Main</p>

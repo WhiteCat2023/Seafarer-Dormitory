@@ -1,6 +1,5 @@
 import 'boxicons'
-import { BiClinic, BiSearchAlt, BiMap } from "react-icons/bi";
-import { useState } from 'react';
+import { BiClinic, BiSearchAlt} from "react-icons/bi";
 
 export default function Tenants(){
     
