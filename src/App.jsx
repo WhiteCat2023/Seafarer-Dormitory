@@ -1,7 +1,6 @@
 import './App.css'
 import Home from './Pages/Home'
 import Login from './Pages/Login'
-import Users from './Pages/Users'
 import Rooms from './Pages/Rooms'
 import Nav from './Pages/Nav'
 import Root from './Pages/Root'
@@ -25,7 +24,6 @@ const router = createBrowserRouter(
       
       {/* Routes Nav child (Admin) */}
       <Route path='/Nav' element={<Nav/>}>
-        <Route path='/Nav/Users' element={<Users/>}/>
         <Route path='/Nav/Rooms' element={<Rooms/>}/>
         <Route path='/Nav/Reservations' element={<Reservations/>}/>
       </Route>

@@ -1,4 +1,4 @@
-import { BiCheck, BiHash, BiInfoCircle, BiMap, BiSearchAlt, BiTrash, BiX } from 'react-icons/bi';
+import { BiCheck, BiHash, BiInfoCircle, BiMap, BiSearchAlt, BiTrash, BiX, BiLoader, BiChevronLeft, BiChevronsLeft, BiChevronsRight, BiChevronRight } from 'react-icons/bi';
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Spinner } from '@material-tailwind/react';
@@ -162,15 +162,15 @@ export default function Reservations() {
                         <div className='border-b-2 border-blue-500 justify-between flex items-center px-4 pb-1 pt-3 sticky top-0 left-0 bg-white'>
                             <div className='flex items-center gap-x-6'>
                                 <input type="checkbox" onChange={handleSelectAllChange} checked={selectAll} className=' p-2 rounded cursor-pointer'/>
-                                <i className='p-1 rounded-full hover:bg-blue-100 cursor-pointer flex justify-center' onClick={() => fetchData()} ><box-icon name='loader'></box-icon></i>
+                                <i className='p-1 rounded-full text-xl hover:bg-blue-100 cursor-pointer flex justify-center' onClick={() => fetchData()} ><BiLoader/></i>
                                 <BiTrash onClick={handleDeleteSelected} className='text-3xl p-1 rounded-full hover:bg-blue-100 cursor-pointer flex justify-center'/>
                             </div>
                             <div className='flex items-center'>
-                                <i className='p-1 rounded-full hover:bg-blue-100 cursor-pointer flex justify-center'><box-icon type='solid' name='chevron-left'></box-icon></i>
-                                <i className='p-1 rounded-full hover:bg-blue-100 cursor-pointer flex justify-center'><box-icon name='chevrons-left' ></box-icon></i>
+                                <BiChevronLeft className='p-1 text-3xl rounded-full hover:bg-blue-100 cursor-pointer flex justify-center'/>
+                                <BiChevronsLeft className='p-1 text-3xl rounded-full hover:bg-blue-100 cursor-pointer flex justify-center'/>
                                 <p className='mx-2'>1</p>
-                                <i className='p-1 rounded-full hover:bg-blue-100 cursor-pointer flex justify-center'><box-icon name='chevrons-right' ></box-icon></i>
-                                <i className='p-1 rounded-full hover:bg-blue-100 cursor-pointer flex justify-center'><box-icon name='chevron-right' type='solid' ></box-icon></i>
+                                <BiChevronsRight className='p-1 text-3xl rounded-full hover:bg-blue-100 cursor-pointer flex justify-center'/>
+                                <BiChevronRight className='p-1 text-3xl rounded-full hover:bg-blue-100 cursor-pointer flex justify-center'/>
                             </div>
                         </div>
                         <ul className=' w-full' id='apartment-li'>             

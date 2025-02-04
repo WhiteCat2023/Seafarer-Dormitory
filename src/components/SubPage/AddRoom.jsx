@@ -97,6 +97,9 @@ export default function AddRoom({isOpen, onClose, onAdd}) {
   }
 
   return (
+//Note:
+    // kani rang mga divs imo hilabtan dong imo rani butangan ug tailwind css
+
     <div className='' display={{display: isOpen ? 'block' : 'none'}}>
       <div>
         <BiArrowBack onClick={onClose} />

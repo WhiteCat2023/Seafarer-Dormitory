@@ -27,6 +27,11 @@ export default function CVUser({isOpen, onClose, item}){
     }
 
     return(
+        
+    //Note: 
+        //Diri ra sad imong hilabtan dong ang mga div ra imong designan :)
+
+
         <>
             <div className={` ${isModalOpen ? 'none': 'block'}`}>
                 

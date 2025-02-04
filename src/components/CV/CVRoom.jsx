@@ -11,7 +11,9 @@ export default function CVRoom({isOpen, onClose, item}) {
 
     console.log(amenities)
     return (
-        
+    //Note:
+        // Diri ra imo hilabtan lance happy coding :)
+        // ayaw na hilabti ang babaw na code :)
         <div className={` ${isOpen ? 'flex': 'none'}`}>
             <div>
                 <BiArrowBack onClick={onClose}/>
@@ -34,5 +36,6 @@ export default function CVRoom({isOpen, onClose, item}) {
                 </div>
             </div>
         </div>
+        /////////////////////////////////////////////////////
     )
 }
