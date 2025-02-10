@@ -10,8 +10,10 @@ export default function Nav(){
 
     return(
         <>
-            <div className="sm:flex h-dvh">
-                <TopNavAdmin navItem={navigation}/>
+            <div className="sm:flex h-screen  overflow-y-scroll">
+                <div className="sticky top-0 left-0">
+                    <TopNavAdmin navItem={navigation}/>
+                </div>
                 <Outlet/>   
             </div>
         </>
