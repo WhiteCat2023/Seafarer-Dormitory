@@ -24,18 +24,18 @@ export default function Reservations() {
     const [items, setItems] = useState([]);
     const [loading, setLoading] = useState(false);
     const [selectAll, setSelectAll] = useState(false);
-    const [isListVisible, setIsListVisible] = useState(true);
     const [selectedItems, setSelectedItems] = useState(new Set());
     const [key, setKey] = useState(0);
     const selectedItem = items.find(item => item.id === key);
     const [isInfoBtnClicked, setIsInfoBtnClicked] = useState(false);
+    const [searchQuery, setSearchQuery] = useState("");
 
     //Need pa ni e-modify paras pagination STRICTLY DO NOT TOUCH
     const fetchData = async () => {
         setLoading(true);
         try{
             
-            const response = await axios.get('https://seafarerdorm.scarlet2.io/Reservations/retrieve-reservations.php');
+            const response = await axios.get(`https://seafarerdorm.scarlet2.io/Reservations/retrieve-reservations.php?=search${searchQuery}`);
             // const apartmentArray = Object.values(response.data);
             setItems(response.data.data);
         }catch(error){
@@ -48,7 +48,7 @@ export default function Reservations() {
 
     useEffect(() => { 
         fetchData()
-    }, [])
+    }, [searchQuery])
 
     function openModal(key){
         setIsInfoBtnClicked(true);
@@ -105,6 +105,10 @@ export default function Reservations() {
         }
     };
 
+    const handleSearchChange = (event) => {
+        setSearchQuery(event.target.value); // Update search query state
+    };
+
     function displayList(){
         if(loading){
         
@@ -153,7 +157,7 @@ export default function Reservations() {
                             New User</button> */}
                     </nav>
                     <div className={`relative w-full md:w-1/4 flex-grow md:flex-grow-0 px-2 lg:px-0 block`}>
-                        <input className="rounded-full w-full ps-10 border-blue-500 border-2" type="search" placeholder="Search"/>
+                        <input onChange={handleSearchChange} className="rounded-full w-full ps-10 border-blue-500 border-2" type="search" placeholder="Search"/>
                         <i className='absolute lg:left-3 left-5 top-3 -translate-y-1 text-2xl flex justify-center'><BiSearchAlt/></i>
                     </div>
                 </div>

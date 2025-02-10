@@ -33,6 +33,7 @@ export default function Rooms(){
     const [isItemClicked, setItemClicked] = useState(false);
     const [key, setKey] = useState(0);
     const selectedItem = items.find(item => item.id === key);
+    const [searchQuery, setSearchQuery] = useState("");
 
     const openAddRoom = () =>{
         setIsButtonClicked(true);
@@ -48,13 +49,14 @@ export default function Rooms(){
     const fetchData = async () => {
         setLoading(true);
         try{
-            const fd = new FormData();
-            fd.append('page', currentPage);
-            fd.append('limit', itemsPerPage);
-            const response = await axios.get('https://seafarerdorm.scarlet2.io/Rooms/retrieve-rooms.php', fd);
-            // const apartmentArray = Object.values(response.data);
-           
-            setTotalItems(response.data.total); 
+            // const fd = new FormData();
+            // fd.append('page', currentPage);
+            // fd.append('limit', itemsPerPage);
+            // fd.append('search', searchQuery); 
+            // const response = await axios.get('https://seafarerdorm.scarlet2.io/Rooms/retrieve-rooms.php', fd); 
+            const response = await axios.get(
+                `https://seafarerdorm.scarlet2.io/Rooms/retrieve-rooms.php?page=${currentPage}&limit=${itemsPerPage}&search=${searchQuery}`
+              );            setTotalItems(response.data.total); 
             const apartmentArray = Object.values(response.data.data);
             setItems(apartmentArray);
         }catch(error){
@@ -68,7 +70,7 @@ export default function Rooms(){
     useEffect(() => { 
         fetchData()
         console.log(items)
-    }, [currentPage]);
+    }, [currentPage, searchQuery]);
 
     const handlePageChange = (newPage) => {
         if(newPage > 0 && newPage <= totalPages){
@@ -134,6 +136,10 @@ export default function Rooms(){
         setIsListVisible(true);
         setKey(0);
     }
+
+    const handleSearchChange = (event) => {
+        setSearchQuery(event.target.value); // Update search query state
+    };
     
     function displayList(){
 
@@ -145,6 +151,7 @@ export default function Rooms(){
         }
         try{
             return items.length > 0 ? (items.map((item, index) => (
+                
                 <div className='flex items-center border-b hover:bg-blue-50' key={index}>
                     <input type="checkbox" className=' p-2 rounded mx-3 cursor-pointer' checked={selectedItems.has(item.id)} onChange={() => handleCheckboxChange(item.id)} id={item.id} />
                     <li onClick={() => handleClickItem(item.id)} className='flex justify-between items-center p-4 text-black flex-grow cursor-pointer '>
@@ -179,7 +186,7 @@ export default function Rooms(){
                             New Apartment</button>
                     </nav>
                     <div className={`relative w-full md:w-1/4 flex-grow md:flex-grow-0 px-2 lg:px-0 ${isListVisible ? 'block': 'hidden'}`} >
-                        <input className="rounded-full w-full ps-10 border-blue-500 border-2" type="search" placeholder="Search"/>
+                        <input onChange={handleSearchChange} className="rounded-full w-full ps-10 border-blue-500 border-2" type="search" placeholder="Search" value={searchQuery}/>
                         <i className='absolute lg:left-3 left-5 top-3 -translate-y-1 text-2xl flex justify-center'><BiSearchAlt/></i>
                     </div>
                 </div>
