@@ -3,6 +3,7 @@ import Home from './Pages/Home'
 import Login from './Pages/Login'
 import Rooms from './Pages/Rooms'
 import Nav from './Pages/Nav'
+import Dashboard from './Pages/Dashboard'
 import Root from './Pages/Root'
 import { createBrowserRouter, RouterProvider, createRoutesFromElements, Route } from 'react-router-dom'
 import CVUser from './components/CV/CVUser'
@@ -24,6 +25,7 @@ const router = createBrowserRouter(
       
       {/* Routes Nav child (Admin) */}
       <Route path='/Nav' element={<Nav/>}>
+      <Route path='/Nav/Dashboard' element={<Dashboard/>}/>
         <Route path='/Nav/Rooms' element={<Rooms/>}/>
         <Route path='/Nav/Reservations' element={<Reservations/>}/>
       </Route>
