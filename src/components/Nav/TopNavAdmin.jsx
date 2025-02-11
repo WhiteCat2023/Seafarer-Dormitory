@@ -50,8 +50,12 @@ export default function TopNavAdmin({navItem}){
     }
     const logout = async () => {
         try{
-            await signOut(auth);
-            navigate("/Login");
+            window.localStorage.removeItem("isLoggedIn");
+            window.localStorage.removeItem("user");
+            window.localStorage.removeItem("token");
+
+            // Optionally, redirect the user to the login page
+            window.location.href = "/"; // or use a routing method if using React Router
         }catch(err){
             console.error(err);
         }
@@ -69,7 +73,7 @@ export default function TopNavAdmin({navItem}){
                 <div className=" hidden lg:flex flex-col w-full justify-evenly text-start">
                     <p className="font-bold text-xs text-gray-400 mb-2">Main</p>
                     <NavLink 
-                     to="/Nav/Dashboard"
+                     to="/Dashboard"
                         className="transition-all duration-150 font-outfit text-balance  px-2 py-1 hover:bg-primary hover:text-white rounded-xl">
                          <span className="flex items-center gap-x-3"><BiSolidDashboard className="w-5 h-5"/> DashBoard</span>
                     </NavLink>
