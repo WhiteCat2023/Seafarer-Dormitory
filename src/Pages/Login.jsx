@@ -18,8 +18,6 @@ export default function Login(){
     const [isModalOpen, setIsModalOpen] = useState(false);
     const navigate = useNavigate();
 
-
-
     const openModal = () => setIsModalOpen(true);
 
 
@@ -42,10 +40,18 @@ export default function Login(){
         try{
             const response = await axios.post("https://seafarerdorm.scarlet2.io/Login/signin.php", inputs);
             if(response.data.status === "success"){
+                window.localStorage.setItem('token', response.data.id)
+                window.localStorage.setItem('user', response.data.role)
+                window.localStorage.setItem('isLoggedIn', true)
+
+                if(response.data.role == "admin"){
+                    return (window.location.href = "./Dashboard")
+                }else{
+                    window.location.href = "/Home"
+                }
                 if (rememberMe) {       
                     localStorage.setItem('userEmail', inputs.email);
                 }
-                navigate("/Nav/Rooms");
             }else{
                 withReactContent(Swal).fire({
                     icon: "error",
