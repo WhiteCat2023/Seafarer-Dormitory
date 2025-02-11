@@ -1,10 +1,10 @@
 import React, { useState } from "react";
-import { BiClinic, BiSearchAlt } from "react-icons/bi";
+import { BiBuilding, BiClinic, BiSearchAlt } from "react-icons/bi";
 import DashboardTower1 from "./DashboardTower1";
 import DashboardTower2 from "./DashboardTower2";
 
 function Dashboard() {
-  const [activeTower, setActiveTower] = useState(null);
+  const [activeTower, setActiveTower] = useState("tower1"); // Set Tower 1 as default
 
   return (
     <div className="container mx-auto sm:pt-10 sm:px-4 h-full">
@@ -34,7 +34,7 @@ function Dashboard() {
           }`}
           onClick={() => setActiveTower("tower1")}
         >
-          <BiClinic className="text-xl" />
+          <BiBuilding className="text-xl" />
           Tower 1
         </button>
         <button
@@ -43,12 +43,12 @@ function Dashboard() {
           }`}
           onClick={() => setActiveTower("tower2")}
         >
-          <BiClinic className="text-xl" />
+          <BiBuilding className="text-xl" />
           Tower 2
         </button>
       </div>
 
-      {/* Conditionally rendering katong gitudlo ni sir */}
+      {/* Default display is DashboardTower1 */}
       {activeTower === "tower1" && <DashboardTower1 />}
       {activeTower === "tower2" && <DashboardTower2 />}
     </div>
