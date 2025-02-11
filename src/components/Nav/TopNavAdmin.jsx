@@ -94,6 +94,7 @@ export default function TopNavAdmin({navItem}){
                 <div className=" hidden lg:flex flex-col w-full justify-evenly text-start ">
                     <p className="font-bold text-gray-400 mb-2 text-xs">Useful</p>
                     <NavLink 
+                    to="/Nav/Statistics"
                         className="transition-all duration-150 font-outfit text-balance  px-2 py-1 hover:bg-primary hover:text-white rounded-xl">
                         <span className="flex items-center gap-x-3"><BiObjectsVerticalBottom className="w-5 h-5"/> Stats</span>
                     </NavLink>
