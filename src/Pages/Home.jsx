@@ -5,10 +5,8 @@ import { BiSearchAlt } from 'react-icons/bi';
 import axios from 'axios';
 import Spinner from '../components/Spinner/Spinner';
 import CVUser from '../components/CV/CVUser';
-import { FaLocationDot } from 'react-icons/fa6';
-import { FaPhoneAlt } from 'react-icons/fa';
-import { MdEmail } from 'react-icons/md';
 import { useNavigate } from 'react-router-dom';
+import Footer from '../components/SubPage/Footer';
 
 export default function Home() {
 
@@ -35,9 +33,6 @@ export default function Home() {
         }
     }
 
-  function loginAsAdmin(){
-    navigate("/Login")
-  }
 
   useEffect(() => { 
     fetchData()
@@ -92,19 +87,9 @@ export default function Home() {
             {displayList()}
           </div>
         </main>
+        <Footer/>
         
         
-        <footer className='pt-6 pb-10 px-8 border-t-2 border-blue-100 flex justify-between'>
-          <div className='flex flex-col gap-y-4'>
-            <h2 className='font-bold'>Other information</h2>
-            <span className='flex items-center gap-x-4'><FaLocationDot/><p>Juana Osmeña Extension Road, Cebu City, 6000 Cebu , Cebu City, Philippines</p></span>
-            <span className='flex items-center gap-x-4'><FaPhoneAlt/><p>0922 489 9721</p></span>
-            <span className='flex items-center gap-x-4'><MdEmail/><p>cebuseafarersdormitoryandtrans@gmail.com</p></span>
-          </div>
-          <div>
-            <button onClick={loginAsAdmin} className='py-1 px-10 bg-primary rounded-xl text-white'>Admin</button>
-          </div>
-        </footer>
           
       
       </div>

@@ -9,6 +9,8 @@ import { createBrowserRouter, RouterProvider, createRoutesFromElements, Route, N
 import CVUser from './components/CV/CVUser'
 import Reservations from './Pages/Reservations'
 import ProtectedRoute from './ProtectedRoute'
+import Tenants from './Pages/Tenants'
+import Profile from './Pages/Profile'
 
 //Note:
   // Add lang diri tan ang link sa imo mga pages :)
@@ -84,6 +86,8 @@ const router = createBrowserRouter(
           <>
             <Route path='/' element={<Dashboard/>}/>
             <Route path='/Dashboard' element={<Dashboard/>}/>
+            <Route path='/Profile' element={<Profile/>}/>
+            <Route path="/Tenants" element={<Tenants/>}/>
             <Route path='/Rooms' element={<Rooms/>}/>
             <Route path='/Reservations' element={<Reservations/>}/>
           </>

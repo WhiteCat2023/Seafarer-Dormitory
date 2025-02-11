@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { BiObjectsVerticalBottom, BiSolidDashboard, BiSolidUserRectangle, BiBuildingHouse, BiLogOut, BiSolidUserDetail, BiCalendar } from "react-icons/bi";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import { FaUsers } from "react-icons/fa6";
 
 //Note:
     // Ang pagtarung nalang sa design igkahuman sa things to do
@@ -46,6 +47,8 @@ export default function TopNavAdmin({navItem}){
                 return <span className="flex items-center gap-x-3"><BiBuildingHouse className="w-5 h-5"/> {name}</span>;
             case 'Reservations':
                 return <span className="flex items-center gap-x-3"><BiCalendar className="w-5 h-5"/> {name}</span>;
+            case 'Tenants':
+                return <span className="flex items-center gap-x-3"><FaUsers className="w-5 h-5"/> {name}</span>;
         }
     }
     const logout = async () => {
@@ -108,6 +111,7 @@ export default function TopNavAdmin({navItem}){
                 <div className="hidden lg:flex flex-col w-full justify-evenly text-start gap-y-2">
                     <p className="font-bold text-gray-400 mb-2 text-xs">User</p>
                     <NavLink 
+                        to={"/Profile"}
                         className="transition-all duration-150 font-outfit text-balance  px-2 py-1 hover:bg-primary hover:text-white rounded-xl">
                         <span className="flex items-center gap-x-3"><BiSolidUserDetail className="w-5 h-5"/> Profile</span>
                     </NavLink>
