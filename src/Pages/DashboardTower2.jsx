@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 
-function DashboardTower1() {
+function DashboardTower2() {
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
@@ -14,8 +14,8 @@ function DashboardTower1() {
       const response = await axios.get(
         `https://seafarerdorm.scarlet2.io/Rooms/retrieve-rooms.php?page=${currentPage}&limit=${itemsPerPage}&search=${search}`
       );
-      console.log("API Response:", response.data); // For Debugging ni
-      setItems(response.data.data || []);
+      console.log("API Response:", response.data); // Debugging Line
+      setItems(response.data.data || []); // Ensure data exists before setting state
     } catch (error) {
       console.error("Error fetching data:", error);
     } finally {
@@ -30,7 +30,7 @@ function DashboardTower1() {
   return (
     <div className="flex justify-center items-center my-6">
       <div className="border-2 border-blue-500 rounded-xl p-6 w-full max-w-7xl shadow-lg">
-        <h2 className="text-5xl font-semibold flex font-outfit">Rooms Tower 1</h2>
+        <h2 className="text-5xl font-semibold flex font-outfit">Rooms Tower 2</h2>
         <p className="text-1xl font-semibold flex font-outfit">Below are the list of apartments in Tower 1</p>
 
         {/* Search Input */}
@@ -61,8 +61,8 @@ function DashboardTower1() {
             <tbody>
               {items.length > 0 ? (
                 items.map((room, index) => (
-                  room.tower === "tower-1" ?
-                  <tr key={index} className="border-t border-gray-300 bg-white">
+                    room.tower === "tower-2" ?
+                    <tr key={index} className="border-t border-gray-300 bg-white">
                     <td className="py-2 px-4">{room.roomNumber || "N/A"}</td>
                     <td className="py-2 px-4">{room.name || "N/A"}</td>
                     <td className="py-2 px-4">{room.tower || "N/A"}</td>
@@ -71,7 +71,7 @@ function DashboardTower1() {
                     <td className="py-2 px-4">{room.pax || "N/A"}</td>
                     <td className="py-2 px-4">{room.baths || "N/A"}</td>
                     <td className="py-2 px-4">{room.amenities || "N/A"}</td>
-                  </tr>:""
+                  </tr> : ""
                 ))
               ) : (
                 <tr>
@@ -106,4 +106,4 @@ function DashboardTower1() {
   );
 }
 
-export default DashboardTower1;
+export default DashboardTower2;
