@@ -22,7 +22,7 @@ const router = createBrowserRouter(
       {/* pun-e lang kung naa ka gusto e add but ayaw kuhae */}
       <Route index element={<Home/>}/>
       <Route path='/Login' element={<Login/>}/>
-      <Route path='/cv-user' elemen={<CVUser/>}/>
+      <Route path='/cv-user' element={<CVUser/>}/>
       
       {/* Routes Nav child (Admin) */}
       <Route path='/Nav' element={<Nav/>}>
