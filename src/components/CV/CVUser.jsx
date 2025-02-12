@@ -79,6 +79,9 @@ export default function CVUser({isOpen, onClose, item}){
                     <iframe className='w-full rounded-xl mb-4 shadow-xl' src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3925.291045501798!2d123.89042871079957!3d10.318576667428992!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x33a9990007a0219f%3A0x19e1f73c25c43424!2sWinland%20Towers%20Condominium!5e0!3m2!1sen!2sph!4v1739290459103!5m2!1sen!2sph" width="800" height="400" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
                     <h3 className='font-semibold p-2'>8V9V+C6C, Juana Osmeña St, Cebu City, 6000 Cebu</h3>
                     
+                    {/* AIzaSyD90Z57bRIZ0JJFRqmlkYn_Qz3MXrOeR3o */}
+
+
                 </div>
                 <div className='mt-10'>
                     <Footer/>

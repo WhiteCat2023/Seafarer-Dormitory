@@ -16,17 +16,22 @@ import Profile from './Pages/Profile'
   // Add lang diri tan ang link sa imo mga pages :)
   // Pun e lang ayaw kuhae 
 const user = window.localStorage.getItem("user")
+const isLoggedIn = window.localStorage.getItem("isLoggedIn")
 
 const router = createBrowserRouter(
-
   createRoutesFromElements(
     <Route path='/' element={<Root/>}>
       
       {/* User Routes (User) */}
       {/* pun-e lang kung naa ka gusto e add but ayaw kuhae */}
-      <Route index element={<Home/>}/>
-      <Route path='/Login' element={<Login/>}/>
-      <Route path='/cv-user' element={<CVUser/>}/>
+      {!isLoggedIn && (
+        <>
+          <Route index element={<Home/>}/>
+          <Route path='/Login' element={<Login/>}/>
+          <Route path='/cv-user' element={<CVUser/>}/>
+        </>
+      )}
+      
       
       {/* Routes Nav child (Admin) */}
       <Route element={<ProtectedRoute/>}>
@@ -38,6 +43,9 @@ const router = createBrowserRouter(
             <Route path='/Dashboard' element={<Navigate to={"/"}/>}/>
             <Route path='/Rooms' element={<Navigate to={"/"}/>}/>
             <Route path='/Reservations' element={<Navigate to={"/"}/>}/>
+            <Route path='/Profile' element={<Navigate to={"/"}/>}/>
+            <Route path="/Tenants" element={<Navigate to={"/"}/>}/>
+            <Route path='/Statistics' element={<Navigate to={"/"}/>}/>
           </>
         ) : (
           <>

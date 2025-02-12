@@ -12,12 +12,6 @@ function ProtectedRoute() {
     ]
     console.log(isLoggedIn)
 
-    // return(<div className="sm:flex h-screen  overflow-y-scroll">
-    //     <div className="sticky top-0 left-0">
-    //         <TopNavAdmin navItem={navigation}/>
-    //     </div>
-    //     <Outlet/>   
-    // </div>)
         return isLoggedIn === "true" ? 
             (<div className="sm:flex h-screen  overflow-y-scroll">
                 <div className="sticky top-0 left-0">

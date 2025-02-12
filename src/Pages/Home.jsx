@@ -7,6 +7,12 @@ import Spinner from '../components/Spinner/Spinner';
 import CVUser from '../components/CV/CVUser';
 import { useNavigate } from 'react-router-dom';
 import Footer from '../components/SubPage/Footer';
+import pic1 from '../assets/pic1.png'
+import pic2 from '../assets/pic2.png'
+import pic3 from '../assets/pic3.png'
+import pic4 from '../assets/pic4.png'
+import pic5 from '../assets/pic5.png'
+import AnimatedCaoursel from '../components/Carousel/AnimatedCarousel'
 
 export default function Home() {
 
@@ -53,8 +59,8 @@ export default function Home() {
         }
         try{
             return items.length > 0 ? (items.map(item => (
-              <div className='col-span-1 row-span-1'>
-                <Card src={item.files} key={item.id} name={item.name} price={item.price} availability={item.isAvailable} onClick={() => handleItemClick(item.id)}/>
+              <div className='col-span-1 row-span-1' key={item.id}>
+                <Card src={item.files} name={item.name} price={item.price} availability={item.isAvailable} onClick={() => handleItemClick(item.id)}/>
               </div>
             ))) : (
                 <p className='h-full w-full flex items-center justify-center text-gray-500'>No apartments available</p>
@@ -64,6 +70,8 @@ export default function Home() {
             return <p className='h-full w-full flex items-center justify-center text-gray-500'>Error occurred</p>
         }
     }
+
+    const staticImgs = [pic1, pic2, pic3, pic4, pic5]
   return (
     <>
       <div style={{display: isClicked ? 'none': 'block'}}>
@@ -71,10 +79,10 @@ export default function Home() {
       </div>
       
       
-      <div className={` mx-6 mx-auto flex-col mt-5 lg:mt-24 `} style={{display: isListVisible ? 'flex': 'none'}}>
-        <main className='px-8'>
-          <div>
-            {/* Carousel */}
+      <div className={` mx-6 mx-auto flex-col mt-5 `} style={{display: isListVisible ? 'flex': 'none'}}>
+        <main className='px-8 w-5/6 mx-auto'>
+          <div className='h-[500px] mb-8 overflow-hidden rounded-xl'>
+            <AnimatedCaoursel items={staticImgs}/>
           </div>
           <div className="flex justify-between items-center">
             <h2 className='font-bold font-outfit'>Other Rooms Available</h2>
