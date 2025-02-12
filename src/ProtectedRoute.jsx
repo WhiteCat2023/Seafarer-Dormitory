@@ -3,7 +3,7 @@ import TopNavAdmin from './components/Nav/TopNavAdmin'
 import { Navigate, Outlet } from 'react-router-dom'
 
 function ProtectedRoute() {
-    const isLoggedIn = window.localStorage.getItem("isLoggedIn")
+    const isLoggedIn = window.localStorage.getItem("isLoggedIn") || window.sessionStorage.getItem("isLoggedIn")
 
     const navigation = [
         {name: 'Rooms', href: '/Rooms'},

@@ -22,7 +22,6 @@ export default function Home() {
   const [isListVisible, setIsListVisible] = useState(true);
   const [key, setKey] = useState(0);
   const selectedItem = items.find(item => item.id == key);
-  const navigate = useNavigate()
 
   const fetchData = async () => {
         setLoading(true);

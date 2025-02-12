@@ -40,9 +40,12 @@ export default function Login(){
         try{
             const response = await axios.post("https://seafarerdorm.scarlet2.io/Login/signin.php", inputs);
             if(response.data.status === "success"){
-                window.localStorage.setItem('token', response.data.id)
-                window.localStorage.setItem('user', response.data.role)
-                window.localStorage.setItem('isLoggedIn', true)
+                window.sessionStorage.setItem('token', response.data.id)
+                window.sessionStorage.setItem('user', response.data.role)
+                window.sessionStorage.setItem('isLoggedIn', true)
+                window.sessionStorage.setItem('name', response.data.name)
+                window.sessionStorage.setItem('email', response.data.email)
+                window.sessionStorage.setItem('profile_pic', response.data.profile_pic)
 
                 if(response.data.role == "admin"){
                     return (window.location.href = "./Dashboard")
@@ -50,7 +53,12 @@ export default function Login(){
                     window.location.href = "/Home"
                 }
                 if (rememberMe) {       
-                    localStorage.setItem('userEmail', inputs.email);
+                    window.localStorage.setItem('token', response.data.id)
+                    window.localStorage.setItem('user', response.data.role)
+                    window.localStorage.setItem('isLoggedIn', true)
+                    window.localStorage.setItem('name', response.data.name)
+                    window.localStorage.setItem('email', response.data.email)
+                    window.localStorage.setItem('profile_pic', response.data.profile_pic)
                 }
             }else{
                 withReactContent(Swal).fire({

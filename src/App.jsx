@@ -11,12 +11,13 @@ import Reservations from './Pages/Reservations'
 import ProtectedRoute from './ProtectedRoute'
 import Tenants from './Pages/Tenants'
 import Profile from './Pages/Profile'
+import ProfileSetting from './Pages/ProfileSetting'
 
 //Note:
   // Add lang diri tan ang link sa imo mga pages :)
   // Pun e lang ayaw kuhae 
-const user = window.localStorage.getItem("user")
-const isLoggedIn = window.localStorage.getItem("isLoggedIn")
+const user = window.localStorage.getItem("user") || window.sessionStorage.getItem("user")
+const isLoggedIn = window.localStorage.getItem("isLoggedIn") || window.sessionStorage.getItem("isLoggedIn")
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -46,16 +47,20 @@ const router = createBrowserRouter(
             <Route path='/Profile' element={<Navigate to={"/"}/>}/>
             <Route path="/Tenants" element={<Navigate to={"/"}/>}/>
             <Route path='/Statistics' element={<Navigate to={"/"}/>}/>
+            <Route path='/ProfileSetting' element={"/"}/>
           </>
         ) : (
           <>
             <Route path='/' element={<Dashboard/>}/>
             <Route path='/Dashboard' element={<Dashboard/>}/>
-            <Route path='/Profile' element={<Profile/>}/>
+            <Route exact path='/Profile' element={<Profile/>}>
+              <Route index element={<ProfileSetting/>}/>
+            </Route>
             <Route path="/Tenants" element={<Tenants/>}/>
             <Route path='/Statistics' element={<Statistics/>}/>
             <Route path='/Rooms' element={<Rooms/>}/>
             <Route path='/Reservations' element={<Reservations/>}/>
+            
           </>
         )}
   

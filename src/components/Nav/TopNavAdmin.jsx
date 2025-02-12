@@ -53,9 +53,19 @@ export default function TopNavAdmin({navItem}){
     }
     const logout = async () => {
         try{
-            window.localStorage.removeItem("isLoggedIn");
-            window.localStorage.removeItem("user");
-            window.localStorage.removeItem("token");
+            window.localStorage.removeItem('token')
+            window.localStorage.removeItem('user')
+            window.localStorage.removeItem('isLoggedIn')
+            window.localStorage.removeItem('name')
+            window.localStorage.removeItem('email')
+            window.localStorage.removeItem('profile_pic')
+
+            window.sessionStorage.removeItem('token')
+            window.sessionStorage.removeItem('user')
+            window.sessionStorage.removeItem('isLoggedIn')
+            window.sessionStorage.removeItem('name')
+            window.sessionStorage.removeItem('email')
+            window.sessionStorage.removeItem('profile_pic')
 
             // Optionally, redirect the user to the login page
             window.location.href = "/"; // or use a routing method if using React Router
