@@ -6,8 +6,13 @@ export default function ProfileSetting() {
   const email = window.sessionStorage.getItem("email") || window.localStorage.getItem("email");
   const userType = window.sessionStorage.getItem("user") || window.localStorage.getItem("user");
 
+  const handleLogout = () => {
+    // Add logout functionality here
+    console.log("User logged out");
+  };
+
   return (
-    <div className="p-8 max-w-4xl mx-auto">
+    <div className="p-8 max-w-4xl mx-6 rounded-lg">
       {/* Profile Picture and Name Section */}
       <div className="flex items-center space-x-4 mb-8">
         <img
@@ -33,6 +38,16 @@ export default function ProfileSetting() {
         <p>
           <span className="font-semibold font-outfit text-[#5B5B5B]">Email:</span> {email || "firstname.lastname@gmail.com"}
         </p>
+      </div>
+
+      {/* Log Out Button */}
+      <div className="mt-10">
+        <button
+          onClick={handleLogout}
+          className="w-56 py-3 bg-indigo-600 text-white font-semibold rounded-lg hover:bg-indigo-700 transition"
+        >
+          Log out
+        </button>
       </div>
     </div>
   );
