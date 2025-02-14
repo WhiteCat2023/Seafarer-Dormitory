@@ -109,6 +109,33 @@ export default function Reservations() {
         setSearchQuery(event.target.value); // Update search query state
     };
 
+    const accept = async (id) => {
+        const fd = new FormData()
+        fd.append("bookingId", id)
+        fd.append("status", "accepted")
+        try {
+            const response = await axios.post(`https://seafarerdorm.scarlet2.io/Reservations/status-reservation.php`, fd);
+            // Check if the response status is "success"
+            response.data.status === "success" ? fetchData() : console.log(response.data.message);
+        } catch (error) {
+            console.log("something wrong with the network", error);
+        }
+    }
+    
+    const decline = async (id) => {
+        const fd = new FormData()
+        fd.append("bookingId", id)
+        fd.append("status", "declined")
+        try {
+            const response = await axios.post(`https://seafarerdorm.scarlet2.io/Reservations/status-reservation.php`, fd);
+            
+            // Check if the response status is "success"
+            response.data.status === "success" ? fetchData() : console.log(response.data.message);
+        } catch (error) {
+            console.log("something wrong with the network", error);
+        }
+    }
+
     function displayList(){
         if(loading){
         
@@ -118,7 +145,8 @@ export default function Reservations() {
         }
         try{
             return items.length > 0 ? (items.map((item, index) => (
-                <div className='flex items-center border-b' key={index}>
+                item.reservationStatus == "pending" ? (
+                    <div className='flex items-center border-b' key={index} id={item.id}>
                     <input type="checkbox" className=' p-2 rounded mx-3 cursor-pointer' checked={selectedItems.has(item.id)} onChange={() => handleCheckboxChange(item.id)} id={item.id} />
                     <li className='flex justify-between items-center p-4 text-black flex-grow'>
                         <span className='flex-grow text-start'>
@@ -130,11 +158,12 @@ export default function Reservations() {
                         </span>
                     </li>
                     <div className='px-4 flex gap-x-2'>
-                        <button className='cursor-pointer text-green-700 p-2 rounded-full text-2xl hover:bg-green-50'><BiCheck/></button>
-                        <button className='cursor-pointer text-red-700 p-2 rounded-full text-2xl hover:bg-red-50'><BiX/></button>
+                        <button onClick={() => accept(item.id)} className='cursor-pointer text-green-700 p-2 rounded-full text-2xl hover:bg-green-50'><BiCheck/></button>
+                        <button onClick={() => decline(item.id)} className='cursor-pointer text-red-700 p-2 rounded-full text-2xl hover:bg-red-50'><BiX/></button>
                         <button className='cursor-pointer text-blue-700 p-2 rounded-full text-2xl hover:bg-blue-50' onClick={() => openModal(item.id)}><BiInfoCircle/></button>
                     </div>
                 </div>
+                ) : ""
             ))) : (
                 <p className='h-96 w-full flex items-center justify-center text-gray-500'>No Reservations Available</p>
             )
