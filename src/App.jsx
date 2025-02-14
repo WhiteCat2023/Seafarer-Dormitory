@@ -11,7 +11,7 @@ import Reservations from './Pages/Reservations'
 import ProtectedRoute from './ProtectedRoute'
 import Tenants from './Pages/Tenants'
 import Profile from './Pages/Profile'
-import ProfileSetting from './Pages/ProfileSetting'
+import History from './Pages/History'
 
 //Note:
   // Add lang diri tan ang link sa imo mga pages :)
@@ -53,10 +53,9 @@ const router = createBrowserRouter(
           <>
             <Route path='/' element={<Dashboard/>}/>
             <Route path='/Dashboard' element={<Dashboard/>}/>
-            <Route exact path='/Profile' element={<Profile/>}>
-              <Route index element={<ProfileSetting/>}/>
-            </Route>
+            <Route exact path='/Profile' element={<Profile/>}/>
             <Route path="/Tenants" element={<Tenants/>}/>
+            <Route path="/History" element={<History/>}/>
             <Route path='/Statistics' element={<Statistics/>}/>
             <Route path='/Rooms' element={<Rooms/>}/>
             <Route path='/Reservations' element={<Reservations/>}/>

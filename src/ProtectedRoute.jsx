@@ -8,7 +8,8 @@ function ProtectedRoute() {
     const navigation = [
         {name: 'Rooms', href: '/Rooms'},
         {name: 'Reservations', href: '/Reservations'},,
-        {name: 'Tenants', href: "/Tenants"}
+        {name: 'Tenants', href: "/Tenants"},
+        {name: 'History', href: "/History"}
     ]
     console.log(isLoggedIn)
 

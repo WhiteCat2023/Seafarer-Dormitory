@@ -89,8 +89,8 @@ export default function Login(){
             </div>
             <div className="w-100 block lg:w-1/2 lg:flex lg:justify-center lg:flex-col">
                 <img src={Logo} alt="" className="mx-auto"/>
-                <h1 className="text-balance text-5xl font-normal font-orelega text-gray-900 sm:text-7xl" >Greetings!</h1>
-                <h3 className="font-orelega font-normal text-gray-900 text-balance text-base lg:text-3x1">Welcome Back!</h3>
+                <h1 className="text-balance text-5xl font-normal font-orelega text-gray-900 sm:text-7xl text-center" >Greetings!</h1>
+                <h3 className="font-orelega font-normal text-gray-900 text-balance text-base lg:text-3x1 text-center">Welcome Back!</h3>
                 <form onSubmit={handleLogin} name="login_user" className="flex flex-col p-5 lg:p-11 lg:w-9/12 mx-auto">
                   <input onChange={handleChange} name="email" className="border-2 p-2 mb-3 rounded font-outfit border-blue-400 outline-none" type="email" placeholder="Email" required/>
                     <input onChange={handleChange} name="password" className="border-2 p-2 rounded font-outfit border-blue-400 outline-none" type="password" placeholder="Password" required/>

@@ -1,7 +1,67 @@
-import React from 'react';
 import { BiLoader, BiTrash, BiChevronLeft, BiChevronsLeft, BiChevronsRight, BiChevronRight } from 'react-icons/bi';
+import axios from 'axios';
+import { useEffect, useState } from 'react';
+import { Spinner } from '@material-tailwind/react';
 
 function TenantsTower1() {
+
+  const [items, setItems] = useState([])
+  const [loading, setLoading] = useState(false);
+  
+
+  const fetchData = async () => {
+    setLoading(true);
+    try{
+      const response = await axios.get(`https://seafarerdorm.scarlet2.io/Reservations/retrieve-reservations.php`);
+        // const apartmentArray = Object.values(response.data);
+        setItems(response.data.data);
+    }catch(error){
+      console.error(error);
+    }finally{
+      setLoading(false);
+    }
+  }
+
+  useEffect(() => { 
+    fetchData()
+  }, [])
+
+  function displayList(){
+        if(loading){
+        
+            return <div className="w-full h-96 flex justify-center items-center">
+                <Spinner className="w-10 h-10"/>; 
+            </div>
+        }
+        try{
+            return items.length > 0 ? (items.map((item, index) => (
+                item.reservationStatus == "accepted" && item.tower == "tower-1" ? (
+                    <div className='flex items-center border-b' key={index} id={item.id}>
+                    <input type="checkbox" className=' p-2 rounded mx-3 cursor-pointer' checked={selectedItems.has(item.id)} onChange={() => handleCheckboxChange(item.id)} id={item.id} />
+                    <li className='flex justify-between items-center p-4 text-black flex-grow'>
+                        <span className='flex-grow text-start'>
+                            <p className='font-semibold text-gray-800'>{item.cName}</p>
+                            <div className='text-xs'>
+                                <p className='flex items-center text-gray-400 gap-x-2'><BiMap/>{item.tower}</p>
+                                <p className='flex items-center text-gray-400 gap-x-2'><BiHash/>Room no. : {item.roomNumber}</p>
+                            </div>
+                        </span>
+                    </li>
+                    <div className='px-4 flex gap-x-2'>
+                        <button onClick={() => accept(item.id)} className='cursor-pointer text-green-700 p-2 rounded-full text-2xl hover:bg-green-50'><BiCheck/></button>
+                        <button onClick={() => decline(item.id)} className='cursor-pointer text-red-700 p-2 rounded-full text-2xl hover:bg-red-50'><BiX/></button>
+                        <button className='cursor-pointer text-blue-700 p-2 rounded-full text-2xl hover:bg-blue-50' onClick={() => openModal(item.id)}><BiInfoCircle/></button>
+                    </div>
+                </div>
+                ) : ""
+            ))) : (
+                <p className='h-96 w-full flex items-center justify-center text-gray-500'>No Tenants Available</p>
+            )
+        }catch(error){
+            console.error(error);
+            return <p className='h-96 w-full flex items-center justify-center text-gray-500'>Error occurred</p>
+        }
+    }
   return (
     // Main Section
     <div className="relative">
@@ -10,9 +70,7 @@ function TenantsTower1() {
           {/* Checkbox and Action Icons */}
           <div className="flex items-center gap-x-6">
             <input className="p-2 rounded cursor-pointer" type="checkbox" />
-            <i className="p-1 text-xl rounded-full hover:bg-blue-100 cursor-pointer flex justify-center">
-              <BiLoader />
-            </i>
+            <i onClick={() => fetchData()} className="p-1 text-xl rounded-full hover:bg-blue-100 cursor-pointer flex justify-center"><BiLoader /></i>
             <BiTrash className="text-3xl p-1 rounded-full hover:bg-blue-100 cursor-pointer flex justify-center" />
           </div>
 
@@ -26,8 +84,9 @@ function TenantsTower1() {
           </div>
         </div>
         <div>
-        <h2>Tenants in Tower 1</h2>
-        {/* Add content for Tower 1 tenants */}
+        <ul className=' w-full' id='apartment-li'>             
+          {displayList()}
+        </ul>
       </div>
       </div>
     </div>

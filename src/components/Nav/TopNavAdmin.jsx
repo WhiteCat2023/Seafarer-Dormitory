@@ -2,6 +2,7 @@ import Logo from "../../assets/Logo.png";
 import { NavLink } from 'react-router-dom';
 import { useEffect, useState } from "react";
 import { BiObjectsVerticalBottom, BiSolidDashboard, BiSolidUserRectangle, BiBuildingHouse, BiLogOut, BiSolidUserDetail, BiCalendar } from "react-icons/bi";
+import { MdOutlineHistoryEdu } from "react-icons/md";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { FaUsers } from "react-icons/fa6";
@@ -49,6 +50,8 @@ export default function TopNavAdmin({navItem}){
                 return <span className="flex items-center gap-x-3"><BiCalendar className="w-5 h-5"/> {name}</span>;
             case 'Tenants':
                 return <span className="flex items-center gap-x-3"><FaUsers className="w-5 h-5"/> {name}</span>;
+            case 'History':
+                return <span className="flex items-center gap-x-3"><MdOutlineHistoryEdu className="w-5 h-5"/> {name}</span>;
         }
     }
     const logout = async () => {
