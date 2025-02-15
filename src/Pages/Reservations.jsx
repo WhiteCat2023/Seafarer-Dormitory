@@ -163,7 +163,7 @@ export default function Reservations() {
                         <button className='cursor-pointer text-blue-700 p-2 rounded-full text-2xl hover:bg-blue-50' onClick={() => openModal(item.id)}><BiInfoCircle/></button>
                     </div>
                 </div>
-                ) : ""
+                ) :  <p className='h-96 w-full flex items-center justify-center text-gray-500'>No Reservations Available</p>
             ))) : (
                 <p className='h-96 w-full flex items-center justify-center text-gray-500'>No Reservations Available</p>
             )

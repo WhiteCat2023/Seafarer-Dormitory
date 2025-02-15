@@ -21,6 +21,7 @@ export default function BookRoom({isOpen, onClose, item}) {
         fd.append('email', inputs.email);
         fd.append('phone', inputs.phone);
         fd.append('roomId', item.id);
+        fd.append('tower', item.tower);
 
         try{
             const response = await axios.post('https://seafarerdorm.scarlet2.io/Rooms/book-room.php', fd);

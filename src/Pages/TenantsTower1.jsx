@@ -1,18 +1,27 @@
-import { BiLoader, BiTrash, BiChevronLeft, BiChevronsLeft, BiChevronsRight, BiChevronRight } from 'react-icons/bi';
+import { BiLoader, BiTrash, BiChevronLeft, BiChevronsLeft, BiChevronsRight, BiChevronRight, BiSearchAlt, BiMap, BiHash, BiCheck, BiX, BiInfoCircle } from 'react-icons/bi';
 import axios from 'axios';
 import { useEffect, useState } from 'react';
 import { Spinner } from '@material-tailwind/react';
+import BookingInfo from '../components/Modals/BookingInfo';
 
 function TenantsTower1() {
 
   const [items, setItems] = useState([])
   const [loading, setLoading] = useState(false);
-  
+  const [selectAll, setSelectAll] = useState(false);
+  const [selectedItems, setSelectedItems] = useState(new Set());
+  const [key, setKey] = useState(0);
+  const selectedItem = items.find(item => item.id === key);
+  const [isInfoBtnClicked, setIsInfoBtnClicked] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
+  // const [currentPage, setCurrentPage] = useState(1);
+  // const [totalItems, setTotalItems] = useState(0);
+  // const itemsPerPage = 20;
 
   const fetchData = async () => {
     setLoading(true);
     try{
-      const response = await axios.get(`https://seafarerdorm.scarlet2.io/Reservations/retrieve-reservations.php`);
+      const response = await axios.get(`https://seafarerdorm.scarlet2.io/Reservations/retrieve-reservations.php?=search${searchQuery}`);
         // const apartmentArray = Object.values(response.data);
         setItems(response.data.data);
     }catch(error){
@@ -24,7 +33,67 @@ function TenantsTower1() {
 
   useEffect(() => { 
     fetchData()
-  }, [])
+  }, [searchQuery])
+
+  function openModal(key){
+      setIsInfoBtnClicked(true);
+      setKey(key);
+  }
+
+  function closeModal(){
+      setIsInfoBtnClicked(false);
+      setKey(0)
+  }
+
+  const handleSelectAllChange = (event) => {
+      const checked = event.target.checked;
+      setSelectAll(checked);
+      if (checked) {
+          const allIds = new Set(items.map(item => item.id)); 
+          setSelectedItems(allIds);
+      } else {
+          setSelectedItems(new Set()); 
+      }
+  };
+
+  const handleCheckboxChange = (id) => {
+      const newSelectedItems = new Set(selectedItems);
+      if (newSelectedItems.has(id)) {
+          newSelectedItems.delete(id); 
+      } else {
+          newSelectedItems.add(id); 
+      }
+      setSelectedItems(newSelectedItems);
+      setSelectAll(newSelectedItems.size === items.length); 
+  };
+
+  const handleDeleteSelected = async () => {
+      if (selectedItems.size === 0) return; 
+
+      try {
+          // Send delete request to the backend for each selected item
+          const fd = new FormData();
+          fd.append('ids', Array.from(selectedItems).join(','));
+          fd.append('tower', "tower-1")
+          
+          const response = await axios.post('https://seafarerdorm.scarlet2.io/Tenants/delete-tenant-tower-1.php', fd);
+          if(response.data.status == 'success'){
+              console.log(response.data.status);
+          }else{
+              console.log(response.data.status);
+          }
+          
+          fetchData();
+          setSelectedItems(new Set()); 
+          setSelectAll(false); 
+      } catch (error) {
+          console.error("Error deleting items:", error);
+      }
+  };
+
+  const handleSearchChange = (event) => {
+      setSearchQuery(event.target.value); // Update search query state
+  };
 
   function displayList(){
         if(loading){
@@ -48,12 +117,10 @@ function TenantsTower1() {
                         </span>
                     </li>
                     <div className='px-4 flex gap-x-2'>
-                        <button onClick={() => accept(item.id)} className='cursor-pointer text-green-700 p-2 rounded-full text-2xl hover:bg-green-50'><BiCheck/></button>
-                        <button onClick={() => decline(item.id)} className='cursor-pointer text-red-700 p-2 rounded-full text-2xl hover:bg-red-50'><BiX/></button>
                         <button className='cursor-pointer text-blue-700 p-2 rounded-full text-2xl hover:bg-blue-50' onClick={() => openModal(item.id)}><BiInfoCircle/></button>
                     </div>
                 </div>
-                ) : ""
+                ) : <p className='h-96 w-full flex items-center justify-center text-gray-500'>No Tenants Available</p>
             ))) : (
                 <p className='h-96 w-full flex items-center justify-center text-gray-500'>No Tenants Available</p>
             )
@@ -69,9 +136,22 @@ function TenantsTower1() {
         <div className="border-b-2 border-blue-500 justify-between flex items-center px-4 pb-1 pt-3 sticky top-0 left-0 bg-white">
           {/* Checkbox and Action Icons */}
           <div className="flex items-center gap-x-6">
-            <input className="p-2 rounded cursor-pointer" type="checkbox" />
+            <input className="p-2 rounded cursor-pointer" type="checkbox" checked={selectAll} onChange={handleSelectAllChange}/>
             <i onClick={() => fetchData()} className="p-1 text-xl rounded-full hover:bg-blue-100 cursor-pointer flex justify-center"><BiLoader /></i>
-            <BiTrash className="text-3xl p-1 rounded-full hover:bg-blue-100 cursor-pointer flex justify-center" />
+            <BiTrash onClick={handleDeleteSelected} className="text-3xl p-1 rounded-full hover:bg-blue-100 cursor-pointer flex justify-center" />
+          </div>
+
+          {/* Search bar */}
+          <div className="relative w-full md:w-1/4 flex-grow md:flex-grow-0 px-2 lg:px-0">
+            <input
+              className="rounded-full w-full ps-10 border-blue-500 border-2 p-1"
+              type="search"
+              placeholder="Search"
+              onChange={handleSearchChange}
+            />
+            <i className="absolute lg:left-3 left-5 top-3 -translate-y-1 text-2xl flex justify-center">
+              <BiSearchAlt />
+            </i>
           </div>
 
           {/* Pagination Controls */}
@@ -84,11 +164,12 @@ function TenantsTower1() {
           </div>
         </div>
         <div>
-        <ul className=' w-full' id='apartment-li'>             
-          {displayList()}
-        </ul>
+          <ul className=' w-full' id='apartment-li'>             
+            {displayList()}
+          </ul>
+        </div>
       </div>
-      </div>
+       {isInfoBtnClicked && <BookingInfo isOpen={isInfoBtnClicked} onClose={closeModal} item={selectedItem}/>}      
     </div>
   );
 }

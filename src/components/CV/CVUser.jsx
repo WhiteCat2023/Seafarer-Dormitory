@@ -5,6 +5,7 @@ import BookRoom from '../Modals/BookRoom';
 import Logo from "../../assets/Logo.png";
 import { IoIosArrowBack } from 'react-icons/io';
 import Footer from '../SubPage/Footer';
+import { Link, useLocation } from 'react-router-dom';
 
 //Note:
     // Ang pagtarung nalang sa design igkahuman sa things to do
@@ -17,7 +18,9 @@ import Footer from '../SubPage/Footer';
 
     //By Berndt Dennis F. Canaya
 
-export default function CVUser({isOpen, onClose, item}){
+export default function CVUser(){
+    const location = useLocation();
+    const item = location.state
     const images = Object.values(item.files);
     const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -35,14 +38,14 @@ export default function CVUser({isOpen, onClose, item}){
 
 
         <>
-            <div className={` ${isModalOpen ? 'none': 'block'}`}>
+            <div>
                 
-                <div className={`${isOpen ? 'flex' : 'none'} container mx-auto mt-4 flex-col md:w-full lg:w-4/6 pb-10`}>
+                <div className={`flex container mx-auto mt-4 flex-col md:w-full lg:w-4/6 pb-10`}>
                     <div>
-                         <img src={Logo} alt="" className="lg:w-34 w-24 my-2 cursor-pointer" onClick={onClose}/>
+                         <img src={Logo} alt="" className="lg:w-34 w-24 my-2 cursor-pointer" />
                     </div>
                     <div className='flex items-center gap-x-4 font-semibold text-xl py-3'>
-                        <IoIosArrowBack onClick={onClose}/>
+                        <Link to="/"><IoIosArrowBack /></Link>
                         <h2>{item.name}</h2>
                     </div>
                     <div className="grid grid-cols-1 sm:auto-rows-[180px] sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-2 auto-rows-auto">
