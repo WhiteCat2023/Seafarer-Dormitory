@@ -12,12 +12,17 @@ import ProtectedRoute from './ProtectedRoute'
 import Tenants from './Pages/Tenants'
 import Profile from './Pages/Profile'
 import History from './Pages/History'
+import Booking from './Pages/Booking'
+import { Elements } from '@stripe/react-stripe-js';
+import { loadStripe } from '@stripe/stripe-js';
 
 //Note:
   // Add lang diri tan ang link sa imo mga pages :)
   // Pun e lang ayaw kuhae 
 const user = window.localStorage.getItem("user") || window.sessionStorage.getItem("user")
 const isLoggedIn = window.localStorage.getItem("isLoggedIn") || window.sessionStorage.getItem("isLoggedIn")
+
+const stripePromise = loadStripe('pk_test_51QtrmcCGugl0BSixKUiZCglsCTG1KtZ8fAujR1Zwd26ar1dXZ8kqVj3sQpWQT54b5G4v6xLsoQ8NgkbSytlFaTq200vanMn1sf');
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -30,6 +35,11 @@ const router = createBrowserRouter(
           <Route index element={<Home/>}/>
           <Route path='/Login' element={<Login/>}/>
           <Route path='/cv-user' element={<CVUser/>}/>
+          <Route path='/booking' element={
+            <Elements  stripe={stripePromise}>
+              <Booking/>
+            </Elements>
+          }/>
         </>
       )}
       

@@ -1,7 +1,5 @@
 // import { BiArrowBack } from 'react-icons/bi';
 import CardCarousel from '../Carousel/CardCarousel';
-import { useState } from 'react';
-import BookRoom from '../Modals/BookRoom';
 import Logo from "../../assets/Logo.png";
 import { IoIosArrowBack } from 'react-icons/io';
 import Footer from '../SubPage/Footer';
@@ -22,14 +20,6 @@ export default function CVUser(){
     const location = useLocation();
     const item = location.state
     const images = Object.values(item.files);
-    const [isModalOpen, setIsModalOpen] = useState(false);
-
-    function openModal(){
-        setIsModalOpen(true);
-    }
-    function closeModal(){
-        setIsModalOpen(false);
-    }
 
     return(
         
@@ -56,7 +46,7 @@ export default function CVUser(){
                             <img key={index} className={`rounded-xl object-cover col-span-2 h-full w-full row-span-1 shadow-xl`} src={`https://seafarerdorm.scarlet2.io/Rooms/${image}`} />
                         ))}
                     </div>
-                    <div className='flex  overflow-x-hidden mx-auto p-4 pt-10 gap-2'>
+                    <div className='flex w-full overflow-x-hidden mx-auto p-4 pt-10 gap-2'>
                         <div className='w-full text-start'>
                             <p className='font-bold text-xl'>{item.name} {item.isAvailable ? <span className='text-base text-green-600'>{item.isAvailable}</span>: <span className='text-base text-gray-500'>{item.isAvailable}</span>}</p>
                         
@@ -67,7 +57,7 @@ export default function CVUser(){
                         <div className='w-2/4 text-start px-2 py-4 border rounded-xl'>
                             <p className='text-gray-800'>Location: {item.tower}</p>
                             <p className='text-gray-800'>Price: &#8369;{item.price} per {item.stayType}</p>
-                            <button onClick={openModal} className='w-full p-2 border bg-primary text-white rounded mt-4'>Book Now</button>
+                            <Link to="/booking" state={item} className='w-full p-2 border bg-primary text-white rounded mt-4 block text-center'>Book Now</Link>
                         </div>
                     </div>
                     <h3 className='font-semibold p-2'>More pictures</h3>
@@ -90,7 +80,6 @@ export default function CVUser(){
                     <Footer/>
                 </div>
             </div>
-            {isModalOpen && <BookRoom isOpen={isModalOpen} onClose={closeModal} item={item}/>}
         </>
         
     );
