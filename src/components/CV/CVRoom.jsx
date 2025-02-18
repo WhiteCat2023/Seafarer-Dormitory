@@ -31,15 +31,15 @@ export default function CVRoom({isOpen, onClose, item}) {
                             <img key={index} className={`rounded-xl object-cover col-span-2 h-full w-full row-span-1`} src={`https://seafarerdorm.scarlet2.io/Rooms/${image}`} />
                         ))}
                 </div>
-                <div className='flex mt-4 mb-24'>
-                    <div className='px-4'>
+                <div className='grid mt-4 mb-24 w-full grid-cols-6'>
+                    <div className='px-4 col-span-4'>
                         <p className='font-semibold text-xl '>{item.name} <span>{item.roomNumber}</span></p>
                         <p>&#8369; {item.price}</p>
                         <p>{item.tower}</p>
                         <hr className='my-2'/>
                         <p className='text-justify'>{item.description}</p>
                     </div>
-                    <div className='border p-5 rounded-xl'>
+                    <div className='border p-5 rounded-xl col-span-2'>
                         <p className='truncate flex flex-wrap gap-1 leading-6'>Amenities: {amenities.map((item, index) => (
                             <span className='me-2 bg-blue-400 px-2 py-1 text-xs text-white rounded-lg' key={index}>{item.trim()}</span>
                         ))}</p>

@@ -175,6 +175,8 @@ function Booking() {
         fd.append("roomId", item.id)
         fd.append("paymentStatus", status)
         fd.append("modeOfPayment", modeOfPayment)
+        fd.append("startDate", dateState.startDate)
+        fd.append("endDate", dateState.endDate)
 
         try{
             const response = await axios.post("https://seafarerdorm.scarlet2.io/Rooms/book-room.php", fd);
@@ -200,6 +202,8 @@ function Booking() {
             console.error(err)
             console.log(err)
         }
+        // console.log(inputs)
+        // console.log(dateState)
     }
     return (
         <div className='pb-24'>
@@ -212,9 +216,9 @@ function Booking() {
                             <p className='font-bold text-2xl'>Application Form</p>
                             <p className='font-semibold text-xl'>Confirm and Pay</p>
                             <p className='mt-2'>Identification</p>
-                            <input onChange={handleInputChange} className='rounded-lg' type="text" placeholder='Full Name' name='name'/>
-                            <input onChange={handleInputChange} className='rounded-lg' type="number" placeholder='Contact Number' name='contact-number'/>
-                            <input onChange={handleInputChange} className='rounded-lg' type="email" placeholder='Email' name='email'/>
+                            <input onChange={handleInputChange} className='rounded-lg' type="text" placeholder='Full Name' name='name' required/>
+                            <input onChange={handleInputChange} className='rounded-lg' type="number" placeholder='Contact Number' name='contactNumber' required/>
+                            <input onChange={handleInputChange} className='rounded-lg' type="email" placeholder='Email' name='email' required/>
                             <p className='mt-2 text-lg font-semibold'>Choose how to pay</p>
                             <p>Apartment: {item.name}</p>
                             <p>Tower: {item.tower}</p>
