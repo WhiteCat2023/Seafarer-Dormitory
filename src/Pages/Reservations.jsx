@@ -29,15 +29,21 @@ export default function Reservations() {
     const selectedItem = items.find(item => item.id === key);
     const [isInfoBtnClicked, setIsInfoBtnClicked] = useState(false);
     const [searchQuery, setSearchQuery] = useState("");
+    const [currentPage, setCurrentPage] = useState(1);
+    const [totalItems, setTotalItems] = useState(0);
+    const itemsPerPage = 20;
 
     //Need pa ni e-modify paras pagination STRICTLY DO NOT TOUCH
     const fetchData = async () => {
         setLoading(true);
         try{
             
-            const response = await axios.get(`https://seafarerdorm.scarlet2.io/Reservations/retrieve-reservations.php?=search${searchQuery}`);
+            const response = await axios.get(`https://seafarerdorm.scarlet2.io/Reservations/retrieve-reservations.php?page=${currentPage}&limit=${itemsPerPage}&search=${searchQuery}`);
             // const apartmentArray = Object.values(response.data);
-            setItems(response.data.data);
+            setTotalItems(response.data.total); 
+            const apartmentArray = Object.values(response.data.data);
+            setItems(apartmentArray);
+            // setItems(response.data.data);
         }catch(error){
             console.error(error);
 
@@ -49,6 +55,14 @@ export default function Reservations() {
     useEffect(() => { 
         fetchData()
     }, [searchQuery])
+
+    const totalPages = Math.ceil(totalItems / itemsPerPage); 
+
+    const handlePageChange = (newPage) => {
+        if(newPage > 0 && newPage <= totalPages){
+            setCurrentPage(newPage);
+        }
+    };
 
     function openModal(key){
         setIsInfoBtnClicked(true);
@@ -179,11 +193,6 @@ export default function Reservations() {
                 <div className={`lg:flex items-center justify-between lg:mb-5 flex-col md:flex-row flex`} >
                     <nav className="flex items-center mb-4 md:mb-0 flex-grow md:flex-grow-0 w-full px-3 lg:px-0">
                         <h1 className="md:text-5xl font-outfit font-semibold text-3xl text-gray-600">Reservations</h1>
-                        {/* <button  className="bg-primary px-2 py-2 lg:px-3 lg:py-2 rounded-xl text-white ms-4 hover:bg-transparent hover:border-2 hover:border-blue-500 hover:text-blue-500 border-2 border-transparent flex justify-center text-sm lg:text-base" >
-                            <i className='lg:text-2xl text-xl me-1 lg:me-2 flex justify-center'>
-                                <BiClinic />
-                            </i>
-                            New User</button> */}
                     </nav>
                     <div className={`relative w-full md:w-1/4 flex-grow md:flex-grow-0 px-2 lg:px-0 block`}>
                         <input onChange={handleSearchChange} className="rounded-full w-full ps-10 border-blue-500 border-2" type="search" placeholder="Search"/>
@@ -199,11 +208,11 @@ export default function Reservations() {
                                 <BiTrash onClick={handleDeleteSelected} className='text-3xl p-1 rounded-full hover:bg-blue-100 cursor-pointer flex justify-center'/>
                             </div>
                             <div className='flex items-center'>
-                                <BiChevronLeft className='p-1 text-3xl rounded-full hover:bg-blue-100 cursor-pointer flex justify-center'/>
-                                <BiChevronsLeft className='p-1 text-3xl rounded-full hover:bg-blue-100 cursor-pointer flex justify-center'/>
+                                <BiChevronLeft onClick={() => handlePageChange(currentPage - 1)} disabled={currentPage === 1} className='p-1 text-3xl rounded-full hover:bg-blue-100 cursor-pointer flex justify-center'/>
+                                <BiChevronsLeft onClick={() => handlePageChange(currentPage - 1)} disabled={currentPage === 1} className='p-1 text-3xl rounded-full hover:bg-blue-100 cursor-pointer flex justify-center'/>
                                 <p className='mx-2'>1</p>
-                                <BiChevronsRight className='p-1 text-3xl rounded-full hover:bg-blue-100 cursor-pointer flex justify-center'/>
-                                <BiChevronRight className='p-1 text-3xl rounded-full hover:bg-blue-100 cursor-pointer flex justify-center'/>
+                                <BiChevronsRight onClick={() => handlePageChange(currentPage + 1)} disabled={currentPage === totalPages} className='p-1 text-3xl rounded-full hover:bg-blue-100 cursor-pointer flex justify-center'/>
+                                <BiChevronRight onClick={() => handlePageChange(currentPage + 1)} disabled={currentPage === totalPages} className='p-1 text-3xl rounded-full hover:bg-blue-100 cursor-pointer flex justify-center'/>
                             </div>
                         </div>
                         <ul className=' w-full' id='apartment-li'>             

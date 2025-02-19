@@ -56,7 +56,8 @@ export default function Rooms(){
             // const response = await axios.get('https://seafarerdorm.scarlet2.io/Rooms/retrieve-rooms.php', fd); 
             const response = await axios.get(
                 `https://seafarerdorm.scarlet2.io/Rooms/retrieve-rooms.php?page=${currentPage}&limit=${itemsPerPage}&search=${searchQuery}`
-              );            setTotalItems(response.data.total); 
+              );            
+            setTotalItems(response.data.total); 
             const apartmentArray = Object.values(response.data.data);
             setItems(apartmentArray);
         }catch(error){

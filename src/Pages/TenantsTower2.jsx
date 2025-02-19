@@ -14,9 +14,9 @@ function TenantsTower2() {
   const selectedItem = items.find(item => item.id === key);
   const [isInfoBtnClicked, setIsInfoBtnClicked] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
-  // const [currentPage, setCurrentPage] = useState(1);
-  // const [totalItems, setTotalItems] = useState(0);
-  // const itemsPerPage = 20;
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalItems, setTotalItems] = useState(0);
+  const itemsPerPage = 20;
   
 
   const fetchData = async () => {
@@ -24,7 +24,10 @@ function TenantsTower2() {
     try{
       const response = await axios.get(`https://seafarerdorm.scarlet2.io/Reservations/retrieve-reservations.php?=search${searchQuery}`);
         // const apartmentArray = Object.values(response.data);
-        setItems(response.data.data);
+        setTotalItems(response.data.total); 
+        const apartmentArray = Object.values(response.data.data);
+        setItems(apartmentArray);
+        // setItems(response.data.data);
     }catch(error){
       console.error(error);
     }finally{
@@ -35,6 +38,14 @@ function TenantsTower2() {
   useEffect(() => { 
     fetchData()
   }, [searchQuery])
+
+  const totalPages = Math.ceil(totalItems / itemsPerPage); 
+
+  const handlePageChange = (newPage) => {
+    if(newPage > 0 && newPage <= totalPages){
+      setCurrentPage(newPage);
+    }
+  };
 
   function openModal(key){
       setIsInfoBtnClicked(true);
@@ -136,7 +147,7 @@ function TenantsTower2() {
     // Main Section
     <div className="relative">
       <div style={{ display: 'block', height: 'calc(100% - 50px)' }}>
-        <div className="border-b-2 border-blue-500 justify-between flex items-center px-4 pb-1 pt-3 sticky top-0 left-0 bg-white">
+        <div className="border-b-2 border-blue-500 justify-between flex items-center px-4 pb-2 pt-3 sticky top-0 left-0 bg-white">
           {/* Checkbox and Action Icons */}
           <div className="flex items-center gap-x-6">
             <input onChange={handleSelectAllChange} checked={selectAll} className="p-2 rounded cursor-pointer" type="checkbox" />
@@ -145,7 +156,7 @@ function TenantsTower2() {
           </div>
 
           {/* Search bar */}
-          <div className="relative w-full md:w-1/4 flex-grow md:flex-grow-0 px-2 lg:px-0">
+          <div className="relative w-full md:w-96 flex-grow md:flex-grow-0 px-2 lg:px-0">
             <input
               className="rounded-full w-full ps-10 border-blue-500 border-2 p-1"
               type="search"
@@ -159,11 +170,11 @@ function TenantsTower2() {
 
           {/* Pagination Controls */}
           <div className="flex items-center">
-            <BiChevronLeft className="p-1 text-3xl rounded-full hover:bg-blue-100 cursor-pointer flex justify-center" />
-            <BiChevronsLeft className="p-1 text-3xl rounded-full hover:bg-blue-100 cursor-pointer flex justify-center" />
+            <BiChevronLeft onClick={() => handlePageChange(currentPage - 1)} disabled={currentPage === 1} className="p-1 text-3xl rounded-full hover:bg-blue-100 cursor-pointer flex justify-center" />
+            <BiChevronsLeft onClick={() => handlePageChange(currentPage - 1)} disabled={currentPage === 1} className="p-1 text-3xl rounded-full hover:bg-blue-100 cursor-pointer flex justify-center" />
             <p className="mx-2">1</p>
-            <BiChevronsRight className="p-1 text-3xl rounded-full hover:bg-blue-100 cursor-pointer flex justify-center" />
-            <BiChevronRight className="p-1 text-3xl rounded-full hover:bg-blue-100 cursor-pointer flex justify-center" />
+            <BiChevronsRight onClick={() => handlePageChange(currentPage + 1)} disabled={currentPage === totalPages} className="p-1 text-3xl rounded-full hover:bg-blue-100 cursor-pointer flex justify-center" />
+            <BiChevronRight onClick={() => handlePageChange(currentPage + 1)} disabled={currentPage === totalPages} className="p-1 text-3xl rounded-full hover:bg-blue-100 cursor-pointer flex justify-center" />
           </div>
         </div>
         <div>
