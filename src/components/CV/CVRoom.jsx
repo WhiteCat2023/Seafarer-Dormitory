@@ -3,6 +3,8 @@ import { BiArrowBack, BiEdit, BiTrash } from 'react-icons/bi'
 import CardCarousel from '../Carousel/CardCarousel'
 import Swal from 'sweetalert2'
 import withReactContent from 'sweetalert2-react-content'
+import EditRoom from '../../Pages/EditRoom'
+import axios from 'axios';
 
 export default function CVRoom({isOpen, onClose, item}) {
 
@@ -32,7 +34,7 @@ export default function CVRoom({isOpen, onClose, item}) {
         const fd = new FormData()
         fd.append("id", id)
         try{
-            const response = await axios.post("", fd)
+            const response = await axios.post("https://seafarerdorm.scarlet2.io/Rooms/delete-single-room.php", fd)
             if(response.data.status == "success"){
                 window.location.href = "/Rooms"
             }else{
@@ -44,6 +46,7 @@ export default function CVRoom({isOpen, onClose, item}) {
                 })
             }
         }catch(err){
+            console.log(item)
             console.log("Delete Error" + err.message)
             withReactContent(Swal).fire({
                 icon: "warning",
@@ -58,12 +61,16 @@ export default function CVRoom({isOpen, onClose, item}) {
         }
     }
 
+    function handleBack(){
+        setEdit(false)
+    }
+
     return (
     //Note:
         // Diri ra imo hilabtan lance happy coding :)
         // ayaw na hilabti ang babaw na code :)
         <div className={` ${isOpen ? 'flex': 'none'} flex-col w-5/6 mx-auto`}>
-            <div>
+            <div className={`${!isEdit ? "block": "hidden"}`}>
                 <div className='w-full py-2 flex justify-between'>
                     <BiArrowBack className='pointer' onClick={onClose} />
                     <div className='flex gap-x-4'>
@@ -96,7 +103,7 @@ export default function CVRoom({isOpen, onClose, item}) {
                     </div>
                 </div>
             </div>
+            {isEdit && <EditRoom item={item} isOpen={isEdit} onClose={() => handleBack()}/>}
         </div>
-        /////////////////////////////////////////////////////
     )
 }

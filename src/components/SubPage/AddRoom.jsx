@@ -74,7 +74,11 @@ export default function AddRoom({isOpen, onClose, onAdd}) {
           title: "Success",
           text: response.data.message,
           confirmButtonColor: "#3085d6",
-        });
+        }).then((result) => {
+          if (result.isConfirmed) {
+              handleDeleteRoom(id);
+          }
+      });
         console.log(response.data.status);
       }else{
         withReactContent(Swal).fire({

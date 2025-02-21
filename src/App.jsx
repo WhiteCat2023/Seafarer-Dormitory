@@ -15,6 +15,7 @@ import History from './Pages/History'
 import Booking from './Pages/Booking'
 import { Elements } from '@stripe/react-stripe-js';
 import { loadStripe } from '@stripe/stripe-js';
+import EditRoom from './Pages/EditRoom'
 
 //Note:
   // Add lang diri tan ang link sa imo mga pages :)
@@ -57,12 +58,14 @@ const router = createBrowserRouter(
             <Route path='/Profile' element={<Navigate to={"/"}/>}/>
             <Route path="/Tenants" element={<Navigate to={"/"}/>}/>
             <Route path='/Statistics' element={<Navigate to={"/"}/>}/>
-            <Route path='/ProfileSetting' element={"/"}/>
+            <Route path='/ProfileSetting' element={<Navigate to={"/"}/>}/>
+            <Route path='/EditPage' element={<Navigate to={"/"}/>}/>
           </>
         ) : (
           <>
             <Route path='/' element={<Dashboard/>}/>
             <Route path='/Dashboard' element={<Dashboard/>}/>
+            <Route path='/EditPage' element={<EditRoom/>}/>
             <Route exact path='/Profile' element={<Profile/>}/>
             <Route path="/Tenants" element={<Tenants/>}/>
             <Route path="/History" element={<History/>}/>
