@@ -39,7 +39,7 @@ export default function Home() {
   }, [])
   function displayList(){
         if(loading){
-            return <Spinner/>; //buhatanan ug centered na spinner
+            return <div className='w-full h-full flex items-start pt-4 justify-center col-span-6'><Spinner/></div>; //buhatanan ug centered na spinner
         }
         try{
             return items.length > 0 ? (items.map(item => (
@@ -67,14 +67,14 @@ export default function Home() {
       
       <div className={` mx-6 mx-auto flex-col mt-5 flex`}>
         <main className='px-8 w-5/6 mx-auto'>
-          <div className='h-[500px] mb-8 overflow-hidden rounded-xl'>
+          <div className='h-[350px] mb-8 overflow-hidden rounded-xl'>
             <AnimatedCaoursel items={staticImgs}/>
           </div>
           <div className="flex justify-between items-center">
             <h2 className='font-bold font-outfit'>Other Rooms Available</h2>
             <div className={`relative w-full md:w-2/6 flex-grow md:flex-grow-0 px-2 lg:px-0 block`}>
-              <input className="rounded-full w-full ps-10 border-blue-500 border-2" type="search" placeholder="Search"/>
-              <i className='absolute lg:left-3 left-5 top-3 -translate-y-1 text-2xl flex justify-center'><BiSearchAlt/></i>
+              <input className="rounded-full w-full ps-10 border-blue-500 border-2 p-1" type="search" placeholder="Search"/>
+              <i className='absolute lg:left-3 left-5 top-3 -translate-y-1 text-2xl flex justify-center '><BiSearchAlt/></i>
             </div>
           </div>
           <div className='grid grid-cols-1 sm:auto-rows-[320px] sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-2 auto-rows-auto pb-24 pt-4'>
