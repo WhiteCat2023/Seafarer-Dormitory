@@ -4,6 +4,8 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 import { Spinner } from "@material-tailwind/react";
 import CVRoom from "../components/CV/CVRoom";
+import Swal from 'sweetalert2';
+import withReactContent from 'sweetalert2-react-content';
 
 //Note: 
     // kulang nalang design sa CVRoom, 
@@ -103,6 +105,19 @@ export default function Rooms(){
         setSelectAll(newSelectedItems.size === items.length); 
     };
 
+    function deleteFiles(){
+         withReactContent(Swal).fire({
+            icon: "warning",
+            title: `Delete ${selectedItems.size > 1 ? selectedItems.size + " rooms" : selectedItems.size + " room"}`,
+            text:  `Do you want to delete these ${selectedItems.size > 1 ? "rooms" : "room"}?`,
+            confirmButtonColor: "#3085d6",
+        }).then((result) => {
+            if(result.isConfirmed){
+                handleDeleteSelected()
+            }
+        })
+    }
+
     const handleDeleteSelected = async () => {
         if (selectedItems.size === 0) return; 
 
@@ -197,7 +212,7 @@ export default function Rooms(){
                             <div className='flex items-center gap-x-6'>
                                 <input className=' p-2 rounded cursor-pointer' type="checkbox" onChange={handleSelectAllChange} checked={selectAll}/>
                                 <i className='p-1 text-xl rounded-full hover:bg-blue-100 cursor-pointer flex justify-center' onClick={() => fetchData()} ><BiLoader/></i>
-                                <BiTrash onClick={handleDeleteSelected} className='text-3xl p-1 rounded-full hover:bg-blue-100 cursor-pointer flex justify-center'/>
+                                <BiTrash onClick={deleteFiles} className='text-3xl p-1 rounded-full hover:bg-blue-100 cursor-pointer flex justify-center'/>
                             </div>
 
                             <div className='flex items-center'>

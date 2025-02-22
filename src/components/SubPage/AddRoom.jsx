@@ -3,9 +3,11 @@ import React, { useState } from 'react'
 import { BiArrowBack } from 'react-icons/bi'
 import Swal from 'sweetalert2';
 import withReactContent from 'sweetalert2-react-content';
+import Spinner from '../Spinner/Spinner';
 
 export default function AddRoom({isOpen, onClose, onAdd}) {
 
+  const [isLoading, setIsLoading] = useState(false);
   const [inputs, setInputs] = useState({
     name: '', 
     roomNumber: 0, 
@@ -50,51 +52,65 @@ export default function AddRoom({isOpen, onClose, onAdd}) {
       }
   };
 
-  const fd = new FormData();
-  fd.append("name", inputs.name);
-  fd.append("roomNumber", inputs.roomNumber);
-  fd.append("price", inputs.price);
-  fd.append("pax", inputs.pax);
-  fd.append("tower", inputs.tower);
-  fd.append("stayType", inputs.stayType);
-  fd.append("deck", inputs.deck);
-  fd.append("amenities", inputs.amenities.join(","))
-  fd.append("description", inputs.description);
-  inputs.imageFiles.forEach(item => fd.append("imageFiles[]", item));
-  fd.append("bath", inputs.bath);
-  fd.append("action", "add");
+
 
   const onSubmitData = async (e) => {
     e.preventDefault();
+    setIsLoading(true)
+    const fd = new FormData();
+    fd.append("name", inputs.name);
+    fd.append("roomNumber", inputs.roomNumber);
+    fd.append("price", inputs.price);
+    fd.append("pax", inputs.pax);
+    fd.append("tower", inputs.tower);
+    fd.append("stayType", inputs.stayType);
+    fd.append("deck", inputs.deck);
+    fd.append("amenities", inputs.amenities.join(","))
+    fd.append("description", inputs.description);
+    inputs.imageFiles.forEach(item => fd.append("imageFiles[]", item));
+    fd.append("bath", inputs.bath);
+    fd.append("action", "add");
+    console.log(inputs)
     try{
       const response = await axios.post("https://seafarerdorm.scarlet2.io/Rooms/post-rooms.php", fd);
-      if(response.data.status === "success"){
+      if(response.data.status == "success"){
+        setIsLoading(false)
         withReactContent(Swal).fire({
-          icon: response.data.status,
+          icon: "success",
           title: "Success",
           text: response.data.message,
           confirmButtonColor: "#3085d6",
         }).then((result) => {
           if (result.isConfirmed) {
-              handleDeleteRoom(id);
+            window.location.href = "/Rooms" 
           }
       });
         console.log(response.data.status);
       }else{
+        setIsLoading(false)
         withReactContent(Swal).fire({
-          icon: response.data.status,
+          icon: "warning",
           title: "Error",
           text: response.data.message,
           confirmButtonColor: "#3085d6",
+        }).then((result) => {
+          if (result.isConfirmed) {
+            window.location.href = "/Rooms" 
+          }
         });
       }
     }catch(e){
+      setIsLoading(false)
       console.log(e);
       withReactContent(Swal).fire({
-        icon: "error",
+        icon: "warning",
         title: "Error",
-        text: response.data.message,
+        text: "There was a problem processing your request",
         confirmButtonColor: "#3085d6",
+      }).then((result) => {
+        if (result.isConfirmed) {
+          window.location.href = "/Rooms" 
+        }
       });
     }
     
@@ -145,14 +161,14 @@ export default function AddRoom({isOpen, onClose, onAdd}) {
           </div>
           <div className='w-2/4 flex flex-col justify-between items-center'>
             <div className='w-full'>
-              <input onChange={handleChange} name='imageFiles' type="file" multiple accept='image/*' className='rounded-lg mb-4'/>
+              <input onChange={handleChange} name='imageFiles' type="file" multiple encType="multipart/form-data" accept='image/*' className='rounded-lg mb-4'/>
               <div className='flex gap-4 flex-wrap'>
                 {imgObject.map((item, index) => (
                   <img src={item} alt="" key={index} className='w-24 h-24 rounded-lg'/>
                 ))}
               </div>
             </div>
-            <button onClick={onAdd} type="submit" className='rounded-lg bg-primary p-2 text-white w-full'>Add Room</button>
+            <button type="submit" className='rounded-lg bg-primary p-2 text-white w-full'>{isLoading ? <Spinner/> : "Add Room"}</button>
           </div>
         </form>
       </div>

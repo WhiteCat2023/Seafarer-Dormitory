@@ -32,11 +32,21 @@ export default function CVRoom({isOpen, onClose, item}) {
 
     const handleDeleteRoom = async (id) => {
         const fd = new FormData()
-        fd.append("id", id)
+        fd.append('room-id', id)
         try{
             const response = await axios.post("https://seafarerdorm.scarlet2.io/Rooms/delete-single-room.php", fd)
             if(response.data.status == "success"){
-                window.location.href = "/Rooms"
+                withReactContent(Swal).fire({
+                    icon: "success",
+                    title: "Success",
+                    text: response.data.message,
+                    confirmButtonColor: "#3085d6" 
+                }).then((result) => {
+                    if(result.isConfirmed){
+                        window.location.href = "/Rooms" 
+                    }
+                })
+                
             }else{
                 withReactContent(Swal).fire({
                     icon: "warning",
