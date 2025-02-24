@@ -47,7 +47,7 @@ function DashboardTower1() {
         ) : (
           <table className="w-full mt-4 border-collapse">
             <thead>
-              <tr className="text-left text-gray-700 font-medium bg-gray-200 font-outfit">
+              <tr className="text-left text-black font-medium bg-white font-outfit">
                 <th className="py-2 px-4">Room Number</th>
                 <th className="py-2 px-4">Name</th>
                 <th className="py-2 px-4">Tower</th>
@@ -62,15 +62,15 @@ function DashboardTower1() {
               {items.length > 0 ? (
                 items.map((room, index) => (
                   room.tower === "tower-1" ?
-                  <tr key={index} className="border-t border-gray-300 bg-white">
-                    <td className="py-2 px-4">{room.roomNumber || "N/A"}</td>
-                    <td className="py-2 px-4">{room.name || "N/A"}</td>
-                    <td className="py-2 px-4">{room.tower || "N/A"}</td>
-                    <td className="py-2 px-4">{room.deck || "N/A"}</td>
-                    <td className="py-2 px-4">{room.price ? `$${room.price}` : "N/A"}</td>
-                    <td className="py-2 px-4">{room.pax || "N/A"}</td>
-                    <td className="py-2 px-4">{room.baths || "N/A"}</td>
-                    <td className="py-2 px-4">{room.amenities || "N/A"}</td>
+                  <tr key={index} className="bg-white">
+                    <td className="p-3 border-l border-t border-b border-blue-500">{room.roomNumber || "N/A"}</td>
+                    <td className="p-3 border-t border-b border-blue-500">{room.name || "N/A"}</td>
+                    <td className="p-3 border-t border-b border-blue-500">{room.tower || "N/A"}</td>
+                    <td className="p-3 border-t border-b border-blue-500">{room.deck || "N/A"}</td>
+                    <td className="p-3 border-t border-b border-blue-500">{room.price ? `$${room.price}` : "N/A"}</td>
+                    <td className="p-3 border-t border-b border-blue-500">{room.pax || "N/A"}</td>
+                    <td className="p-3 border-t border-b border-blue-500">{room.baths || "N/A"}</td>
+                    <td className="p-3 border-t border-b border-r border-blue-500">{room.amenities || "N/A"}</td>
                   </tr>:""
                 ))
               ) : (

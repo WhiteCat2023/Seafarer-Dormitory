@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { BiBuilding, BiClinic, BiSearchAlt } from "react-icons/bi";
+import { FaCashRegister, FaMoneyBillTransfer, FaUsers } from "react-icons/fa6";
 import TenantsTower1 from "./TenantsTower1";
 import DashboardTower2 from "./DashboardTower2";
 import TenantsTower2 from "./TenantsTower2";
@@ -38,7 +39,7 @@ function History() {
           }`}
           onClick={() => setActiveTower("tower1")}
         >
-          <BiBuilding className="text-xl" />
+          <FaUsers className="text-xl" />
           Tenant History
         </button>
 
@@ -48,7 +49,7 @@ function History() {
           }`}
           onClick={() => setActiveTower("tower2")}
         >
-          <BiBuilding className="text-xl" />
+          <FaMoneyBillTransfer className="text-xl" />
           Payment History
         </button>
 
