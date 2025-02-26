@@ -116,10 +116,17 @@ function TenantsTower2() {
                 <Spinner className="w-10 h-10"/>; 
             </div>
         }
+
+        const filteredTower = items.filter(item => item.reservationStatus === "accepted" && item.tower !== "tower-1");
+
+        if (filteredTower.length === 0) {
+            return <p className='h-96 w-full flex items-center justify-center text-gray-500'>No Tenants Available</p>;
+        }
+
         try{
-            return items.length > 0 ? (items.map((item, index) => (
-                item.reservationStatus == "accepted" && item.tower == "tower-2" ? (
-                    <div className='flex items-center border-b' key={index} id={item.id}>
+            return (filteredTower.map((item, index) => (
+             
+                <div className='flex items-center border-b' key={index} id={item.id}>
                     <input type="checkbox" className=' p-2 rounded mx-3 cursor-pointer' checked={selectedItems.has(item.id)} onChange={() => handleCheckboxChange(item.id)} id={item.id} />
                     <li className='flex justify-between items-center p-4 text-black flex-grow'>
                         <span className='flex-grow text-start'>
@@ -134,10 +141,7 @@ function TenantsTower2() {
                         <button className='cursor-pointer text-blue-700 p-2 rounded-full text-2xl hover:bg-blue-50' onClick={() => openModal(item.id)}><BiInfoCircle/></button>
                     </div>
                 </div>
-                ) : <p key={index} className='h-96 w-full flex items-center justify-center text-gray-500'>No Tenants Available</p>
-            ))) : (
-                <p className='h-96 w-full flex items-center justify-center text-gray-500'>No Tenants Available</p>
-            )
+            ))) 
         }catch(error){
             console.error(error);
             return <p className='h-96 w-full flex items-center justify-center text-gray-500'>Error occurred</p>
