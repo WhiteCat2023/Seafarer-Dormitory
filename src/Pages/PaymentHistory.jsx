@@ -36,12 +36,12 @@ const PaymentHistory = () => {
             {/* Table Header */}
             <thead>
               <tr className="text-left bg-white">
-                <th className="p-3 font-semibold">Customer’s Name</th>
-                <th className="p-3 font-semibold">Amount</th>
-                <th className="p-3 font-semibold">Room</th>
-                <th className="p-3 font-semibold">Date</th>
-                <th className="p-3 font-semibold">Status</th>
-                <th className="p-3 font-semibold">Payment Method</th>
+                <th className="p-3 font-outfit font-semibold">Customer’s Name</th>
+                <th className="p-3 font-outfit font-semibold">Amount</th>
+                <th className="p-3 font-outfit font-semibold">Room</th>
+                <th className="p-3 font-outfit font-semibold">Date</th>
+                <th className="p-3 font-outfit font-semibold">Status</th>
+                <th className="p-3 font-outfit font-semibold">Payment Method</th>
               </tr>
             </thead>
 
@@ -53,10 +53,10 @@ const PaymentHistory = () => {
                     key={index}
                     className="border-b border-blue-300"
                   >
-                    <td className="p-3 border-l border-t border-b border-blue-500">{booking.c_name}</td>
-                    <td className="p-3 border-t border-b border-blue-500">₱{booking.total_price.toLocaleString()}</td>
-                    <td className="p-3 border-t border-b border-blue-500">{booking.roomId}</td>
-                    <td className="p-3 border-t border-b border-blue-500">
+                    <td className="p-3 font-outfit font-semibold border-l border-t border-b border-blue-500">{booking.c_name}</td>
+                    <td className="p-3 font-outfit font-semibold border-t border-b border-blue-500">₱{booking.total_price.toLocaleString()}</td>
+                    <td className="p-3 font-outfit font-semibold border-t border-b border-blue-500">{booking.roomId}</td>
+                    <td className="p-3 font-outfit font-semibold border-t border-b border-blue-500">
                       {new Date(booking.date_timestamp).toLocaleDateString("en-US", {
                         year: "numeric",
                         month: "long",
@@ -64,7 +64,7 @@ const PaymentHistory = () => {
                       })}
                     </td>
                     <td
-                      className={`p-3 border-t border-b border-blue-500 ${
+                      className={`p-3 font-outfit font-semibold border-t border-b border-blue-500 ${
                         booking.reservation_status === "Paid"
                           ? "text-green-500"
                           : "text-red-500"
@@ -72,7 +72,7 @@ const PaymentHistory = () => {
                     >
                       {booking.reservation_status}
                     </td>
-                    <td className="p-3 border-t border-b border-r border-blue-500">{booking.mode_of_payment}</td>
+                    <td className="p-3 font-outfit font-semibold border-t border-b border-r border-blue-500">{booking.mode_of_payment}</td>
                   </tr>
                 ))
               ) : (
