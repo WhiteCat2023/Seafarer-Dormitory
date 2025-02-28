@@ -1,29 +1,117 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { BiArrowBack } from 'react-icons/bi'
+import Spinner from '../components/Spinner/Spinner';
+import Swal from 'sweetalert2';
+import withReactContent from 'sweetalert2-react-content';
+import axios from 'axios';
 
 function EditRoom({isOpen, onClose, item}) {
 
+    const [isLoading, setIsLoading] = useState(false);
+    const [inputs, setInputs] = useState({
+        name: '', 
+        roomNumber: 0, 
+        price: 0, 
+        pax: 0, 
+        tower: '', 
+        stayType: '', 
+        deck: '', 
+        amenities: [],
+        description: '', 
+        imageFiles: []
+    });
+    const [amenityInput, setAmenityInput] = useState("");
+    const [imgObject, setImgObject] = useState([]);
+    
+    const handleChange = (e) => {
+        const name = e.target.name;
+        const value = e.target.value;
+        if(name == 'pax' || name == 'price' || name == 'roomNumber'){
+          setInputs(inputs => ({...inputs, [name]: Number(value)}));
+        } else if(name == 'imageFiles'){
+          const files = Array.from(e.target.files);
+          const imageUrls = files.map(file => URL.createObjectURL(file));
+          setInputs(inputs => ({...inputs, [name]: files}));
+          setImgObject(image => [...image, ...imageUrls]);
+        } else{
+          setInputs(inputs => ({...inputs, [name]: value}));
+        }
+      }
+    const onSubmitData = async (e) => {
+        e.preventDefault();
+        setIsLoading(true)
+        const fd = new FormData();
+        fd.append("id", item.id)
+        fd.append("name", inputs.name);
+        fd.append("roomNumber", inputs.roomNumber);
+        fd.append("price", inputs.price);
+        fd.append("pax", inputs.pax);
+        fd.append("tower", inputs.tower);
+        fd.append("stayType", inputs.stayType);
+        fd.append("deck", inputs.deck);
+        fd.append("amenities", inputs.amenities.join(","))
+        fd.append("description", inputs.description);
+        inputs.imageFiles.forEach(item => fd.append("imageFiles[]", item));
+        console.log(inputs)
+        try{
+          const response = await axios.post("https://seafarerdorm.scarlet2.io/Rooms/edit-room.php", fd);
+          if(response.data.status == "success"){
+            setIsLoading(false)
+            withReactContent(Swal).fire({
+              icon: "success",
+              title: "Success",
+              text: response.data.message,
+              confirmButtonColor: "#3085d6",
+            }).then((result) => {
+              if (result.isConfirmed) {
+                window.location.href = "/Rooms" 
+              }
+          });
+            console.log(response.data.status);
+          }else{
+            setIsLoading(false)
+            withReactContent(Swal).fire({
+              icon: "warning",
+              title: "Error",
+              text: response.data.message,
+              confirmButtonColor: "#3085d6",
+            }).then((result) => {
+              if (result.isConfirmed) {
+                window.location.href = "/Rooms" 
+              }
+            });
+          }
+        }catch(e){
+          setIsLoading(false)
+          console.log(e);
+          withReactContent(Swal).fire({
+            icon: "warning",
+            title: "Error",
+            text: "There was a problem processing your request",
+            confirmButtonColor: "#3085d6",
+        })
+        //   }).then((result) => {
+        //     if (result.isConfirmed) {
+        //       window.location.href = "/Rooms" 
+        //     }
+        //   });
+        }
+        
+      }
+    
+   
+  const handleAmenityChange = (e) => {
+    setAmenityInput(e.target.value); 
+  };
 
-    const amenities = item.amenities
-    .split(/,|\s-/)
-    const amenity = Object.values(amenities);
-    const images = Object.values(item.files);
-
-    function handleChange(){
-
-    }
-    const onSubmitData = () => {
-
-    }
-    function handleAmenityChange(){
-
-    }
-    function addAmenity(){
-
-    }
-    function onAdd(){
-
-    }
+  const addAmenity = (e) => {
+      e.preventDefault();
+      if (amenityInput.trim() !== "") {
+          setInputs(inputs => ({...inputs, amenities: [...inputs.amenities, amenityInput.trim()]})
+        );
+          setAmenityInput("");
+      }
+  };
 
     return (
         <div className={`${isOpen ? "block": "hidden"}`}>
@@ -55,13 +143,13 @@ function EditRoom({isOpen, onClose, item}) {
                             <option value="lower-deck">Lower Deck</option>
                         </select>
                         <div className='flex gap-x-2 w-full'>
-                            <input onChange={handleAmenityChange} name='amenities' type="text" placeholder={item.amenities} className='rounded-lg w-full'/>
+                            <input onChange={handleAmenityChange} name='amenities' type="text" placeholder={item.amenities} value={amenityInput} className='rounded-lg w-full'/>
                             <button onClick={addAmenity} className='rounded-lg bg-primary py-2 px-4 text-white w-1/6'>Add</button>
                         </div>
                         <div className='flex gap-4 flex-wrap'>
-                        {/* {amenity.map((item, index) => (
+                        {inputs.amenities.map((item, index) => (
                             <p className='py-2 px-4 bg-black text-white rounded-lg block' key={index}>{item}</p>
-                        ))} */}
+                        ))}
                         </div>
                         <textarea onChange={handleChange} name='description' type="text" placeholder={item.description} className='rounded-lg' rows={6}/>
                     </div>
@@ -69,15 +157,12 @@ function EditRoom({isOpen, onClose, item}) {
                         <div className='w-full'>
                         <input onChange={handleChange} name='imageFiles' type="file" multiple accept='image/*' className='rounded-lg mb-4'/>
                         <div className='flex gap-4 flex-wrap'>
-                            {/* {images.map((item, index) => (
-                                <div>
-
-                                </div>
-                               
-                            ))} */}
+                            {imgObject.map((item, index) => (
+                               <img src={item} alt="" key={index} className='w-24 h-24 rounded-lg'/>
+                            ))}
                         </div>
                         </div>
-                        <button onClick={onAdd} type="submit" className='rounded-lg bg-primary p-2 text-white w-full'>Edit Room</button>
+                        <button type="submit" className='rounded-lg bg-primary p-2 text-white w-full'>{isLoading ? <Spinner/> : "Edit Room"}</button>
                     </div>
                 </form>
             </div>

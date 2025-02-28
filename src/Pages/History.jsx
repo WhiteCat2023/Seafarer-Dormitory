@@ -18,7 +18,7 @@ function History() {
             History
           </h1>
         </nav>
-        <div className="relative w-full md:w-1/4 flex-grow md:flex-grow-0 px-2 lg:px-0 block">
+        {/* <div className="relative w-full md:w-1/4 flex-grow md:flex-grow-0 px-2 lg:px-0 block">
           <input
             className="rounded-full w-full ps-10 border-blue-500 border-2"
             type="search"
@@ -27,7 +27,7 @@ function History() {
           <i className="absolute lg:left-3 left-5 top-3 -translate-y-1 text-2xl flex justify-center">
             <BiSearchAlt />
           </i>
-        </div>
+        </div> */}
       </div>
 
       {/* Tabs */}
