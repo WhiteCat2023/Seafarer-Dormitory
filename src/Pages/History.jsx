@@ -6,7 +6,6 @@ import DashboardTower2 from "./DashboardTower2";
 import TenantsTower2 from "./TenantsTower2";
 import TenantHistory from "./TenantHistory"; // Make sure this is correctly imported
 import PaymentHistory from "./PaymentHistory";
-import RoomsHistory from "./RoomsHistory";
 
 function History() {
   const [activeTower, setActiveTower] = useState("tower1"); // Set Tower 1 as default
@@ -53,21 +52,12 @@ function History() {
           Payment History
         </button>
 
-        <button
-          className={`flex items-center gap-2 px-4 py-2 rounded-lg border-2 font-outfit ${
-            activeTower === "tower3" ? "bg-blue-500 text-white" : "text-gray-700 hover:bg-blue-100 border-[#595BD4]"
-          }`}
-          onClick={() => setActiveTower("tower3")}
-        >
-          <BiBuilding className="text-xl" />
-          Rooms History
-        </button>
+        
       </div>
 
       {/* Default display is DashboardTower1 */}
       {activeTower === "tower1" && <TenantHistory />}
       {activeTower === "tower2" && <PaymentHistory />}
-      {activeTower === "tower3" && <RoomsHistory />}
     </div>
   );
 }

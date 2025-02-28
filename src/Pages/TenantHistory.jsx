@@ -7,14 +7,12 @@ const TenantHistory = () => {
     const [loading, setLoading] = useState(false);
     const [searchQuery, setSearchQuery] = useState("");
 
-    // Function to fetch tenant data
     const fetchData = async () => {
         setLoading(true);
         try {
             const response = await axios.get(
                 `https://seafarerdorm.scarlet2.io/Rooms/fetch_tenant_history.php?search=${searchQuery}`
             );
-            console.log("API Response:", response.data); // Debugging Log
             setItems(Array.isArray(response.data) ? response.data : []);
         } catch (error) {
             console.error("Error fetching data:", error);
@@ -23,20 +21,43 @@ const TenantHistory = () => {
         }
     };
 
-    // Debounce function to reduce API calls on every keystroke
+    const clearHistory = async () => {
+        if (!window.confirm("Are you sure you want to clear the tenant history?")) {
+            return;
+        }
+
+        try {
+            await axios.post("https://seafarerdorm.scarlet2.io/Rooms/clear_tenant_history.php");
+            setItems([]);
+            alert("Tenant history cleared successfully!");
+        } catch (error) {
+            console.error("Error clearing tenant history:", error);
+            alert("Failed to clear history. Try again.");
+        }
+    };
+
     useEffect(() => {
         const delayDebounce = setTimeout(() => {
             fetchData();
-        }, 500); // Adjust delay as needed (500ms)
+        }, 500);
 
         return () => clearTimeout(delayDebounce);
     }, [searchQuery]);
 
     return (
         <div className="p-6 border border-blue-500 rounded-xl bg-white">
-            <h2 className="text-5xl font-outfit mb-4">Tenant History</h2>
+            <div className="flex justify-between items-center mb-4">
+                <h2 className="text-5xl font-outfit">Tenant History</h2>
+                {items.length > 0 && (
+                    <button
+                        onClick={clearHistory}
+                        className="text-sm text-gray-500 hover:underline"
+                    >
+                        Clear all history
+                    </button>
+                )}
+            </div>
 
-           
             {loading ? (
                 <div className="w-full h-96 flex justify-center items-center">
                     <Spinner className="w-10 h-10" />
