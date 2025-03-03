@@ -1,17 +1,27 @@
 
-import Carousel from '../Carousel/CardCarousel';
-
-export default function Card({ src, name, availability, price, onClick}){
-    const newSrc = Object.values(src);
+// import Carousel from '../Carousel/CardCarousel';
+import { BiSolidStar } from "react-icons/bi";
+import DefaultImage from "../../assets/default-image.png"
+export default function Card({item}){
+    const newSrc = Object.values(item.files);
     return(
         <>
-            <div className="w-full h-full sm:border sm:rounded-xl overflow-hidden sm:shadow-xl cursor-pointer "  >
-                <div className='h-48'>
-                    <Carousel items={newSrc}/>
+            <div className="w-full h-full overflow-hidden cursor-pointer "  >
+                <div className='h-4/6 overflow-hidden'>
+                    {
+                        newSrc.length > 0 ? 
+                            <img 
+                            src={`https://seafarerdorm.scarlet2.io/Rooms/${newSrc[0]}`}
+                            className="rounded-lg object-cover h-full w-full"/> 
+                        : 
+                            <img src={DefaultImage}/>
+                    }
                 </div>
-                <div className="text-start w-full p-4 pt-2 text-gray-400" key={name} onClick={onClick}>
-                    <p className="flex justify-between"><span className="font-bold text-black">{name}</span><span>{availability}</span></p>
-                    <p className="mb-2">{price}</p>
+                <div className="text-start text-sm w-full pt-2 h-2/6 leading-none" key={item.id}>
+                    <p className="font-normal w-full flex justify-between">{item.name}<span className="flex items-center gap-x-1"><BiSolidStar/>4.0</span></p>
+                    <p className="font-light">Room {item.roomNumber}</p>
+                    <p className="font-light">{item.pax} person</p>
+                    <p className="font-semibold">₱{item.price} per {item.stayType}</p>
                 </div>
             </div>
         </>

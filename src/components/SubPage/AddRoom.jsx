@@ -1,6 +1,6 @@
 import axios from 'axios';
 import React, { useState } from 'react'
-import { BiArrowBack } from 'react-icons/bi'
+import { BiArrowBack, BiX } from 'react-icons/bi'
 import Swal from 'sweetalert2';
 import withReactContent from 'sweetalert2-react-content';
 import Spinner from '../Spinner/Spinner';
@@ -51,8 +51,6 @@ export default function AddRoom({isOpen, onClose, onAdd}) {
           setAmenityInput("");
       }
   };
-
-
 
   const onSubmitData = async (e) => {
     e.preventDefault();
@@ -116,6 +114,15 @@ export default function AddRoom({isOpen, onClose, onAdd}) {
     
   }
 
+  function handleRemoveImage(index) {
+    setImgObject((prevImages) => prevImages.filter((_, i) => i !== index));
+    setInputs((prevInputs) => ({
+      ...prevInputs,
+      imageFiles: prevInputs.imageFiles.filter((_, i) => i !== index),
+    }));
+  }
+  
+
   return (
 //Note:
     // kani rang mga divs imo hilabtan dong imo rani butangan ug tailwind css
@@ -127,44 +134,78 @@ export default function AddRoom({isOpen, onClose, onAdd}) {
         </div>
         <form className='flex gap-2 w-full' onSubmit={onSubmitData}>
           <div className='flex flex-col w-2/4 gap-2'>
-            <input onChange={handleChange} name='name' type="text" placeholder='Name' className='rounded-lg'/>
-            <input onChange={handleChange} name='roomNumber' type="number" placeholder='room number' className='rounded-lg'/>
-            <input onChange={handleChange} name='price' type="number" placeholder='price' className='rounded-lg'/>
-            <input onChange={handleChange} name='pax' type="number" placeholder='pax' className='rounded-lg'/>
-            <select onChange={handleChange} name="tower" id="tower" className='rounded-lg p-2'>
+          <label htmlFor="name" className='leading-[0.5] text-sm'>Room Name</label>
+            <input onChange={handleChange} id='name' name='name' type="text" placeholder='Ex. John Doe' className='rounded-lg border border-[#595BD4] bg-[#D3D3E7]' required/>
+
+            <label htmlFor="Room Number" className='leading-[0.5] text-sm'>Room Number</label>
+            <input onChange={handleChange} id='Room Number' name='roomNumber' type="number" placeholder='Ex. 123' className='rounded-lg border border-[#595BD4] bg-[#D3D3E7]' required/>
+
+            <label htmlFor="price" className='leading-[0.5] text-sm'>Price</label>
+            <input onChange={handleChange} id='price' name='price' type="number" placeholder='Ex. 1,234' className='rounded-lg border border-[#595BD4] bg-[#D3D3E7]' required/>
+
+            <label htmlFor="pax" className='leading-[0.5] text-sm'>Pax</label>
+            <input onChange={handleChange} id='pax' name='pax' type="number" placeholder='Ex. 1 ' className='rounded-lg border border-[#595BD4] bg-[#D3D3E7]' required/>
+
+            <label htmlFor="tower" className='leading-[0.5] text-sm'>Tower</label>
+            <select onChange={handleChange} name="tower" id="tower" className='rounded-lg p-2 border border-[#595BD4] bg-[#D3D3E7]' required>
               <option value="">Select apartment</option>
               <option value="tower-1">Tower 1</option>
               <option value="tower-2">Tower 2</option>
             </select>
-            <select onChange={handleChange} name="stayType" id="" className='rounded-lg p-2'>
+
+            <label htmlFor="stay type" className='leading-[0.5] text-sm'>Stay Type</label>
+            <select onChange={handleChange} name="stayType" id="stay type" className='rounded-lg p-2 border border-[#595BD4] bg-[#D3D3E7]' required>
               <option value="">Select stay type</option>
               <option value="day">Day</option>
               <option value="night">Night</option>
               <option value="week">Week</option>
               <option value="month">Month</option>
             </select>
-            <select onChange={handleChange} name="deck" id="" className='rounded-lg p-2'>
+
+            <label htmlFor="deck" className='leading-[0.5] text-sm'>Deck</label>
+            <select onChange={handleChange} name="deck" id="deck" className='rounded-lg p-2 border border-[#595BD4] bg-[#D3D3E7]' required>
               <option value="">Select which deck</option>
               <option value="upper-deck">Upper Deck</option>
               <option value="lower-deck">Lower Deck</option>
             </select>
+
+            <label htmlFor="amenities" className='leading-[0.5] text-sm'>Amenities</label>
             <div className='flex gap-x-2 w-full'>
-              <input onChange={handleAmenityChange} name='amenities' type="text" placeholder='amenities' className='rounded-lg w-full' value={amenityInput}/>
+              <input onChange={handleAmenityChange} id='amenities' name='amenities' type="text" placeholder='Ex. free pizza, near SWU, etc.' className='rounded-lg w-full border border-[#595BD4] bg-[#D3D3E7]' value={amenityInput} required/>
               <button onClick={addAmenity} className='rounded-lg bg-primary py-2 px-4 text-white w-1/6'>Add</button>
             </div>
             <div className='flex gap-4 flex-wrap'>
               {inputs.amenities.map((item, index) => (
-                <p className='py-2 px-4 bg-black text-white rounded-lg block' key={index}>{item}</p>
+                <p className='py-2 px-4 bg-primary text-white rounded-lg block' key={index}>{item}</p>
               ))}
             </div>
-            <textarea onChange={handleChange} name='description' type="text" placeholder='description' className='rounded-lg' rows={6}/>
+
+            <label htmlFor="description" className='leading-[0.5] text-sm'>Description</label>
+            <textarea onChange={handleChange} id='description' name='description' type="text" placeholder='Apartment details...' className='rounded-lg border border-[#595BD4] bg-[#D3D3E7]' rows={6} required/>
           </div>
           <div className='w-2/4 flex flex-col justify-between items-center'>
             <div className='w-full'>
-              <input onChange={handleChange} name='imageFiles' type="file" multiple encType="multipart/form-data" accept='image/*' className='rounded-lg mb-4'/>
-              <div className='flex gap-4 flex-wrap'>
+              {/* <button type='button' className='rounded-lg bg-primary p-2 text-white w-full'>Choose Files</button>
+              <input onChange={handleChange} name='imageFiles' type="file" multiple encType="multipart/form-data" accept='image/*' className='rounded-lg mb-4 '/> */}
+              <label className="rounded-lg bg-primary p-2 text-white w-full text-center cursor-pointer hover:bg-primary-dark transition-all">
+              Choose Files
+              <input
+                type="file"
+                name="imageFiles"
+                multiple
+                accept="image/*"
+                onChange={handleChange}
+                className="hidden"
+              />
+            </label>
+              <div className='flex gap-4 flex-wrap mt-6'>
                 {imgObject.map((item, index) => (
-                  <img src={item} alt="" key={index} className='w-24 h-24 rounded-lg'/>
+                  <div className='relative'>
+                    <BiX 
+                      className='rounded-full bg-black text-white font-bold absolute -right-2 -top-2 cursor-pointer'
+                      onClick={() => handleRemoveImage(index)}/>
+                    <img src={item} alt="" key={index} className='w-24 h-24 rounded-lg'/>
+                  </div>
                 ))}
               </div>
             </div>

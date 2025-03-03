@@ -1,4 +1,5 @@
 /** @type {import('tailwindcss').Config} */
+
 export default {
   content: [
     "./index.html",
@@ -11,7 +12,8 @@ export default {
       fontFamily: {
         orelega:["Orelega One", "sans-serif"],
         montserrat: ["Montserrat", "sans-serif"],
-        outfit: ["Outfit", "sans-serif"]
+        outfit: ["Outfit", "sans-serif"],
+        otomanopee: ["Otomanopee One", "sans-serif"]
       },
       colors: {
         primary: "#6B8DE0",
