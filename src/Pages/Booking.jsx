@@ -101,7 +101,7 @@ function Booking() {
             return;
         }
 
-        onSuccess(paymentIntent);
+        // onSuccess(paymentIntent);
         setLoading(false);
         handleReservation("paid", "Stripe", "Paid", "")
     };
@@ -206,24 +206,23 @@ function Booking() {
         // console.log(dateState)
     }
     return (
-        <div className='pb-24'>
-            <TopNavUser/>
+        <div className='pb-24 font-outfit'>
             <div className='w-4/6 mx-auto'>
-                <Link to="/" className='items-center flex '><BiChevronLeft/>Back</Link>
+                <TopNavUser/>
+                <Link to="/" className='items-center flex mt-4'><BiChevronLeft/>Back</Link>
                 <div>
                     <form className='flex w-full' onSubmit={handleSubmit}>
                         <div className='flex flex-col w-2/4 p-4 gap-y-2'>
                             <p className='font-bold text-2xl'>Application Form</p>
-                            <p className='font-semibold text-xl'>Confirm and Pay</p>
                             <p className='mt-2'>Identification</p>
-                            <input onChange={handleInputChange} className='rounded-lg' type="text" placeholder='Full Name' name='name' required/>
-                            <input onChange={handleInputChange} className='rounded-lg' type="number" placeholder='Contact Number' name='contactNumber' required/>
-                            <input onChange={handleInputChange} className='rounded-lg' type="email" placeholder='Email' name='email' required/>
+                            <input onChange={handleInputChange} className='rounded-lg bg-[#D3D3E7] border border-[#595BD4] text-[#1E1E1E8C]' type="text" placeholder='Full Name' name='name' required/>
+                            <input onChange={handleInputChange} className='rounded-lg bg-[#D3D3E7] border border-[#595BD4] text-[#1E1E1E8C]' type="number" placeholder='Contact Number' name='contactNumber' required/>
+                            <input onChange={handleInputChange} className='rounded-lg bg-[#D3D3E7] border border-[#595BD4] text-[#1E1E1E8C]' type="email" placeholder='Email' name='email' required/>
                             <p className='mt-2 text-lg font-semibold'>Choose how to pay</p>
-                            <p>Apartment: {item.name}</p>
-                            <p>Tower: {item.tower}</p>
-                            {days != 0 && (<p>Total: {days} days X ₱{item.price} = ₱{totalPrice}</p>)}
-                            <CardElement className="w-full mb-4 p-2 border border-gray-300 rounded-lg" />
+                            <p><span className='font-bold'>Apartment: </span>{item.name}</p>
+                            <p><span className='font-bold'>Tower: </span>{item.tower}</p>
+                            {days != 0 && (<p><span className='font-bold'>Total: </span>{days} days X ₱{item.price} = ₱{totalPrice}</p>)}
+                            <CardElement className="w-full mb-4 p-2 rounded-lg bg-[#D3D3E7] border border-[#595BD4] text-[#1E1E1E8C]" />
                             <button
                                 type="submit"
                                 className="rounded-lg bg-primary text-white py-2 w-full"
@@ -256,7 +255,9 @@ function Booking() {
                                 {loading ? 'Processing...' : 'Maya'}
                             </button>
                         </div>
-                        <div className='w-2/4 flex items-center justify-center overflow-hidden'>
+                        <div className='w-2/4 flex flex-col items-start justify-center overflow-hidden'>
+                            <p className='font-outfit text-2xl font-bold'>Days Duration</p>
+                            <p className='font-outfit'>Enter Days how long is your stay</p>
                             <DateRange
                                 editableDateInputs={true}
                                 onChange={item => setDateState([item.selection])}

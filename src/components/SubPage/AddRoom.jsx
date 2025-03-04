@@ -188,23 +188,23 @@ export default function AddRoom({isOpen, onClose, onAdd}) {
               {/* <button type='button' className='rounded-lg bg-primary p-2 text-white w-full'>Choose Files</button>
               <input onChange={handleChange} name='imageFiles' type="file" multiple encType="multipart/form-data" accept='image/*' className='rounded-lg mb-4 '/> */}
               <label className="rounded-lg bg-primary p-2 text-white w-full text-center cursor-pointer hover:bg-primary-dark transition-all">
-              Choose Files
-              <input
-                type="file"
-                name="imageFiles"
-                multiple
-                accept="image/*"
-                onChange={handleChange}
-                className="hidden"
-              />
-            </label>
+                Choose Files
+                <input
+                  type="file"
+                  name="imageFiles"
+                  multiple
+                  accept="image/*"
+                  onChange={handleChange}
+                  className="hidden"
+                />
+              </label>
               <div className='flex gap-4 flex-wrap mt-6'>
                 {imgObject.map((item, index) => (
-                  <div className='relative'>
+                  <div className='relative' key={index}>
                     <BiX 
                       className='rounded-full bg-black text-white font-bold absolute -right-2 -top-2 cursor-pointer'
                       onClick={() => handleRemoveImage(index)}/>
-                    <img src={item} alt="" key={index} className='w-24 h-24 rounded-lg'/>
+                    <img src={item} alt="" className='w-24 h-24 rounded-lg'/>
                   </div>
                 ))}
               </div>

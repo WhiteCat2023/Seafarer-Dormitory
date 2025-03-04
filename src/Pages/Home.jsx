@@ -11,7 +11,7 @@ import pic3 from '../assets/pic3.png'
 import pic4 from '../assets/pic4.png'
 import pic5 from '../assets/pic5.png'
 import AnimatedCaoursel from '../components/Carousel/AnimatedCarousel'
-import { IoSearchCircleOutline, IoSearchOutline, IoSearchSharp } from 'react-icons/io5';
+import { IoSearchSharp } from 'react-icons/io5';
 import { VscSettings } from 'react-icons/vsc';
 
 export default function Home() {
@@ -19,11 +19,12 @@ export default function Home() {
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(false);
   const [isExpand, setIsExpand] = useState(false)
+  const [searchQuery, setSearchQuery] = useState("");
 
   const fetchData = async () => {
     setLoading(true);
     try{     
-      const response = await axios.get('https://seafarerdorm.scarlet2.io/Rooms/retrieve-rooms.php');
+      const response = await axios.get(`https://seafarerdorm.scarlet2.io/Rooms/retrieve-rooms.php?search=${searchQuery}`);
       // const apartmentArray = Object.values(response.data);
       setItems(response.data.data);
     }catch(error){
@@ -38,10 +39,14 @@ export default function Home() {
     setIsExpand(prevState => !prevState);
   }
 
+  const handleSearchChange = (event) => {
+    setSearchQuery(event.target.value); // Update search query state
+  };
+
 
   useEffect(() => { 
     fetchData()
-  }, [])
+  }, [searchQuery])
   function displayList(){
     console.log(items)
         if(loading){
@@ -55,7 +60,9 @@ export default function Home() {
                 </div>
               </Link>
             ))) : (
-                <p className='h-full w-full flex items-center justify-center text-gray-500'>No apartments available</p>
+              <div className='row-span-2 col-span-5 h-56 flex justify-center items-center'>
+                <p className=' text-gray-500'>No apartments available</p>
+              </div>
             )
         }catch(error){
             console.error(error);
@@ -77,7 +84,7 @@ export default function Home() {
               <h2 className=' font-otomanopee'>Other Rooms Available</h2>
               <div className='flex w-[60%] gap-x-4'>
                 <div className={`relative w-full md:w-5/6 flex-grow md:flex-grow-0 px-2 lg:px-0 block`}>
-                  <input className="rounded-xl w-full ps-4 border-[#6B8DE0] border p-1 bg-[#D3D3E7]" type="search" placeholder="Search"/>
+                  <input className="rounded-xl w-full ps-4 border-[#6B8DE0] border p-1 bg-[#D3D3E7] pe-8" type="search" placeholder="Search" onChange={handleSearchChange}/>
                   <IoSearchSharp className='absolute lg:end-3 end-5 top-3 -translate-y-1 text-2xl flex justify-center text-[18px] text-primary font-bold'/>
                 </div>
                 <button className=' py-1 bg-[#D3D3E7] rounded-lg border border-[#6B8DE0] text-sm p-2'>

@@ -2,11 +2,12 @@ import { useState } from "react"
 import Logo from "../assets/Logo.png"
 import ShowCase from "../assets/showcase.jpg"
 import axios from "axios"
-import { useNavigate } from "react-router-dom"
+// import { useNavigate } from "react-router-dom"
 import Spinner from "../components/Spinner/Spinner"
 import Swal from 'sweetalert2'
 import withReactContent from 'sweetalert2-react-content'
 import ForgotPassword from "../components/Modals/ForgotPassword"
+import { BiChevronLeft } from 'react-icons/bi';
 
 
 
@@ -16,7 +17,7 @@ export default function Login(){
     const [loading, setLoading] = useState(false);
     const [rememberMe, setRememberMe] = useState(false);
     const [isModalOpen, setIsModalOpen] = useState(false);
-    const navigate = useNavigate();
+    // const navigate = useNavigate();
 
     const openModal = () => setIsModalOpen(true);
 
@@ -77,7 +78,7 @@ export default function Login(){
                 confirmButtonColor: "#3085d6",
             })
             console.error("Error signing in:", error);
-            setError(error.message); 
+            // setError(error.message); 
         } finally {
             setLoading(false); 
         }
@@ -87,7 +88,8 @@ export default function Login(){
             <div className="flex-none mb-8 lg:w-1/2 lg:mb-0 lg:p-4 p-2">
                 <img src={ShowCase} alt="" className="w-full h-36 lg:h-full object-cover lg:rounded-xl rounded-md" loading="lazy"/>
             </div>
-            <div className="w-100 block lg:w-1/2 lg:flex lg:justify-center lg:flex-col">
+            <div className="w-100 block lg:w-1/2 lg:flex lg:justify-center lg:flex-col relative">
+                <span className="absolute top-5 inline-flex items-center cursor-pointer" onClick={() => window.location.href = "./"}><BiChevronLeft className="text-4xl"/><p>back</p></span> 
                 <img src={Logo} alt="" className="mx-auto"/>
                 <h1 className="text-balance text-5xl font-normal font-orelega text-gray-900 sm:text-7xl text-center" >Greetings!</h1>
                 <h3 className="font-orelega font-normal text-gray-900 text-balance text-base lg:text-3x1 text-center">Welcome Back!</h3>
