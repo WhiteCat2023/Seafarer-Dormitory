@@ -10,6 +10,7 @@ function TenantsTower1() {
   const [loading, setLoading] = useState(false);
   const [selectAll, setSelectAll] = useState(false);
   const [selectedItems, setSelectedItems] = useState(new Set());
+  const [selectedItemRoomIds, setSelectedItemRoomIds] = useState(new Set());
   const [key, setKey] = useState(0);
   const selectedItem = items.find(item => item.id === key);
   const [isInfoBtnClicked, setIsInfoBtnClicked] = useState(false);
@@ -92,6 +93,7 @@ function TenantsTower1() {
               console.log(response.data.status);
           }else{
               console.log(response.data.status);
+              // console.log(response.data.message);
           }
           
           fetchData();

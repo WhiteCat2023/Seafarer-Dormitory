@@ -7,7 +7,7 @@ import 'react-date-range/dist/theme/default.css';
 import { useStripe, useElements, CardElement } from '@stripe/react-stripe-js';
 import Maya from '../assets/maya.png'
 import GCash from '../assets/gcash.png'
-import { addDays, differenceInDays } from 'date-fns';
+import { addDays, differenceInDays, format } from 'date-fns';
 import { BiChevronLeft } from 'react-icons/bi';
 import axios from 'axios';
 import Swal from 'sweetalert2'
@@ -36,6 +36,7 @@ function Booking() {
           key: 'selection'
         }
     ]);
+    
 
     useEffect(() => {
         const start = dateState[0].startDate;
@@ -175,9 +176,13 @@ function Booking() {
         fd.append("roomId", item.id)
         fd.append("paymentStatus", status)
         fd.append("modeOfPayment", modeOfPayment)
-        fd.append("startDate", dateState.startDate)
-        fd.append("endDate", dateState.endDate)
+        // fd.append("startDate", dateState.startDate)
+        // fd.append("endDate", dateState.endDate)
 
+        fd.append("startDate", format(dateState[0].startDate, 'yyyy-MM-dd hh:mm:ss a'));
+        fd.append("endDate", format(dateState[0].endDate, 'yyyy-MM-dd HH:mm:ss a'));
+
+        console.log(format(dateState[0].startDate, 'yyyy-MM-dd HH:mm:ss'))
         try{
             const response = await axios.post("https://seafarerdorm.scarlet2.io/Rooms/book-room.php", fd);
             if(response.data.status == "success"){
@@ -202,7 +207,7 @@ function Booking() {
             console.error(err)
             console.log(err)
         }
-        // console.log(inputs)
+        console.log(item)
         // console.log(dateState)
     }
     return (

@@ -32,6 +32,7 @@ export default function Reservations() {
     const [currentPage, setCurrentPage] = useState(1);
     const [totalItems, setTotalItems] = useState(0);
     const itemsPerPage = 20;
+    const filteredTower = items.filter(item => item.reservationStatus !== "accepted" && item.reservationStatus !== "declined");
 
     //Need pa ni e-modify paras pagination STRICTLY DO NOT TOUCH
     const fetchData = async () => {
@@ -131,6 +132,7 @@ export default function Reservations() {
             const response = await axios.post(`https://seafarerdorm.scarlet2.io/Reservations/status-reservation.php`, fd);
             // Check if the response status is "success"
             response.data.status === "success" ? fetchData() : console.log(response.data.message);
+            fetchData();
         } catch (error) {
             console.log("something wrong with the network", error);
         }
@@ -141,10 +143,10 @@ export default function Reservations() {
         fd.append("bookingId", id)
         fd.append("status", "declined")
         try {
-            const response = await axios.post(`https://seafarerdorm.scarlet2.io/Reservations/status-reservation.php`, fd);
-            
+            const response = await axios.post(`https://seafarerdorm.scarlet2.io/Reservations/status-reservation.php`, fd); 
             // Check if the response status is "success"
             response.data.status === "success" ? fetchData() : console.log(response.data.message);
+            fetchData();
         } catch (error) {
             console.log("something wrong with the network", error);
         }
@@ -157,8 +159,6 @@ export default function Reservations() {
                 <Spinner className="w-10 h-10"/>; 
             </div>
         }
-
-        const filteredTower = items.filter(item => item.reservationStatus !== "accepted" && item.reservationStatus !== "declined");
 
         if (filteredTower.length === 0) {
             return <p className='h-96 w-full flex items-center justify-center text-gray-500'>No Tenants Available</p>;

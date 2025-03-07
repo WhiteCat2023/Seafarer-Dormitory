@@ -20,12 +20,16 @@ export default function Home() {
   const [loading, setLoading] = useState(false);
   const [isExpand, setIsExpand] = useState(false)
   const [searchQuery, setSearchQuery] = useState("");
+  const itemsPerPage = 20;
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalItems, setTotalItems] = useState(0);
 
   const fetchData = async () => {
     setLoading(true);
     try{     
-      const response = await axios.get(`https://seafarerdorm.scarlet2.io/Rooms/retrieve-rooms.php?search=${searchQuery}`);
+      const response = await axios.get(`https://seafarerdorm.scarlet2.io/Rooms/retrieve-rooms.php?search=${searchQuery}&limit=${itemsPerPage}`);
       // const apartmentArray = Object.values(response.data);
+      setTotalItems(response.data.total); 
       setItems(response.data.data);
     }catch(error){
       console.error(error);
@@ -33,6 +37,14 @@ export default function Home() {
       setLoading(false);
     }
   }
+
+  const handlePageChange = (newPage) => {
+    if(newPage > 0 && newPage <= totalPages){
+        setCurrentPage(newPage);
+    }
+  };
+
+  const totalPages = Math.ceil(totalItems / itemsPerPage);
 
   function handleExpand(){
     // setIsExpand(true)
@@ -47,6 +59,7 @@ export default function Home() {
   useEffect(() => { 
     fetchData()
   }, [searchQuery])
+
   function displayList(){
     console.log(items)
         if(loading){
@@ -99,13 +112,23 @@ export default function Home() {
             </div>
             {
               items.length > 10 ? (
+                
                 <div className='py-10 w-full flex flex-col justify-center items-center'>
-                  <p className='text-[17px] font-semibold'>Continue to explore available rooms</p>
+                  {
+                    isExpand ? (
+                      <div className='w-full'>
+                        <BiChevronsLeft onClick={() => handlePageChange(currentPage - 1)} disabled={currentPage === 1} className='p-1 text-3xl rounded-full hover:bg-blue-100 cursor-pointer flex justify-center'/>
+                        <p className='mx-2'>{currentPage}</p>
+                        <BiChevronsRight onClick={() => handlePageChange(currentPage + 1)} disabled={currentPage === totalPages} className='p-1 text-3xl rounded-full hover:bg-blue-100 cursor-pointer flex justify-center'/>
+                      </div>
+                    ): ""
+                  }
+                  <p className='text-[17px] font-semibold'>{isExpand > 10 ? "": "Continue to explore available rooms"}</p>
                   <button
                     type='button'
                     className='py-1 bg-primary rounded-lg text-white text-sm w-32 mt-2'
                     onClick={handleExpand}>
-                    Show more
+                    {isExpand ? "Show less" : "Show more"}
                   </button>
                 </div>
               )

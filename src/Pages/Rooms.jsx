@@ -51,11 +51,6 @@ export default function Rooms(){
     const fetchData = async () => {
         setLoading(true);
         try{
-            // const fd = new FormData();
-            // fd.append('page', currentPage);
-            // fd.append('limit', itemsPerPage);
-            // fd.append('search', searchQuery); 
-            // const response = await axios.get('https://seafarerdorm.scarlet2.io/Rooms/retrieve-rooms.php', fd); 
             const response = await axios.get(
                 `https://seafarerdorm.scarlet2.io/Rooms/retrieve-rooms.php?page=${currentPage}&limit=${itemsPerPage}&search=${searchQuery}`
               );            
