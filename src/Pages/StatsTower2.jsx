@@ -10,118 +10,23 @@ import {
   Tooltip,
   Legend,
 } from "chart.js";
-import { BiGroup, BiBed, BiBarChartSquare } from "react-icons/bi"; // Importing icons
+import { BiGroup, BiBed, BiBarChartSquare } from "react-icons/bi";
 
-// Register required chart.js components
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
 
 function StatsTower2() {
   const [tenants, setTenants] = useState(0);
   const [roomsOccupied, setRoomsOccupied] = useState(0);
-  const [revenue, setRevenue] = useState(0); // Added revenue state
-   const [chartData, setChartData] = useState({ labels: [], datasets: [] });
-
-
-  // Bar chart data
-  const barData = {
-    labels: ["Tenant 1", "Tenant 2", "Tenant 3", "Tenant 4", "Tenant 5"],
-    datasets: [
-      {
-        label: "Revenue",
-        data: [5000, 3000, 4000, 2000, 7000], // Adjust values
-        backgroundColor: "#5C59F5",
-        borderRadius: 8,
-      },
-    ],
-  };
-
-  // Bar chart options
-  const barOptions = {
-    responsive: true,
-    maintainAspectRatio: false,
-    plugins: {
-      legend: { display: false },
-    },
-    scales: {
-      y: { beginAtZero: true },
-    },
-  };
-  
+  const [revenue, setRevenue] = useState(0);
+  const [chartData, setChartData] = useState(null);
 
   useEffect(() => {
     fetchTenantsData();
     fetchRoomsData();
     fetchRevenue();
+    fetchChartData();
   }, []);
 
-
-  const fetchRevenue = async () => {
-    try {
-      const response = await axios.get(
-        "https://seafarerdorm.scarlet2.io/Rooms/statistics_datafetch_tower2.php"
-      );
-  
-      console.log("API Response:", response.data);
-  
-      if (response.data.success && Array.isArray(response.data.data)) {
-        // Filter data for only tower-1
-        const tower1Data = response.data.data.filter(booking => booking.tower === "tower-2");
-  
-        const revenueMap = {};
-        tower1Data.forEach((booking) => {
-          const name = booking.c_name || "Unknown"; 
-          const price = parseFloat(booking.total_price) || 0;
-          revenueMap[name] = (revenueMap[name] || 0) + price;
-        });
-  
-        const labels = Object.keys(revenueMap);
-        const revenueValues = Object.values(revenueMap);
-  
-        setRevenue(revenueValues.reduce((sum, value) => sum + value, 0));
-  
-        setChartData({
-          labels,
-          datasets: [
-            {
-              label: "Revenue",
-              data: revenueValues,
-              backgroundColor: "#5C59F5",
-              borderRadius: 8,
-            },
-          ],
-        });
-      } else {
-        console.error("Failed to fetch revenue data:", response.data.message);
-        setRevenue(0);
-      }
-    } catch (e) {
-      console.error("Error fetching revenue data:", e);
-      setRevenue(0);
-    }
-  };
-
-
-  const fetchTenantsData = async () => {
-    try {
-      const response = await axios.get(
-        "https://seafarerdorm.scarlet2.io/Reservations/retrieve-reservations.php"
-      );
-      
-      if (response.data.data) {
-        const tower2Tenants = response.data.data.filter(
-          (booking) => booking.tower === "tower-2"
-        );
-        setTenants(tower2Tenants.length);
-      } else {
-        setTenants(0);
-      }
-    } catch (e) {
-      console.error("Error fetching tenants data:", e);
-      setTenants(0);
-    }
-  };
-
-  // Fetch rooms data for tower-2
   const fetchRoomsData = async () => {
     try {
       const response = await axios.get(
@@ -138,59 +43,144 @@ function StatsTower2() {
     }
   };
 
+  const fetchTenantsData = async () => {
+    try {
+      const response = await axios.get(
+        "https://seafarerdorm.scarlet2.io/Reservations/retrieve-reservations.php"
+      );
+      if (response.data.data) {
+        const tower2Tenants = response.data.data.filter(
+          (booking) => booking.tower === "tower-2"
+        );
+        setTenants(tower2Tenants.length);
+      } else {
+        setTenants(0);
+      }
+    } catch (e) {
+      console.error("Error fetching tenants data:", e);
+      setTenants(0);
+    }
+  };
+
+  const fetchRevenue = async () => {
+    try {
+      const response = await axios.get(
+        "https://seafarerdorm.scarlet2.io/Rooms/statistics_datafetch_tower2.php"
+      );
+      if (response.data.success && Array.isArray(response.data.data)) {
+        const tower2Data = response.data.data.filter(
+          (booking) => booking.tower === "tower-2"
+        );
+        let totalRevenue = 0;
+
+        tower2Data.forEach((booking) => {
+          totalRevenue += parseFloat(booking.amount) || 0;
+        });
+
+        setRevenue(totalRevenue);
+      } else {
+        setRevenue(0);
+      }
+    } catch (e) {
+      console.error("Error fetching revenue data:", e);
+      setRevenue(0);
+    }
+  };
+
+  const fetchChartData = async () => {
+    try {
+      const response = await axios.get(
+        "https://seafarerdorm.scarlet2.io/Reservations/retrieve-reservations.php"
+      );
+      if (response.data.data) {
+        const tower2Bookings = response.data.data.filter(
+          (booking) => booking.tower === "tower-2"
+        );
+  
+        // Ensure data extraction matches API response
+        const labels = tower2Bookings.map((booking) => booking.cName || "Unknown");
+        const data = tower2Bookings.map((booking) =>
+          parseFloat(booking.totalPrice) || 0 // Change this if needed
+        );
+  
+        setChartData({
+          labels,
+          datasets: [
+            {
+              label: "Total Revenue",
+              data,
+              backgroundColor: "#5C59F5",
+              borderColor: "#3b82f6",
+              borderWidth: 1,
+            },
+          ],
+        });
+      } else {
+        setChartData({
+          labels: [],
+          datasets: [],
+        });
+      }
+    } catch (e) {
+      console.error("Error fetching chart data:", e);
+      setChartData({
+        labels: [],
+        datasets: [],
+      });
+    }
+  };
 
   return (
     <div className="p-1 min-h-screen">
-      {/* Stats Cards */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        {/* Number of Tenants */}
         <div className="p-3 rounded-lg shadow-md border-2 border-blue-500 bg-white">
-          <p className="text-black text-2xl font-semibold font-outfit">
-            Number of Tenants
-          </p>
+          <p className="text-black text-2xl font-semibold">Number of Tenants</p>
           <div className="flex items-center justify-between">
-            <p className="text-9xl font-semibold font-outfit p-2">{tenants}</p>
+            <p className="text-9xl font-semibold p-2">{tenants}</p>
             <BiGroup className="text-[#5C59F5] text-7xl" />
           </div>
         </div>
 
-        {/* Beds/Rooms Occupied */}
         <div className="p-3 rounded-lg shadow-md border-2 border-blue-500 bg-white">
-          <p className="text-black text-2xl font-semibold font-outfit">
-            Beds/Rooms Occupied:
-          </p>
+          <p className="text-black text-2xl font-semibold">Beds/Rooms Occupied</p>
           <div className="flex items-center justify-between">
-            <p className="text-9xl font-semibold font-outfit p-2">
-              {roomsOccupied}
-            </p>
+            <p className="text-9xl font-semibold p-2">{roomsOccupied}</p>
             <BiBed className="text-[#5C59F5] text-7xl" />
           </div>
         </div>
 
-        {/* Revenue */}
         <div className="p-3 rounded-lg shadow-md border-2 border-blue-500 bg-white">
-          <p className="text-black text-2xl font-semibold font-outfit">
-            Revenue:
-          </p>
+          <p className="text-black text-2xl font-semibold">Revenue</p>
           <div className="flex items-center justify-between">
-            <p className="text-6xl mt-5 font-semibold font-outfit p-2">₱{revenue.toLocaleString()}</p>
+            <p className="text-6xl mt-5 font-semibold p-2">
+              ₱{revenue.toLocaleString()}
+            </p>
             <BiBarChartSquare className="text-[#5C59F5] text-7xl mt-3" />
           </div>
         </div>
       </div>
 
-       {/* Bar Graph Section */}
-             <div className="bg-white rounded-lg shadow-md border-2 border-[#8E86C3] mt-6 p-6">
-               <h2 className="text-black text-2xl font-semibold">Revenue Chart</h2>
-               <p className="text-gray-600 mb-4">Revenue breakdown for tenants</p>
-               <div className="h-80 w-full">
-                 {chartData.labels.length > 0 ? (
-                   <Bar data={chartData} options={{ responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true } } }} />
-                 ) : (
-                   <p className="text-center text-gray-500">No revenue data available</p>
-                 )}
-               </div>
-             </div>
+      <div className="bg-white rounded-lg shadow-md border-2 border-blue-500 mt-6 p-6">
+        <h2 className="text-black text-2xl font-semibold">Revenue Chart</h2>
+        <p className="text-gray-600 mb-4">Revenue breakdown for tenants</p>
+        <div className="h-80 w-full">
+          {chartData && chartData.labels.length > 0 ? (
+            <Bar
+              data={chartData}
+              options={{
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: { legend: { display: false } },
+                scales: { y: { beginAtZero: true } },
+              }}
+            />
+          ) : (
+            <p className="text-center text-gray-500">
+              No revenue data available
+            </p>
+          )}
+        </div>
+      </div>
     </div>
   );
 }
