@@ -3,6 +3,8 @@ import axios from 'axios';
 import { useEffect, useState } from 'react';
 import { Spinner } from '@material-tailwind/react';
 import BookingInfo from '../components/Modals/BookingInfo';
+import Swal from 'sweetalert2';
+import withReactContent from 'sweetalert2-react-content';
 
 function TenantsTower1() {
 
@@ -55,6 +57,19 @@ function TenantsTower1() {
   function closeModal(){
       setIsInfoBtnClicked(false);
       setKey(0)
+  }
+
+  function deleteTenant(){
+    withReactContent(Swal).fire({
+    icon: "warning",
+    title: `Delete ${selectedItems.size > 1 ? selectedItems.size + " rooms" : selectedItems.size + " room"}`,
+    text:  `Do you want to delete these ${selectedItems.size > 1 ? "rooms" : "room"}?`,
+    confirmButtonColor: "#3085d6",
+  }).then((result) => {
+    if(result.isConfirmed){
+      handleDeleteSelected()
+    }
+  })
   }
 
   const handleSelectAllChange = (event) => {
@@ -154,7 +169,7 @@ function TenantsTower1() {
           <div className="flex items-center gap-x-6">
             <input className="p-2 rounded cursor-pointer" type="checkbox" checked={selectAll} onChange={handleSelectAllChange}/>
             <i onClick={() => fetchData()} className="p-1 text-xl rounded-full hover:bg-blue-100 cursor-pointer flex justify-center"><BiLoader /></i>
-            <BiTrash onClick={handleDeleteSelected} className="text-3xl p-1 rounded-full hover:bg-blue-100 cursor-pointer flex justify-center" />
+            <BiTrash onClick={deleteTenant} className="text-3xl p-1 rounded-full hover:bg-blue-100 cursor-pointer flex justify-center" />
           </div>
 
           {/* Search bar */}

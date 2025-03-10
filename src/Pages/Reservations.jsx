@@ -3,6 +3,8 @@ import { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Spinner } from '@material-tailwind/react';
 import BookingInfo from '../components/Modals/BookingInfo';
+import Swal from 'sweetalert2';
+import withReactContent from 'sweetalert2-react-content';
 
 //Note:
     // Ang pagtarung nalang sa design igkahuman sa things to do
@@ -64,6 +66,19 @@ export default function Reservations() {
             setCurrentPage(newPage);
         }
     };
+
+    function deleteReservations(){
+        withReactContent(Swal).fire({
+            icon: "warning",
+            title: `Delete ${selectedItems.size > 1 ? selectedItems.size + " rooms" : selectedItems.size + " room"}`,
+            text:  `Do you want to delete these ${selectedItems.size > 1 ? "rooms" : "room"}?`,
+            confirmButtonColor: "#3085d6",
+        }).then((result) => {
+            if(result.isConfirmed){
+                handleDeleteSelected()
+            }
+        })
+    }
 
     function openModal(key){
         setIsInfoBtnClicked(true);
@@ -208,7 +223,7 @@ export default function Reservations() {
                             <div className='flex items-center gap-x-6'>
                                 <input type="checkbox" onChange={handleSelectAllChange} checked={selectAll} className=' p-2 rounded cursor-pointer'/>
                                 <i className='p-1 rounded-full text-xl hover:bg-blue-100 cursor-pointer flex justify-center' onClick={() => fetchData()} ><BiLoader/></i>
-                                <BiTrash onClick={handleDeleteSelected} className='text-3xl p-1 rounded-full hover:bg-blue-100 cursor-pointer flex justify-center'/>
+                                <BiTrash onClick={deleteReservations} className='text-3xl p-1 rounded-full hover:bg-blue-100 cursor-pointer flex justify-center'/>
                             </div>
                             <div className='flex items-center'>
                                 <BiChevronLeft onClick={() => handlePageChange(currentPage - 1)} disabled={currentPage === 1} className='p-1 text-3xl rounded-full hover:bg-blue-100 cursor-pointer flex justify-center'/>
