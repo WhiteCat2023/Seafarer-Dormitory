@@ -19,13 +19,15 @@ function StatsTower2() {
   const [roomsOccupied, setRoomsOccupied] = useState(0);
   const [revenue, setRevenue] = useState(0);
   const [chartData, setChartData] = useState(null);
+  const [month, setMonth] = useState(new Date().getMonth() + 1);
+  const [year, setYear] = useState(new Date().getFullYear());
 
   useEffect(() => {
     fetchTenantsData();
     fetchRoomsData();
     fetchRevenue();
     fetchChartData();
-  }, []);
+  }, [month, year]);
 
   const fetchRoomsData = async () => {
     try {
@@ -90,19 +92,23 @@ function StatsTower2() {
   const fetchChartData = async () => {
     try {
       const response = await axios.get(
-        "https://seafarerdorm.scarlet2.io/Reservations/retrieve-reservations.php"
+        "https://seafarerdorm.scarlet2.io/Rooms/statistics_datafetch_tower2.php"
       );
+
       if (response.data.data) {
-        const tower2Bookings = response.data.data.filter(
-          (booking) => booking.tower === "tower-2"
-        );
-  
-        // Ensure data extraction matches API response
-        const labels = tower2Bookings.map((booking) => booking.cName || "Unknown");
+        const tower2Bookings = response.data.data.filter((booking) => {
+          const bookingDate = new Date(booking.timestamp);
+          return (
+            bookingDate.getMonth() + 1 === parseInt(month) &&
+            bookingDate.getFullYear() === parseInt(year)
+          );
+        });
+
+        const labels = tower2Bookings.map((booking) => booking.name || "Unknown");
         const data = tower2Bookings.map((booking) =>
-          parseFloat(booking.totalPrice) || 0 // Change this if needed
+          parseFloat(booking.amount) || 0
         );
-  
+
         setChartData({
           labels,
           datasets: [
@@ -161,8 +167,44 @@ function StatsTower2() {
       </div>
 
       <div className="bg-white rounded-lg shadow-md border-2 border-blue-500 mt-6 p-6">
-        <h2 className="text-black text-2xl font-semibold">Revenue Chart</h2>
-        <p className="text-gray-600 mb-4">Revenue breakdown for tenants</p>
+        {/* Title and Filters Container */}
+        <div className="flex items-center justify-between mb-4">
+          <div>
+            <h2 className="text-black text-2xl font-semibold">Revenue Chart</h2>
+            <p className="text-gray-600">Revenue breakdown for tenants</p>
+          </div>
+          
+          {/* Filter Controls */}
+          <div className="flex space-x-4">
+            <select
+              className="border p-2 rounded"
+              value={month}
+              onChange={(e) => setMonth(e.target.value)}
+            >
+              {Array.from({ length: 12 }, (_, i) => (
+                <option key={i + 1} value={i + 1}>
+                  {new Date(0, i).toLocaleString("default", { month: "long" })}
+                </option>
+              ))}
+            </select>
+
+            <select
+              className="border p-2 rounded"
+              value={year}
+              onChange={(e) => setYear(e.target.value)}
+            >
+              {Array.from({ length: 5 }, (_, i) => {
+                const currentYear = new Date().getFullYear();
+                return (
+                  <option key={i} value={currentYear - i}>
+                    {currentYear - i}
+                  </option>
+                );
+              })}
+            </select>
+          </div>
+        </div>
+
         <div className="h-80 w-full">
           {chartData && chartData.labels.length > 0 ? (
             <Bar

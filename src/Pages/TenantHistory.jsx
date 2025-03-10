@@ -1,6 +1,10 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { Spinner } from "@material-tailwind/react";
+import Swal from "sweetalert2";
+import withReactContent from "sweetalert2-react-content";
+
+const MySwal = withReactContent(Swal);
 
 const TenantHistory = () => {
     const [items, setItems] = useState([]);
@@ -22,18 +26,27 @@ const TenantHistory = () => {
     };
 
     const clearHistory = async () => {
-        if (!window.confirm("Are you sure you want to clear the tenant history?")) {
-            return;
-        }
-
-        try {
-            await axios.post("https://seafarerdorm.scarlet2.io/Rooms/clear_tenant_history.php");
-            setItems([]);
-            alert("Tenant history cleared successfully!");
-        } catch (error) {
-            console.error("Error clearing tenant history:", error);
-            alert("Failed to clear history. Try again.");
-        }
+        MySwal.fire({
+            icon: "warning",
+            title: `Clear Tenant History`,
+            text: "Are you sure you want to delete all tenant history?",
+            showCancelButton: true,
+            confirmButtonColor: "#d33",
+            cancelButtonColor: "#3085d6",
+            confirmButtonText: "Yes, delete it!",
+            cancelButtonText: "Cancel",
+        }).then(async (result) => {
+            if (result.isConfirmed) {
+                try {
+                    await axios.post("https://seafarerdorm.scarlet2.io/Rooms/clear_tenant_history.php");
+                    setItems([]);
+                    MySwal.fire("Deleted!", "Tenant history has been cleared.", "success");
+                } catch (error) {
+                    console.error("Error clearing tenant history:", error);
+                    MySwal.fire("Error", "Failed to clear history. Try again.", "error");
+                }
+            }
+        });
     };
 
     useEffect(() => {

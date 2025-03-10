@@ -1,5 +1,9 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
+import Swal from "sweetalert2";
+import withReactContent from "sweetalert2-react-content";
+
+const MySwal = withReactContent(Swal);
 
 const PaymentHistory = () => {
   const [bookings, setBookings] = useState([]);
@@ -30,10 +34,6 @@ const PaymentHistory = () => {
   };
 
   const clearHistory = async () => {
-    if (!window.confirm("Are you sure you want to clear the tenant history?")) {
-      return;
-    }
-
     try {
       const response = await axios.post(
         "https://seafarerdorm.scarlet2.io/Rooms/clear_payment_history.php"
@@ -41,14 +41,41 @@ const PaymentHistory = () => {
 
       if (response.data.success) {
         setBookings([]);
-        alert("Payment history cleared successfully!");
+        Swal.fire({
+          icon: "success",
+          title: "Payment history cleared successfully!",
+          confirmButtonColor: "#3085d6",
+        });
       } else {
-        alert("Failed to clear payment history. Try again.");
+        Swal.fire({
+          icon: "error",
+          title: "Failed to clear payment history. Try again.",
+        });
       }
     } catch (error) {
       console.error("Error clearing tenant history:", error);
-      alert("Failed to clear payment history. Try again.");
+      Swal.fire({
+        icon: "error",
+        title: "Failed to clear payment history. Try again.",
+      });
     }
+  };
+
+  const confirmClearHistory = () => {
+    MySwal.fire({
+      icon: "warning",
+      title: "Clear All Payment History",
+      text: "Are you sure you want to delete all payment records?",
+      showCancelButton: true,
+      confirmButtonColor: "#d33",
+      cancelButtonColor: "#3085d6",
+      confirmButtonText: "Yes, delete all",
+      cancelButtonText: "Cancel",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        clearHistory();
+      }
+    });
   };
 
   return (
@@ -57,7 +84,7 @@ const PaymentHistory = () => {
       <div className="flex justify-between items-center mb-4">
         <h2 className="text-5xl font-outfit">Payment History</h2>
         <button
-          onClick={clearHistory}
+          onClick={confirmClearHistory}
           className="text-sm text-gray-500 hover:underline"
         >
           Clear all history
