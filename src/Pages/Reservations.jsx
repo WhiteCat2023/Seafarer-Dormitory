@@ -34,7 +34,6 @@ export default function Reservations() {
     const [currentPage, setCurrentPage] = useState(1);
     const [totalItems, setTotalItems] = useState(0);
     const itemsPerPage = 20;
-    const filteredTower = items.filter(item => item.reservationStatus !== "accepted" && item.reservationStatus !== "declined");
 
     //Need pa ni e-modify paras pagination STRICTLY DO NOT TOUCH
     const fetchData = async () => {
@@ -167,43 +166,123 @@ export default function Reservations() {
         }
     }
 
-    function displayList(){
-        if(loading){
+    // function displayList(){
+    //     if(loading){
         
-            return <div className="w-full h-96 flex justify-center items-center">
-                <Spinner className="w-10 h-10"/>; 
-            </div>
-        }
+    //         return <div className="w-full h-96 flex justify-center items-center">
+    //             <Spinner className="w-10 h-10"/>; 
+    //         </div>
+    //     }
 
-        if (filteredTower.length === 0) {
-            return <p className='h-96 w-full flex items-center justify-center text-gray-500'>No Tenants Available</p>;
-        }
+    //     const filteredTower = items.filter(item => item.reservationStatus !== "accepted" || item.reservationStatus !== "declined");
+
+    //     if (filteredTower.length === 0) {
+    //         return <p className='h-96 w-full flex items-center justify-center text-gray-500'>No Tenants Available</p>;
+    //     }
         
-        try{
-            return (items.map((item, index) => ((
-                    <div className='flex items-center border-b' key={index} id={item.id}>
-                    <input type="checkbox" className=' p-2 rounded mx-3 cursor-pointer' checked={selectedItems.has(item.id)} onChange={() => handleCheckboxChange(item.id)} id={item.id} />
-                    <li className='flex justify-between items-center p-4 text-black flex-grow'>
-                        <span className='flex-grow text-start'>
-                            <p className='font-semibold text-gray-800'>{item.cName}</p>
-                            <div className='text-xs'>
-                                <p className='flex items-center text-gray-400 gap-x-2'><BiMap/>{item.tower}</p>
-                                <p className='flex items-center text-gray-400 gap-x-2'><BiHash/>Room no. : {item.roomNumber}</p>
+    //     try{
+    //         return (items.map((item, index) => ((
+    //                 <div className='flex items-center border-b' key={index} id={item.id}>
+    //                 <input type="checkbox" className=' p-2 rounded mx-3 cursor-pointer' checked={selectedItems.has(item.id)} onChange={() => handleCheckboxChange(item.id)} id={item.id} />
+    //                 <li className='flex justify-between items-center p-4 text-black flex-grow'>
+    //                     <span className='flex-grow text-start'>
+    //                         <p className='font-semibold text-gray-800'>{item.cName}</p>
+    //                         <div className='text-xs'>
+    //                             <p className='flex items-center text-gray-400 gap-x-2'><BiMap/>{item.tower}</p>
+    //                             <p className='flex items-center text-gray-400 gap-x-2'><BiHash/>Room no. : {item.roomNumber}</p>
+    //                         </div>
+    //                     </span>
+    //                 </li>
+    //                 <div className='px-4 flex gap-x-2'>
+    //                     <button onClick={() => accept(item.id)} className='cursor-pointer text-green-700 p-2 rounded-full text-2xl hover:bg-green-50'><BiCheck/></button>
+    //                     <button onClick={() => decline(item.id)} className='cursor-pointer text-red-700 p-2 rounded-full text-2xl hover:bg-red-50'><BiX/></button>
+    //                     <button className='cursor-pointer text-blue-700 p-2 rounded-full text-2xl hover:bg-blue-50' onClick={() => openModal(item.id)}><BiInfoCircle/></button>
+    //                 </div>
+    //             </div>
+    //             ))))
+    //     }catch(error){
+    //         console.error(error);
+    //         return <p className='h-96 w-full flex items-center justify-center text-gray-500'>Error occurred</p>
+    //     }
+    // }
+
+    function displayList() {
+        if (loading) {
+            return (
+                <div className="w-full h-96 flex justify-center items-center">
+                    <Spinner className="w-10 h-10" />
+                </div>
+            );
+        }
+    
+        // Corrected filter condition
+        const filteredTower = items.filter(
+            item => item.reservationStatus !== "accepted" && item.reservationStatus !== "declined"
+        );
+    
+        if (filteredTower.length === 0) {
+            return (
+                <p className="h-96 w-full flex items-center justify-center text-gray-500">
+                    No Tenants Available
+                </p>
+            );
+        }
+    
+        try {
+            return filteredTower.map((item, index) => (
+                <div className="flex items-center border-b" key={index} id={item.id}>
+                    <input
+                        type="checkbox"
+                        className="p-2 rounded mx-3 cursor-pointer"
+                        checked={selectedItems.has(item.id)}
+                        onChange={() => handleCheckboxChange(item.id)}
+                        id={item.id}
+                    />
+                    <li className="flex justify-between items-center p-4 text-black flex-grow">
+                        <span className="flex-grow text-start">
+                            <p className="font-semibold text-gray-800">{item.cName}</p>
+                            <div className="text-xs">
+                                <p className="flex items-center text-gray-400 gap-x-2">
+                                    <BiMap /> {item.tower}
+                                </p>
+                                <p className="flex items-center text-gray-400 gap-x-2">
+                                    <BiHash /> Room no. : {item.roomNumber}
+                                </p>
                             </div>
                         </span>
                     </li>
-                    <div className='px-4 flex gap-x-2'>
-                        <button onClick={() => accept(item.id)} className='cursor-pointer text-green-700 p-2 rounded-full text-2xl hover:bg-green-50'><BiCheck/></button>
-                        <button onClick={() => decline(item.id)} className='cursor-pointer text-red-700 p-2 rounded-full text-2xl hover:bg-red-50'><BiX/></button>
-                        <button className='cursor-pointer text-blue-700 p-2 rounded-full text-2xl hover:bg-blue-50' onClick={() => openModal(item.id)}><BiInfoCircle/></button>
+                    <div className="px-4 flex gap-x-2">
+                        <button
+                            onClick={() => accept(item.id)}
+                            className="cursor-pointer text-green-700 p-2 rounded-full text-2xl hover:bg-green-50"
+                        >
+                            <BiCheck />
+                        </button>
+                        <button
+                            onClick={() => decline(item.id)}
+                            className="cursor-pointer text-red-700 p-2 rounded-full text-2xl hover:bg-red-50"
+                        >
+                            <BiX />
+                        </button>
+                        <button
+                            className="cursor-pointer text-blue-700 p-2 rounded-full text-2xl hover:bg-blue-50"
+                            onClick={() => openModal(item.id)}
+                        >
+                            <BiInfoCircle />
+                        </button>
                     </div>
                 </div>
-                ))))
-        }catch(error){
+            ));
+        } catch (error) {
             console.error(error);
-            return <p className='h-96 w-full flex items-center justify-center text-gray-500'>Error occurred</p>
+            return (
+                <p className="h-96 w-full flex items-center justify-center text-gray-500">
+                    Error occurred
+                </p>
+            );
         }
     }
+    
 
     return (
         <>
