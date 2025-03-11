@@ -174,21 +174,20 @@ function TenantsTower2() {
             <BiTrash onClick={deleteTenant} className="text-3xl p-1 rounded-full hover:bg-blue-100 cursor-pointer flex justify-center" />
           </div>
 
-          {/* Search bar */}
-          <div className="relative w-full md:w-96 flex-grow md:flex-grow-0 px-2 lg:px-0">
-            <input
-              className="rounded-full w-full ps-10 border-blue-500 border-2 p-1"
-              type="search"
-              placeholder="Search"
-              onChange={handleSearchChange}
-            />
-            <i className="absolute lg:left-3 left-5 top-3 -translate-y-1 text-2xl flex justify-center">
-              <BiSearchAlt />
-            </i>
-          </div>
-
           {/* Pagination Controls */}
           <div className="flex items-center">
+            {/* Search bar */}
+            <div className="relative w-full md:w-96 flex-grow md:flex-grow-0 px-2 lg:px-0 me-4">
+              <input
+                className="rounded-full w-full ps-10 border-blue-500 border-2 p-1"
+                type="search"
+                placeholder="Search"
+                onChange={handleSearchChange}
+              />
+              <i className="absolute lg:left-3 left-5 top-3 -translate-y-1 text-2xl flex justify-center">
+                <BiSearchAlt />
+              </i>
+            </div>
             <BiChevronLeft onClick={() => handlePageChange(currentPage - 1)} disabled={currentPage === 1} className="p-1 text-3xl rounded-full hover:bg-blue-100 cursor-pointer flex justify-center" />
             <BiChevronsLeft onClick={() => handlePageChange(currentPage - 1)} disabled={currentPage === 1} className="p-1 text-3xl rounded-full hover:bg-blue-100 cursor-pointer flex justify-center" />
             <p className="mx-2">1</p>

@@ -7,7 +7,7 @@ import 'react-date-range/dist/theme/default.css';
 import { useStripe, useElements, CardElement } from '@stripe/react-stripe-js';
 import Maya from '../assets/maya.png'
 import GCash from '../assets/gcash.png'
-import { addDays, differenceInDays, format, differenceInCalendarMonths } from 'date-fns';
+import { addDays, differenceInDays, format, differenceInMonths, isBefore } from 'date-fns';
 import { BiChevronLeft } from 'react-icons/bi';
 import axios from 'axios';
 import Swal from 'sweetalert2'
@@ -42,27 +42,17 @@ function Booking() {
 
     useEffect(() => {
 
-        async function fetchBookedDates() {
-            try {
-                const response = await axios.get('https://your-api-endpoint/booked-dates');
-                setBookedDates(response.data);  // Assuming the response contains a list of booked dates
-            } catch (error) {
-                console.error('Error fetching booked dates:', error);
-            }
-        }
         fetchBookedDates();
             
         const start = dateState[0].startDate;
         const end = dateState[0].endDate;
 
         // Calculate the number of days between start and end date
-        const numOfDays = differenceInDays(end, start);
+        const numOfDays = calculateDaysUsingDateFns(start, end)
         setDays(numOfDays)
-
-        const numOfMonths = differenceInCalendarMonths(end, start) + 1;
-        setMonth(numOfMonths);
-        // Multiply by the price per day to get the total price
         
+        const numOfMonths = calculateMonthsUsingDateFns(start, end)
+        setMonth(numOfMonths)
         
         if(item.stayType == "month"){
             const calculatedPrice = numOfMonths * item.price;
@@ -73,11 +63,50 @@ function Booking() {
         }
     }, [dateState]);
 
+    //Function to fetch already booked dates 
+    const fetchBookedDates = async () => {
+        try {
+            const response = await axios.get('https://your-api-endpoint/booked-dates');
+            setBookedDates(response.data);  // Assuming the response contains a list of booked dates
+        } catch (error) {
+            console.error('Error fetching booked dates:', error);
+        }
+    }
+
+    //Function calculate days
+    function calculateDaysUsingDateFns(startDate, endDate) {
+        const start = new Date(startDate);
+        const end = new Date(endDate);
+        
+        // If the end date is before the start date, return 0 months
+        if (isBefore(end, start)) return 0;
+        
+        // Calculate the difference in full months
+        const daysDifference = differenceInDays(end, start);
+        
+        return daysDifference;
+    };
+
+    //function to calculate months
+    function calculateMonthsUsingDateFns(startDate, endDate) {
+        const start = new Date(startDate);
+        const end = new Date(endDate);
+        
+        // If the end date is before the start date, return 0 months
+        if (isBefore(end, start)) return 0;
+        
+        // Calculate the difference in full months
+        const monthsDifference = differenceInMonths(end, start);
+        
+        return monthsDifference;
+    };
+
+    //function to handle inputs change
     function handleInputChange(e){
         const name = e.target.name;
         const value = e.target.value;
         setInputs(inputs =>({...inputs, [name]: value}))
-    }
+    };
 
     //Function for Stripe
     const handleSubmit = async (e) => {
@@ -186,8 +215,9 @@ function Booking() {
     //Function for reservation
     function handleReservation(){
         handleSubmitInfo("reservation", "walkin", "Reserve", item.name + " reserved")
-    }
+    };
 
+    //Function to submit info
     const handleSubmitInfo = async (status, modeOfPayment, title, message) =>{
         const fd = new FormData()
         fd.append("name", inputs.name);
@@ -236,8 +266,9 @@ function Booking() {
         }
         console.log(item)
         // console.log(dateState)
-    }
+    };
 
+    //Function to change the booked dates to red
     const dayClassName = (date) => {
         const formattedDate = format(date, 'yyyy-MM-dd');
         if (bookedDates.includes(formattedDate)) {

@@ -12,7 +12,6 @@ function TenantsTower1() {
   const [loading, setLoading] = useState(false);
   const [selectAll, setSelectAll] = useState(false);
   const [selectedItems, setSelectedItems] = useState(new Set());
-  const [selectedItemRoomIds, setSelectedItemRoomIds] = useState(new Set());
   const [key, setKey] = useState(0);
   const selectedItem = items.find(item => item.id === key);
   const [isInfoBtnClicked, setIsInfoBtnClicked] = useState(false);
@@ -57,7 +56,7 @@ function TenantsTower1() {
   function closeModal(){
       setIsInfoBtnClicked(false);
       setKey(0)
-  }
+  };
 
   function deleteTenant(){
     withReactContent(Swal).fire({
@@ -70,7 +69,7 @@ function TenantsTower1() {
       handleDeleteSelected()
     }
   })
-  }
+  };
 
   const handleSelectAllChange = (event) => {
       const checked = event.target.checked;
@@ -159,7 +158,8 @@ function TenantsTower1() {
             console.error(error);
             return <p className='h-96 w-full flex items-center justify-center text-gray-500'>Error occurred</p>
         }
-    }
+  };
+
   return (
     // Main Section
     <div className="relative">
@@ -172,21 +172,20 @@ function TenantsTower1() {
             <BiTrash onClick={deleteTenant} className="text-3xl p-1 rounded-full hover:bg-blue-100 cursor-pointer flex justify-center" />
           </div>
 
-          {/* Search bar */}
-          <div className="relative w-full md:w-96 flex-grow md:flex-grow-0 px-2 lg:px-0">
-            <input
-              className="rounded-full w-full ps-10 border-blue-500 border-2 p-1"
-              type="search"
-              placeholder="Search"
-              onChange={handleSearchChange}
-            />
-            <i className="absolute lg:left-3 left-5 top-3 -translate-y-1 text-2xl flex justify-center">
-              <BiSearchAlt />
-            </i>
-          </div>
-
           {/* Pagination Controls */}
           <div className="flex items-center">
+            {/* Search bar */}
+            <div className="relative w-full md:w-96 flex-grow md:flex-grow-0 px-2 lg:px-0 me-4">
+              <input
+                className="rounded-full w-full ps-10 border-blue-500 border-2 p-1"
+                type="search"
+                placeholder="Search"
+                onChange={handleSearchChange}
+              />
+              <i className="absolute lg:left-3 left-5 top-3 -translate-y-1 text-2xl flex justify-center">
+                <BiSearchAlt />
+              </i>
+            </div>
             <BiChevronLeft onClick={() => handlePageChange(currentPage - 1)} disabled={currentPage === 1} className="p-1 text-3xl rounded-full hover:bg-blue-100 cursor-pointer flex justify-center" />
             <BiChevronsLeft onClick={() => handlePageChange(currentPage - 1)} disabled={currentPage === 1} className="p-1 text-3xl rounded-full hover:bg-blue-100 cursor-pointer flex justify-center" />
             <p className="mx-2">1</p>

@@ -31,6 +31,36 @@ export default function BookingInfo({isOpen, onClose, item}) {
                                         <p>Name: {item.cName}</p>
                                         <p>Email: {item.cEmail}</p>
                                         <p>Phone: {item.cPhone}</p>
+                                        <p>Mode Of Payment: {item.modeOfPayment}</p>
+                                        {/* <p>Start Date: {item.startDate}</p>
+                                        <p>End Date: {item.endDate}</p> */}
+
+                                    <p>
+                                    Start Date: {new Date(item.startDate).toLocaleString('en-US', {
+                                        weekday: 'long', // "Monday"
+                                        year: 'numeric', // "2025"
+                                        month: 'long', // "March"
+                                        day: 'numeric', // "11"
+                                        hour: 'numeric', // "2"
+                                        minute: 'numeric', // "30"
+                                        second: 'numeric', // "00"
+                                        hour12: true, // AM/PM
+                                    })}
+                                    </p>
+
+                                    <p>
+                                    End Date: {new Date(item.endDate).toLocaleString('en-US', {
+                                        weekday: 'long',
+                                        year: 'numeric',
+                                        month: 'long',
+                                        day: 'numeric',
+                                        hour: 'numeric',
+                                        minute: 'numeric',
+                                        second: 'numeric',
+                                        hour12: true,
+                                    })}
+                                    </p>
+                                        
                                     </div>
                                 </div>
                             </div>
