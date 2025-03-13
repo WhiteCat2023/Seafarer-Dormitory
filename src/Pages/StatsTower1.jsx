@@ -11,6 +11,7 @@ import {
   Legend,
 } from "chart.js";
 import { BiGroup, BiBed, BiBarChartSquare } from "react-icons/bi";
+import AddExpenseModal from "../components/Modals/AddExpenseModal"; // Import the modal
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
 
@@ -21,6 +22,17 @@ function StatsTower1() {
   const [chartData, setChartData] = useState(null);
   const [month, setMonth] = useState(new Date().getMonth() + 1);
   const [year, setYear] = useState(new Date().getFullYear());
+  const [isModalOpen, setIsModalOpen] = useState(false); // State for modal
+
+  
+  const handleOpenModal = () => {
+    setIsModalOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+  };
+
 
   useEffect(() => {
     fetchTenantsData();
@@ -155,7 +167,8 @@ function StatsTower1() {
           </div>
         </div>
 
-        <div className="p-3 rounded-lg shadow-md border-2 border-blue-500 bg-white">
+        <div 
+        onClick={handleOpenModal} className="p-3 rounded-lg shadow-md border-2 border-blue-500 bg-white">
           <p className="text-black text-2xl font-semibold">Revenue</p>
           <div className="flex items-center justify-between">
             <p className="text-6xl mt-5 font-semibold p-2">
@@ -164,7 +177,10 @@ function StatsTower1() {
             <BiBarChartSquare className="text-[#5C59F5] text-7xl mt-3" />
           </div>
         </div>
-      </div>
+      
+      {/* Add Expense Modal */}
+      {isModalOpen && <AddExpenseModal onClose={handleCloseModal} />}
+    </div>
 
       <div className="bg-white rounded-lg shadow-md border-2 border-blue-500 mt-6 p-6">
         {/* Title and Filters Container */}
