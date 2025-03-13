@@ -1,14 +1,12 @@
 import React, { useState } from "react";
-import { BiBuilding, BiClinic, BiSearchAlt } from "react-icons/bi";
-import { FaCashRegister, FaMoneyBillTransfer, FaUsers } from "react-icons/fa6";
-import TenantsTower1 from "./TenantsTower1";
-import DashboardTower2 from "./DashboardTower2";
-import TenantsTower2 from "./TenantsTower2";
-import TenantHistory from "./TenantHistory"; // Make sure this is correctly imported
+import { FaMoneyBillTransfer, FaUsers, FaCashRegister } from "react-icons/fa6";
+import TenantHistory from "./TenantHistory";
 import PaymentHistory from "./PaymentHistory";
+import ExpenseHistory from "./ExpenseHistory";
+import ExpenseHistory2 from "./ExpenseHistory2"; // Import the new component
 
 function History() {
-  const [activeTower, setActiveTower] = useState("tower1"); // Set Tower 1 as default
+  const [activeTower, setActiveTower] = useState("tower1"); // Default to Tenant History
 
   return (
     <div className="container mx-auto sm:pt-10 sm:px-4 h-full">
@@ -18,16 +16,6 @@ function History() {
             History
           </h1>
         </nav>
-        {/* <div className="relative w-full md:w-1/4 flex-grow md:flex-grow-0 px-2 lg:px-0 block">
-          <input
-            className="rounded-full w-full ps-10 border-blue-500 border-2"
-            type="search"
-            placeholder="Search"
-          />
-          <i className="absolute lg:left-3 left-5 top-3 -translate-y-1 text-2xl flex justify-center">
-            <BiSearchAlt />
-          </i>
-        </div> */}
       </div>
 
       {/* Tabs */}
@@ -52,12 +40,32 @@ function History() {
           Payment History
         </button>
 
-        
+        <button
+          className={`flex items-center gap-2 px-4 py-2 rounded-lg border-2 font-outfit ${
+            activeTower === "tower3" ? "bg-blue-500 text-white" : "text-gray-700 hover:bg-blue-100 border-[#595BD4]"
+          }`}
+          onClick={() => setActiveTower("tower3")}
+        >
+          <FaCashRegister className="text-xl" />
+          Expense History (Tower 1)
+        </button>
+
+        <button
+          className={`flex items-center gap-2 px-4 py-2 rounded-lg border-2 font-outfit ${
+            activeTower === "tower4" ? "bg-blue-500 text-white" : "text-gray-700 hover:bg-blue-100 border-[#595BD4]"
+          }`}
+          onClick={() => setActiveTower("tower4")}
+        >
+          <FaCashRegister className="text-xl" />
+          Expense History (Tower 2)
+        </button>
       </div>
 
-      {/* Default display is DashboardTower1 */}
+      {/* Tab Content */}
       {activeTower === "tower1" && <TenantHistory />}
       {activeTower === "tower2" && <PaymentHistory />}
+      {activeTower === "tower3" && <ExpenseHistory />}
+      {activeTower === "tower4" && <ExpenseHistory2 />}
     </div>
   );
 }

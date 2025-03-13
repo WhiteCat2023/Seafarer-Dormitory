@@ -114,8 +114,8 @@ const AddExpenseModal = ({ onClose }) => {
               className="w-full p-3 border border-gray-300 rounded-md bg-gray-100"
             >
               <option value="" disabled>Select Tower</option>
-              <option value="Tower-1">Tower 1</option>
-              <option value="Tower-2">Tower 2</option>
+              <option value="tower-1">Tower 1</option>
+              <option value="tower-2">Tower 2</option>
             </select>
           </div>
 

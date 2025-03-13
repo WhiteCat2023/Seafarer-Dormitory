@@ -11,21 +11,33 @@ import {
   Legend,
 } from "chart.js";
 import { BiGroup, BiBed, BiBarChartSquare } from "react-icons/bi";
+import AddExpenseModal from "../components/Modals/AddExpenseModal"; // Import the modal
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
 
 function StatsTower2() {
   const [tenants, setTenants] = useState(0);
   const [roomsOccupied, setRoomsOccupied] = useState(0);
-  const [revenue, setRevenue] = useState(0);
+  const [income, setIncome] = useState(0);
   const [chartData, setChartData] = useState(null);
   const [month, setMonth] = useState(new Date().getMonth() + 1);
   const [year, setYear] = useState(new Date().getFullYear());
+  const [isModalOpen, setIsModalOpen] = useState(false); // State for modal
+
+  
+  const handleOpenModal = () => {
+    setIsModalOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+  };
+
 
   useEffect(() => {
     fetchTenantsData();
     fetchRoomsData();
-    fetchRevenue();
+    calculateIncome();
     fetchChartData();
   }, [month, year]);
 
@@ -64,28 +76,35 @@ function StatsTower2() {
     }
   };
 
-  const fetchRevenue = async () => {
+  const calculateIncome = async () => {
     try {
-      const response = await axios.get(
+      const expenseResponse = await axios.get(
+        "https://seafarerdorm.scarlet2.io/Expense/fetch_expense_history_2.php"
+      );
+
+      const revenueResponse = await axios.get(
         "https://seafarerdorm.scarlet2.io/Rooms/statistics_datafetch_tower2.php"
       );
-      if (response.data.success && Array.isArray(response.data.data)) {
-        const tower2Data = response.data.data.filter(
-          (booking) => booking.tower === "tower-2"
-        );
-        let totalRevenue = 0;
 
-        tower2Data.forEach((booking) => {
+      let totalRevenue = 0;
+      let totalExpenses = 0;
+
+      if (revenueResponse.data.success && Array.isArray(revenueResponse.data.data)) {
+        revenueResponse.data.data.forEach((booking) => {
           totalRevenue += parseFloat(booking.amount) || 0;
         });
-
-        setRevenue(totalRevenue);
-      } else {
-        setRevenue(0);
       }
+
+      if (expenseResponse.data.length > 0) {
+        expenseResponse.data.forEach((expense) => {
+          totalExpenses += parseFloat(expense.price) || 0;
+        });
+      }
+
+      setIncome(totalRevenue - totalExpenses);
     } catch (e) {
-      console.error("Error fetching revenue data:", e);
-      setRevenue(0);
+      console.error("Error calculating income:", e);
+      setIncome(0);
     }
   };
 
@@ -155,16 +174,19 @@ function StatsTower2() {
           </div>
         </div>
 
-        <div className="p-3 rounded-lg shadow-md border-2 border-blue-500 bg-white">
-          <p className="text-black text-2xl font-semibold">Revenue</p>
+        <div onClick={handleOpenModal} className="p-3 rounded-lg shadow-md border-2 border-blue-500 bg-white">
+          <p className="text-black text-2xl font-semibold">Income</p>
           <div className="flex items-center justify-between">
             <p className="text-6xl mt-5 font-semibold p-2">
-              ₱{revenue.toLocaleString()}
+            ₱{income.toLocaleString()}
             </p>
             <BiBarChartSquare className="text-[#5C59F5] text-7xl mt-3" />
           </div>
         </div>
-      </div>
+      
+      {/* Add Expense Modal */}
+      {isModalOpen && <AddExpenseModal onClose={handleCloseModal} />}
+    </div>
 
       <div className="bg-white rounded-lg shadow-md border-2 border-blue-500 mt-6 p-6">
         {/* Title and Filters Container */}
