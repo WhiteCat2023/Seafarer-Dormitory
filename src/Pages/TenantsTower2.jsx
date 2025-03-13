@@ -1,4 +1,4 @@
-import { BiLoader, BiTrash, BiChevronLeft, BiChevronsLeft, BiChevronsRight, BiChevronRight, BiSearchAlt, BiMap, BiHash, BiCheck, BiX, BiInfoCircle } from 'react-icons/bi';
+import { BiLoader, BiTrash, BiChevronLeft, BiChevronsLeft, BiChevronsRight, BiChevronRight, BiSearchAlt, BiMap, BiHash, BiInfoCircle } from 'react-icons/bi';
 import axios from 'axios';
 import { useEffect, useState } from 'react';
 import { Spinner } from '@material-tailwind/react';
@@ -19,7 +19,18 @@ function TenantsTower2() {
   const [currentPage, setCurrentPage] = useState(1);
   const [totalItems, setTotalItems] = useState(0);
   const itemsPerPage = 20;
-  
+  const totalPages = Math.ceil(totalItems / itemsPerPage); 
+  useEffect(() => { 
+    fetchData()
+  }, [searchQuery])
+
+ 
+
+  const handlePageChange = (newPage) => {
+    if(newPage > 0 && newPage <= totalPages){
+      setCurrentPage(newPage);
+    }
+  };
 
   const fetchData = async () => {
     setLoading(true);
@@ -35,18 +46,6 @@ function TenantsTower2() {
     }finally{
       setLoading(false);
     }
-  }
-
-  useEffect(() => { 
-    fetchData()
-  }, [searchQuery])
-
-  const totalPages = Math.ceil(totalItems / itemsPerPage); 
-
-  const handlePageChange = (newPage) => {
-    if(newPage > 0 && newPage <= totalPages){
-      setCurrentPage(newPage);
-    }
   };
 
   function deleteTenant(){
@@ -60,17 +59,17 @@ function TenantsTower2() {
         handleDeleteSelected()
       }
     })
-    }
+  };
 
   function openModal(key){
       setIsInfoBtnClicked(true);
       setKey(key);
-  }
+  };
 
   function closeModal(){
       setIsInfoBtnClicked(false);
       setKey(0)
-  }
+  };
 
   const handleSelectAllChange = (event) => {
       const checked = event.target.checked;
