@@ -1,4 +1,4 @@
-import { BiLoader, BiTrash, BiChevronLeft, BiChevronsLeft, BiChevronsRight, BiChevronRight, BiSearchAlt, BiMap, BiHash, BiCheck, BiX, BiInfoCircle } from 'react-icons/bi';
+import { BiLoader, BiTrash, BiChevronLeft, BiChevronsLeft, BiChevronsRight, BiChevronRight, BiSearchAlt, BiMap, BiHash, BiInfoCircle } from 'react-icons/bi';
 import axios from 'axios';
 import { useEffect, useState } from 'react';
 import { Spinner } from '@material-tailwind/react';
@@ -19,9 +19,15 @@ function TenantsTower1() {
   const [currentPage, setCurrentPage] = useState(1);
   const [totalItems, setTotalItems] = useState(0);
   const itemsPerPage = 20;
+  const totalPages = Math.ceil(totalItems / itemsPerPage); 
+
+  useEffect(() => { 
+    fetchData()
+  }, [searchQuery])
 
   const fetchData = async () => {
     setLoading(true);
+   
     try{
       const response = await axios.get(`https://seafarerdorm.scarlet2.io/Reservations/retrieve-reservations.php?page=${currentPage}&limit=${itemsPerPage}&search=${searchQuery}`);
         // const apartmentArray = Object.values(response.data);
@@ -34,13 +40,7 @@ function TenantsTower1() {
     }finally{
       setLoading(false);
     }
-  }
-
-  useEffect(() => { 
-    fetchData()
-  }, [searchQuery])
-
-  const totalPages = Math.ceil(totalItems / itemsPerPage); 
+  };
 
   const handlePageChange = (newPage) => {
     if(newPage > 0 && newPage <= totalPages){
@@ -51,7 +51,7 @@ function TenantsTower1() {
   function openModal(key){
       setIsInfoBtnClicked(true);
       setKey(key);
-  }
+  };
 
   function closeModal(){
       setIsInfoBtnClicked(false);
@@ -123,6 +123,7 @@ function TenantsTower1() {
   };
 
   function displayList(){
+
         if(loading){
         
             return <div className="w-full h-96 flex justify-center items-center">

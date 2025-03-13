@@ -3,11 +3,9 @@ import { BiArrowBack } from 'react-icons/bi';
 
 export default function BookingInfo({isOpen, onClose, item}) {
 
-    const name = item.cName
-    .split(' ');
+    const name = item.cName.split(' ');
+    const firstName = name[0];   
 
-    console.log(name)
-    const firstName = name[0];
     return (
         <Dialog open={isOpen} onClose={onClose} className="relative z-10">
             <DialogBackdrop
@@ -28,35 +26,35 @@ export default function BookingInfo({isOpen, onClose, item}) {
                                         {firstName}'s Info
                                     </DialogTitle>
                                     <div className="p-4 md:p-5 flex flex-col gap-y-2">
-                                        <p>Name: {item.cName}</p>
-                                        <p>Email: {item.cEmail}</p>
-                                        <p>Phone: {item.cPhone}</p>
-                                        <p>Mode Of Payment: {item.modeOfPayment}</p>
+                                        <p><strong>Name:</strong> {item.cName}</p>
+                                        <p><strong>Email:</strong> {item.cEmail}</p>
+                                        <p><strong>Phone:</strong> {item.cPhone}</p>
+                                        <p><strong>Mode Of Payment:</strong> {item.modeOfPayment}</p>
                                         {/* <p>Start Date: {item.startDate}</p>
                                         <p>End Date: {item.endDate}</p> */}
 
                                     <p>
-                                    Start Date: {new Date(item.startDate).toLocaleString('en-US', {
+                                    <strong>Start Date:</strong> {new Date(item.startDate).toLocaleString('en-US', {
                                         weekday: 'long', // "Monday"
                                         year: 'numeric', // "2025"
                                         month: 'long', // "March"
                                         day: 'numeric', // "11"
                                         hour: 'numeric', // "2"
                                         minute: 'numeric', // "30"
-                                        second: 'numeric', // "00"
+                                        // second: 'numeric', // "00"
                                         hour12: true, // AM/PM
                                     })}
                                     </p>
 
                                     <p>
-                                    End Date: {new Date(item.endDate).toLocaleString('en-US', {
+                                    <strong>End Date:</strong> {new Date(item.endDate).toLocaleString('en-US', {
                                         weekday: 'long',
                                         year: 'numeric',
                                         month: 'long',
                                         day: 'numeric',
                                         hour: 'numeric',
                                         minute: 'numeric',
-                                        second: 'numeric',
+                                        // second: 'numeric',
                                         hour12: true,
                                     })}
                                     </p>
