@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { BiX } from "react-icons/bi";
+import axios from "axios";
 
 const AddExpenseModal = ({ onClose }) => {
   const [roomNumber, setRoomNumber] = useState("");
@@ -7,9 +8,43 @@ const AddExpenseModal = ({ onClose }) => {
   const [price, setPrice] = useState("");
   const [tower, setTower] = useState("");
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log({ roomNumber, expenseType, price, tower });
+  
+    if (!roomNumber || !expenseType || !price || !tower) {
+      alert("All fields are required.");
+      return;
+    }
+  
+    const expenseData = {
+      room_id: roomNumber,
+      tower: tower,
+      name: expenseType,
+      price: price,
+      timestamp: new Date().toISOString(),
+    };
+  
+    try {
+      const response = await axios.post(
+        "https://seafarerdorm.scarlet2.io/Expense/add_expense.php",
+        JSON.stringify(expenseData),
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+  
+      if (response.data.success) {
+        alert("Expense added successfully!");
+        onClose();
+      } else {
+        alert(response.data.message || "Failed to add expense.");
+      }
+    } catch (error) {
+      console.error("Error adding expense:", error);
+      alert("Error connecting to the server.");
+    }
   };
 
   return (
@@ -47,9 +82,7 @@ const AddExpenseModal = ({ onClose }) => {
               onChange={(e) => setExpenseType(e.target.value)}
               className="w-full p-3 border border-gray-300 rounded-md bg-gray-100"
             >
-              <option value="" disabled>
-                Select Expense
-              </option>
+              <option value="" disabled>Select Expense</option>
               <option value="Electricity">Electricity</option>
               <option value="Water">Water</option>
               <option value="Internet">Internet</option>
@@ -59,19 +92,19 @@ const AddExpenseModal = ({ onClose }) => {
           {/* Price Input */}
           <div className="mb-4">
             <label className="block text-sm font-medium text-gray-700 mb-1">
-              Price:
+              Price (₱):
             </label>
             <input
-              type="text"
-              placeholder="Ex. ₱32131"
+              type="number"
+              placeholder="Ex. 500"
               value={price}
               onChange={(e) => setPrice(e.target.value)}
               className="w-full p-3 border border-gray-300 rounded-md bg-gray-100"
             />
           </div>
 
-          {/* Tower Dropdown */}
-          <div className="mb-6">
+          {/* Tower Input */}
+          <div className="mb-4">
             <label className="block text-sm font-medium text-gray-700 mb-1">
               Tower:
             </label>
@@ -80,18 +113,16 @@ const AddExpenseModal = ({ onClose }) => {
               onChange={(e) => setTower(e.target.value)}
               className="w-full p-3 border border-gray-300 rounded-md bg-gray-100"
             >
-              <option value="" disabled>
-                Select Tower
-              </option>
+              <option value="" disabled>Select Tower</option>
               <option value="Tower-1">Tower 1</option>
               <option value="Tower-2">Tower 2</option>
             </select>
           </div>
 
-          {/* Add Expense Button */}
+          {/* Submit Button */}
           <button
             type="submit"
-            className="w-full bg-[#5C59F5] text-white py-3 rounded-md hover:bg-[#4A47D5] transition"
+            className="w-full bg-blue-500 text-white py-2 rounded-md hover:bg-blue-700"
           >
             Add Expense
           </button>
