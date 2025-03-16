@@ -4,6 +4,7 @@ import Spinner from '../components/Spinner/Spinner';
 import Swal from 'sweetalert2';
 import withReactContent from 'sweetalert2-react-content';
 import axios from 'axios';
+import { input } from '@material-tailwind/react';
 
 function EditRoom({isOpen, onClose, item}) {
 
@@ -37,64 +38,81 @@ function EditRoom({isOpen, onClose, item}) {
           setInputs(inputs => ({...inputs, [name]: value}));
         }
       }
+
+    function submitData(){
+      if(!inputs.tower == "" && !inputs.deck == "" && !inputs.stayType == ""){
+        onSubmitData()
+      }else{
+        
+      }
+    }
     const onSubmitData = async (e) => {
         e.preventDefault();
         setIsLoading(true)
-        const fd = new FormData();
-        fd.append("id", item.id)
-        fd.append("name", inputs.name);
-        fd.append("roomNumber", inputs.roomNumber);
-        fd.append("price", inputs.price);
-        fd.append("pax", inputs.pax);
-        fd.append("tower", inputs.tower);
-        fd.append("stayType", inputs.stayType);
-        fd.append("deck", inputs.deck);
-        fd.append("amenities", inputs.amenities.join(","))
-        fd.append("description", inputs.description);
-        inputs.imageFiles.forEach(item => fd.append("imageFiles[]", item));
-        console.log(inputs)
-        try{
-          const response = await axios.post("https://seafarerdorm.scarlet2.io/Rooms/edit-room.php", fd);
-          if(response.data.status == "success"){
+        if(!inputs.tower == "" && !inputs.deck == "" && !inputs.stayType == ""){
+          const fd = new FormData();
+          fd.append("id", item.id)
+          fd.append("name", inputs.name);
+          fd.append("roomNumber", inputs.roomNumber);
+          fd.append("price", inputs.price);
+          fd.append("pax", inputs.pax);
+          fd.append("tower", inputs.tower);
+          fd.append("stayType", inputs.stayType);
+          fd.append("deck", inputs.deck);
+          fd.append("amenities", inputs.amenities.join(","))
+          fd.append("description", inputs.description);
+          inputs.imageFiles.forEach(item => fd.append("imageFiles[]", item));
+          console.log(inputs)
+          try{
+            const response = await axios.post("https://seafarerdorm.scarlet2.io/Rooms/edit-room.php", fd);
+            if(response.data.status == "success"){
+              setIsLoading(false)
+              withReactContent(Swal).fire({
+                icon: "success",
+                title: "Success",
+                text: response.data.message,
+                confirmButtonColor: "#3085d6",
+              }).then((result) => {
+                if (result.isConfirmed) {
+                  window.location.href = "/Rooms" 
+                }
+            });
+              console.log(response.data.status);
+            }else{
+              setIsLoading(false)
+              withReactContent(Swal).fire({
+                icon: "warning",
+                title: "Error",
+                text: response.data.message,
+                confirmButtonColor: "#3085d6",
+              }).then((result) => {
+                if (result.isConfirmed) {
+                  window.location.href = "/Rooms" 
+                }
+              });
+            }
+          }catch(e){
             setIsLoading(false)
-            withReactContent(Swal).fire({
-              icon: "success",
-              title: "Success",
-              text: response.data.message,
-              confirmButtonColor: "#3085d6",
-            }).then((result) => {
-              if (result.isConfirmed) {
-                window.location.href = "/Rooms" 
-              }
-          });
-            console.log(response.data.status);
-          }else{
-            setIsLoading(false)
+            console.log(e);
             withReactContent(Swal).fire({
               icon: "warning",
               title: "Error",
-              text: response.data.message,
+              text: "There was a problem processing your request",
               confirmButtonColor: "#3085d6",
-            }).then((result) => {
-              if (result.isConfirmed) {
-                window.location.href = "/Rooms" 
-              }
-            });
+          })
+          //   }).then((result) => {
+          //     if (result.isConfirmed) {
+          //       window.location.href = "/Rooms" 
+          //     }
+          //   });
           }
-        }catch(e){
-          setIsLoading(false)
-          console.log(e);
+        }else{
           withReactContent(Swal).fire({
             icon: "warning",
-            title: "Error",
-            text: "There was a problem processing your request",
+            title: "Some fields are empty",
+            text: "Please fill in all empty fields",
             confirmButtonColor: "#3085d6",
         })
-        //   }).then((result) => {
-        //     if (result.isConfirmed) {
-        //       window.location.href = "/Rooms" 
-        //     }
-        //   });
         }
         
       }
@@ -134,29 +152,29 @@ function EditRoom({isOpen, onClose, item}) {
                         <input onChange={handleChange} name='price' type="number" placeholder={item.price} className='rounded-lg border border-[#595BD4] bg-[#D3D3E7]' required/>
                         <input onChange={handleChange} name='pax' type="number" placeholder={item.pax} className='rounded-lg border border-[#595BD4] bg-[#D3D3E7]' required/>
                         <select onChange={handleChange} name="tower" id="tower" className='rounded-lg border border-[#595BD4] bg-[#D3D3E7] p-2' required>
-                            <option disabled>{item.tower}</option>
+                            <option value="">Select tower</option>
                             <option value="tower-1">Tower 1</option>
                             <option value="tower-2">Tower 2</option>
                         </select>
                         <select onChange={handleChange} name="stayType" id="" className='rounded-lg border border-[#595BD4] bg-[#D3D3E7] p-2' required>
-                            <option disabled>{item.stayType}</option>
+                            <option value="">Select stay type</option>
                             <option value="day">Day</option>
                             <option value="night">Night</option>
                             <option value="week">Week</option>
                             <option value="month">Month</option>
                         </select>
                         <select onChange={handleChange} name="deck" id="" className='rounded-lg border border-[#595BD4] bg-[#D3D3E7] p-2' required>
-                            <option disabled>{item.deck}</option>
+                            <option value="">Select deck</option>
                             <option value="upper-deck">Upper Deck</option>
                             <option value="lower-deck">Lower Deck</option>
                         </select>
                         <div className='flex gap-x-2 w-full'>
-                            <input onChange={handleAmenityChange} name='amenities' type="text" placeholder={item.amenities} value={amenityInput} className='rounded-lg border border-[#595BD4] bg-[#D3D3E7] w-full' required/>
+                            <input onChange={handleAmenityChange} name='amenities' type="text" placeholder={item.amenities} value={amenityInput} className='rounded-lg border border-[#595BD4] bg-[#D3D3E7] w-full'/>
                             <button onClick={addAmenity} className='rounded-lg bg-primary py-2 px-4 text-white w-1/6'>Add</button>
                         </div>
                         <div className='flex gap-4 flex-wrap'>
                         {inputs.amenities.map((item, index) => (
-                            <p className='py-2 px-4 bg-black text-white rounded-lg block' key={index}>{item}</p>
+                            <p className='py-2 px-4 bg-primary text-white rounded-lg block' key={index}>{item}</p>
                         ))}
                         </div>
                         <textarea onChange={handleChange} name='description' type="text" placeholder={item.description} className='rounded-lg border border-[#595BD4] bg-[#D3D3E7]' required rows={6}/>
