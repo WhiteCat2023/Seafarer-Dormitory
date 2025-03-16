@@ -7,13 +7,14 @@ import 'react-date-range/dist/theme/default.css';
 import { useStripe, useElements, CardElement } from '@stripe/react-stripe-js';
 import Maya from '../assets/maya.png'
 import GCash from '../assets/gcash.png'
-import { addDays, differenceInDays, format, differenceInMonths, isBefore } from 'date-fns';
+import { addDays, differenceInDays, format, differenceInMonths, isBefore, differenceInWeeks } from 'date-fns';
 import { BiChevronLeft } from 'react-icons/bi';
 import axios from 'axios';
 import Swal from 'sweetalert2'
 import withReactContent from 'sweetalert2-react-content'
 
 function Booking() {
+
     const stripe = useStripe();
     const elements = useElements();
     const [loading, setLoading] = useState(false);
@@ -29,6 +30,7 @@ function Booking() {
     const [totalPrice, setTotalPrice] = useState(0);
     const [days, setDays] = useState(0);
     const [months, setMonth] = useState(0);
+    const [weeks, setWeeks] = useState(0)
 
     const [dateState, setDateState] = useState([
         {
@@ -48,14 +50,20 @@ function Booking() {
         const end = dateState[0].endDate;
 
         // Calculate the number of days between start and end date
-        const numOfDays = calculateDaysUsingDateFns(start, end)
+        const numOfDays = calculateDays(start, end)
         setDays(numOfDays)
         
-        const numOfMonths = calculateMonthsUsingDateFns(start, end)
+        const numOfMonths = calculateMonths(start, end)
         setMonth(numOfMonths)
+
+        const numberOfWeeks = calculateWeeks(start, end)
+        setWeeks(numberOfWeeks)
         
         if(item.stayType == "month"){
             const calculatedPrice = numOfMonths * item.price;
+            setTotalPrice(calculatedPrice);
+        }else if(item.stayType == "week"){
+            const calculatedPrice = numberOfWeeks * item.price;
             setTotalPrice(calculatedPrice);
         }else{
             const calculatedPrice = numOfDays * item.price;
@@ -73,8 +81,22 @@ function Booking() {
         }
     }
 
+    function calculateWeeks(startDate, endDate){
+
+        const start = new Date(startDate);
+        const end = new Date(endDate);
+
+        if (isBefore(end, start)) return 0;
+
+        const weekDifference = differenceInWeeks(end, start);
+
+        return weekDifference
+
+    }
+
     //Function calculate days
-    function calculateDaysUsingDateFns(startDate, endDate) {
+    function calculateDays(startDate, endDate) {
+
         const start = new Date(startDate);
         const end = new Date(endDate);
         
@@ -88,7 +110,7 @@ function Booking() {
     };
 
     //function to calculate months
-    function calculateMonthsUsingDateFns(startDate, endDate) {
+    function calculateMonths(startDate, endDate) {
         const start = new Date(startDate);
         const end = new Date(endDate);
         

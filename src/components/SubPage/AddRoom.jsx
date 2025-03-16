@@ -171,7 +171,7 @@ export default function AddRoom({isOpen, onClose, onAdd}) {
 
             <label htmlFor="amenities" className='leading-[0.5] text-sm'>Amenities</label>
             <div className='flex gap-x-2 w-full'>
-              <input onChange={handleAmenityChange} id='amenities' name='amenities' type="text" placeholder='Ex. free pizza, near SWU, etc.' className='rounded-lg w-full border border-[#595BD4] bg-[#D3D3E7]' value={amenityInput} required/>
+              <input onChange={handleAmenityChange} id='amenities' name='amenities' type="text" placeholder='Ex. free pizza, near SWU, etc.' className='rounded-lg w-full border border-[#595BD4] bg-[#D3D3E7]' value={amenityInput}/>
               <button onClick={addAmenity} className='rounded-lg bg-primary py-2 px-4 text-white w-1/6'>Add</button>
             </div>
             <div className='flex gap-4 flex-wrap'>
