@@ -21,6 +21,8 @@ export default function AddRoom({isOpen, onClose, onAdd}) {
     description: '', 
     imageFiles: []
   });
+
+  const userId = window.sessionStorage.getItem("token")
   const [amenityInput, setAmenityInput] = useState("");
   const [imgObject, setImgObject] = useState([]);
 
@@ -68,6 +70,7 @@ export default function AddRoom({isOpen, onClose, onAdd}) {
     inputs.imageFiles.forEach(item => fd.append("imageFiles[]", item));
     fd.append("bath", inputs.bath);
     fd.append("action", "add");
+    fd.append("userId", userId);
     console.log(inputs)
     try{
       const response = await axios.post("https://seafarerdorm.scarlet2.io/Rooms/post-rooms.php", fd);

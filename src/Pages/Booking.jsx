@@ -12,6 +12,7 @@ import { BiChevronLeft } from 'react-icons/bi';
 import axios from 'axios';
 import Swal from 'sweetalert2'
 import withReactContent from 'sweetalert2-react-content'
+import NewApartments from '../components/Modals/NewApartments';
 
 function Booking() {
 
@@ -39,6 +40,9 @@ function Booking() {
           key: 'selection'
         }
     ]);
+
+    const [isOpen, setIsOpen] = useState(false)
+    const [isMethod, setIsMethod] = useState("")
     
     const [bookedDates, setBookedDates] = useState([]); 
 
@@ -74,7 +78,7 @@ function Booking() {
     //Function to fetch already booked dates 
     const fetchBookedDates = async () => {
         try {
-            const response = await axios.get('https://your-api-endpoint/booked-dates');
+            const response = await axios.get('http://seafarerdorm.scarlet2.io/Rooms/retrieve_booking_dates.php');
             setBookedDates(response.data);  // Assuming the response contains a list of booked dates
         } catch (error) {
             console.error('Error fetching booked dates:', error);
@@ -182,57 +186,97 @@ function Booking() {
     };
 
     //Function for Maya
-    const handleMayaPayment = async (amount) => {
-        setLoading(true);
+    // const handleMayaPayment = async (amount) => {
+    //     setLoading(true);
     
-        try {
-          const response = await fetch('/api/create-maya-payment', {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ amount: amount }), // Example amount
-          });
+    //     try {
+    //       const response = await fetch('/api/create-maya-payment', {
+    //         method: 'POST',
+    //         headers: {
+    //           'Content-Type': 'application/json',
+    //         },
+    //         body: JSON.stringify({ amount: amount }), // Example amount
+    //       });
     
-          const data = await response.json();
-          if (data.paymentUrl) {
-            // Redirect to Maya's checkout page
-            handleSubmitInfo("paid", "maya", "Paid", "")
-            window.location.href = data.paymentUrl;
-          }
-        } catch (error) {
-          console.error('Error initiating Maya payment:', error);
-        } finally {
-          setLoading(false);
-        }
-    };
+    //       const data = await response.json();
+    //       if (data.paymentUrl) {
+    //         // Redirect to Maya's checkout page
+    //         handleSubmitInfo("paid", "maya", "Paid", "")
+    //         window.location.href = data.paymentUrl;
+    //       }
+    //     } catch (error) {
+    //       console.error('Error initiating Maya payment:', error);
+    //     } finally {
+    //       setLoading(false);
+    //     }
+    // };
 
     //Function for GCash payment
-    const handleGCashPayment = async (amount) => {
-        setLoading(true);
+    // const handleGCashPayment = async (amount) => {
+    //     setLoading(true);
         
-        try {
-          const response = await fetch('/api/create-gcash-payment', {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ amount: amount }), // Example amount
-          });
+    //     try {
+    //       const response = await fetch('/api/create-gcash-payment', {
+    //         method: 'POST',
+    //         headers: {
+    //           'Content-Type': 'application/json',
+    //         },
+    //         body: JSON.stringify({ amount: amount }), // Example amount
+    //       });
     
-          const data = await response.json();
-          if (data.paymentUrl) {
-            // Redirect to the GCash payment page
-            handleSubmitInfo("paid", "gcash", "Paid", "")
-            window.location.href = data.paymentUrl;
+    //       const data = await response.json();
+    //       if (data.paymentUrl) {
+    //         // Redirect to the GCash payment page
+    //         handleSubmitInfo("paid", "gcash", "Paid", "")
+    //         window.location.href = data.paymentUrl;
             
-          }
-        } catch (error) {
-          console.error('Error initiating GCash payment:', error);
-        } finally {
-          setLoading(false);
+    //       }
+    //     } catch (error) {
+    //       console.error('Error initiating GCash payment:', error);
+    //     } finally {
+    //       setLoading(false);
+    //     }
+    // };
+
+    function handleMayaPayment(){
+        if(!inputs.email == "" && !inputs.contactNumber == "" && !inputs.name == ""){
+            setIsMethod("maya")
+            setIsOpen(true)
+        }else{
+            withReactContent(Swal).fire({
+                icon: "error",
+                title: "Empty Fields",
+                text: "Please fill in missing inputs",
+                confirmButtonColor: "#3085d6",
+            })
         }
-    };
+       
+       
+    }
+
+    function handleGCashPayment(){
+        if(!inputs.email == "" && !inputs.contactNumber == "" && !inputs.name == ""){
+            setIsMethod("gcash")
+            setIsOpen(true)
+        }else{
+            withReactContent(Swal).fire({
+                icon: "error",
+                title: "Empty Fields",
+                text: "Please fill in missing inputs",
+                confirmButtonColor: "#3085d6",
+            })
+        }
+        
+        
+    }
+
+    function handleCloseModal(){
+        handleSubmitInfo("reservation", isMethod, "Reserve", item.name + " reserved")
+        setIsOpen(false)
+        setIsMethod("")
+        
+    }
+
 
     //Function for reservation
     function handleReservation(){
@@ -318,7 +362,7 @@ function Booking() {
                             {days != 0 && (<p><span className='font-bold'>Total: </span>{item.stayType == "month" ? months : days} {item.stayType} X ₱{item.price} = ₱{totalPrice}</p>)}
                             <CardElement className="w-full mb-4 p-2 rounded-lg bg-[#D3D3E7] border border-[#595BD4] text-[#1E1E1E8C]" />
                             <button
-                                type="submit"
+                                type={isMethod? "button": "submit"}
                                 className="rounded-lg bg-primary text-white py-2 w-full"
                                 disabled={loading || !stripe}
                             >
@@ -326,7 +370,7 @@ function Booking() {
                             </button>
                             <button
                                 onClick={handleReservation}
-                                type="button"
+                                type={isMethod? "submit": "button"}
                                 className="rounded-lg bg-primary text-white py-2 w-full"
                             >
                                 {loading ? 'Processing...' : 'Reserve'}
@@ -367,6 +411,7 @@ function Booking() {
                 </div>
                 <div></div>
             </div>
+            {isMethod && <NewApartments isOpen={isOpen} onClose={handleCloseModal} method={isMethod}/>}
         </div>
     )
 }

@@ -49,16 +49,34 @@ function TenantsTower2() {
   };
 
   function deleteTenant(){
+    const filteredTower = items.filter(item => item.reservationStatus === "accepted" && item.tower !== "tower-1");
+    if(filteredTower.length == 0){
       withReactContent(Swal).fire({
-      icon: "warning",
-      title: `Delete ${selectedItems.size > 1 ? selectedItems.size + " rooms" : selectedItems.size + " room"}`,
-      text:  `Do you want to delete these ${selectedItems.size > 1 ? "rooms" : "room"}?`,
-      confirmButtonColor: "#3085d6",
-    }).then((result) => {
-      if(result.isConfirmed){
-        handleDeleteSelected()
-      }
-    })
+        icon: "warning",
+        title: `Tower 2 tenants empty`,
+        text:  `There is nothing to delete`,
+        confirmButtonColor: "#3085d6",
+      })
+    }else if(selectedItems.size == 0){
+          withReactContent(Swal).fire({
+            icon: "warning",
+            title: `No item selected`,
+            text:  `Please select an item to delete`,
+            confirmButtonColor: "#3085d6",
+          })
+    }else{
+      withReactContent(Swal).fire({
+        icon: "warning",
+        title: `Delete ${selectedItems.size > 1 ? selectedItems.size + " rooms" : selectedItems.size + " room"}`,
+        text:  `Do you want to delete these ${selectedItems.size > 1 ? "rooms" : "room"}?`,
+        confirmButtonColor: "#3085d6",
+      }).then((result) => {
+        if(result.isConfirmed){
+          handleDeleteSelected()
+        }
+      })
+    }
+     
   };
 
   function openModal(key){

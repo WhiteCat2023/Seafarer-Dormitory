@@ -18,7 +18,7 @@ export default function Card({item}){
                     }
                 </div>
                 <div className="text-start text-sm w-full pt-2 h-2/6 leading-none" key={item.id}>
-                    <p className="font-normal w-full flex justify-between">{item.name}<span className="flex items-center gap-x-1"><BiSolidStar/>4.0</span></p>
+                    <p className="font-normal w-full flex justify-between">{item.name}<span className="flex items-center gap-x-1"><BiSolidStar/>{item.rating}</span></p>
                     <p className="font-light">Room {item.roomNumber}</p>
                     <p className="font-light">{item.pax} person</p>
                     <p className="font-semibold">₱{item.price} per {item.stayType}</p>
