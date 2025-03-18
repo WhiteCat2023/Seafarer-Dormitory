@@ -256,7 +256,7 @@ function Booking() {
     fd.append("roomId", item.id)
     fd.append("paymentStatus", status)
     fd.append("modeOfPayment", modeOfPayment)
-    fd.append("imageFiles", inputs.idImage[0])
+    fd.append("imageFiles", inputs.idImage)
     fd.append("idType", inputs.idType)
 
     // fd.append("startDate", dateState.startDate)
@@ -387,7 +387,7 @@ function Booking() {
     }
   }
 
-    function nameButton(){
+  function nameButton(){
         if(loading){
             return "Proccessing..."
         }else if(paymentMethod == "walk-in"){
@@ -395,7 +395,7 @@ function Booking() {
         }else{
             return "Pay Now"
         }
-    }
+  }
 
   return (
     <div className="pb-24 font-outfit">
