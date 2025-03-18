@@ -1,10 +1,36 @@
 import { Dialog, DialogBackdrop, DialogPanel, DialogTitle } from '@headlessui/react';
+import { useState } from 'react';
 import { BiArrowBack } from 'react-icons/bi';
+import ViewImage from './EditApartments';
 
 export default function BookingInfo({isOpen, onClose, item}) {
 
     const name = item.cName.split(' ');
-    const firstName = name[0];   
+    const firstName = name[0]; 
+    const [isView, setIsView] = useState(false)
+    const idUrl = 'https://seafarerdorm.scarlet2.io/Rooms/' + item.idUrl
+    
+    function idType(){
+        switch(item.idType){
+            case "student":
+                return "Student ID"
+            case "national":
+                return "National ID"
+            case "drivers":
+                return "Drivers License"
+            case "nbi":
+                return "NBI Clearance"
+
+        }
+    }
+
+    function viewImage(){
+        setIsView(true)
+    }
+
+    function close(){
+        setIsView(false)
+    }
 
     return (
         <Dialog open={isOpen} onClose={onClose} className="relative z-10">
@@ -33,32 +59,38 @@ export default function BookingInfo({isOpen, onClose, item}) {
                                         {/* <p>Start Date: {item.startDate}</p>
                                         <p>End Date: {item.endDate}</p> */}
 
-                                    <p>
-                                    <strong>Start Date:</strong> {new Date(item.startDate).toLocaleString('en-US', {
-                                        weekday: 'long', // "Monday"
-                                        year: 'numeric', // "2025"
-                                        month: 'long', // "March"
-                                        day: 'numeric', // "11"
-                                        hour: 'numeric', // "2"
-                                        minute: 'numeric', // "30"
-                                        // second: 'numeric', // "00"
-                                        hour12: true, // AM/PM
-                                    })}
-                                    </p>
+                                        <p>
+                                        <strong>Start Date:</strong> {new Date(item.startDate).toLocaleString('en-US', {
+                                            weekday: 'long', // "Monday"
+                                            year: 'numeric', // "2025"
+                                            month: 'long', // "March"
+                                            day: 'numeric', // "11"
+                                            hour: 'numeric', // "2"
+                                            minute: 'numeric', // "30"
+                                            // second: 'numeric', // "00"
+                                            hour12: true, // AM/PM
+                                        })}
+                                        </p>
 
-                                    <p>
-                                    <strong>End Date:</strong> {new Date(item.endDate).toLocaleString('en-US', {
-                                        weekday: 'long',
-                                        year: 'numeric',
-                                        month: 'long',
-                                        day: 'numeric',
-                                        hour: 'numeric',
-                                        minute: 'numeric',
-                                        // second: 'numeric',
-                                        hour12: true,
-                                    })}
-                                    </p>
+                                        <p>
+                                        <strong>End Date:</strong> {new Date(item.endDate).toLocaleString('en-US', {
+                                            weekday: 'long',
+                                            year: 'numeric',
+                                            month: 'long',
+                                            day: 'numeric',
+                                            hour: 'numeric',
+                                            minute: 'numeric',
+                                            // second: 'numeric',
+                                            hour12: true,
+                                        })}
+                                        </p>
+
+                                        <p><strong>ID Type:</strong> {idType()}</p>
+
+                                        <button onClick={viewImage} className='bg-primary py-2 rounded text-white'>View ID</button>
                                         
+                                        {isView && <ViewImage isOpen={isView} onClose={() => close()} item={idUrl}/>}
+
                                     </div>
                                 </div>
                             </div>

@@ -1,419 +1,988 @@
-import { Link, useLocation } from 'react-router-dom';
-import TopNavUser from '../components/Nav/TopNavUser';
-import { useState, useEffect } from 'react';
-import { DateRange } from 'react-date-range';
-import 'react-date-range/dist/styles.css'; 
-import 'react-date-range/dist/theme/default.css'; 
-import { useStripe, useElements, CardElement } from '@stripe/react-stripe-js';
-import Maya from '../assets/maya.png'
-import GCash from '../assets/gcash.png'
-import { addDays, differenceInDays, format, differenceInMonths, isBefore, differenceInWeeks } from 'date-fns';
-import { BiChevronLeft } from 'react-icons/bi';
-import axios from 'axios';
-import Swal from 'sweetalert2'
-import withReactContent from 'sweetalert2-react-content'
-import NewApartments from '../components/Modals/NewApartments';
+"use client"
+
+import { Link, useLocation } from "react-router-dom"
+import TopNavUser from "../components/Nav/TopNavUser"
+import { useState, useEffect } from "react"
+import { DateRange } from "react-date-range"
+import "react-date-range/dist/styles.css"
+import "react-date-range/dist/theme/default.css"
+import { useStripe, useElements, CardElement } from "@stripe/react-stripe-js"
+import { addDays, differenceInDays, format, differenceInMonths, isBefore, differenceInWeeks } from "date-fns"
+import { BiChevronLeft } from "react-icons/bi"
+import axios from "axios"
+import Swal from "sweetalert2"
+import withReactContent from "sweetalert2-react-content"
+import NewApartments from "../components/Modals/NewApartments"
 
 function Booking() {
+  const stripe = useStripe()
+  const elements = useElements()
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState(null)
+  const location = useLocation()
+  const item = location.state
+  const [inputs, setInputs] = useState({
+    name: "",
+    contactNumber: "",
+    email: "",
+    idType: "",
+    idImage: "",
+  })
 
-    const stripe = useStripe();
-    const elements = useElements();
-    const [loading, setLoading] = useState(false);
-    const [error, setError] = useState(null);
-    const location = useLocation();
-    const item = location.state;
-    const [inputs, setInputs] = useState({
-        name: "",
-        contactNumber: "",
-        email: "",
+  const [totalPrice, setTotalPrice] = useState(0)
+  const [days, setDays] = useState(0)
+  const [months, setMonth] = useState(0)
+  const [weeks, setWeeks] = useState(0)
+
+  const [dateState, setDateState] = useState([
+    {
+      startDate: new Date(),
+      endDate: addDays(new Date(), 0),
+      key: "selection",
+    },
+  ])
+
+  const [isOpen, setIsOpen] = useState(false)
+  const [isMethod, setIsMethod] = useState("")
+
+  const [bookedDates, setBookedDates] = useState([])
+
+  const [paymentMethod, setPaymentMethod] = useState("")
+
+  useEffect(() => {
+    // fetchBookedDates()
+
+    const start = dateState[0].startDate
+    const end = dateState[0].endDate
+
+    // Calculate the number of days between start and end date
+    const numOfDays = calculateDays(start, end)
+    setDays(numOfDays)
+
+    const numOfMonths = calculateMonths(start, end)
+    setMonth(numOfMonths)
+
+    const numberOfWeeks = calculateWeeks(start, end)
+    setWeeks(numberOfWeeks)
+
+    if (item.stayType == "month") {
+      const calculatedPrice = numOfMonths * item.price
+      setTotalPrice(calculatedPrice)
+    } else if (item.stayType == "week") {
+      const calculatedPrice = numberOfWeeks * item.price
+      setTotalPrice(calculatedPrice)
+    } else {
+      const calculatedPrice = numOfDays * item.price
+      setTotalPrice(calculatedPrice) // Update the total price state
+    }
+  }, [dateState])
+
+  function calculateWeeks(startDate, endDate) {
+    const start = new Date(startDate)
+    const end = new Date(endDate)
+
+    if (isBefore(end, start)) return 0
+
+    const weekDifference = differenceInWeeks(end, start)
+
+    return weekDifference
+  }
+
+  //Function calculate days
+  function calculateDays(startDate, endDate) {
+    const start = new Date(startDate)
+    const end = new Date(endDate)
+
+    // If the end date is before the start date, return 0 months
+    if (isBefore(end, start)) return 0
+
+    // Calculate the difference in full months
+    const daysDifference = differenceInDays(end, start)
+
+    return daysDifference
+  }
+
+  //function to calculate months
+  function calculateMonths(startDate, endDate) {
+    const start = new Date(startDate)
+    const end = new Date(endDate)
+
+    // If the end date is before the start date, return 0 months
+    if (isBefore(end, start)) return 0
+
+    // Calculate the difference in full months
+    const monthsDifference = differenceInMonths(end, start)
+
+    return monthsDifference
+  }
+
+  //function to handle inputs change
+  function handleInputChange(e) {
+    const name = e.target.name
+    const value = e.target.value
+
+    if (name == "idImage") {
+      const files = e.target.files[0]
+      setInputs((inputs) => ({ ...inputs, [name]: files }))
+    } else {
+      setInputs((inputs) => ({ ...inputs, [name]: value }))
+    }
+  }
+
+  //Function for Stripe
+  const handleSubmit = async (e) => {
+    e.preventDefault()
+    if (!stripe || !elements) return
+
+    setLoading(true)
+
+    const cardElement = elements.getElement(CardElement)
+
+    // Create a payment method with Stripe
+    const { error, paymentMethod } = await stripe.createPaymentMethod({
+      type: "card",
+      card: cardElement,
     })
 
-    const [totalPrice, setTotalPrice] = useState(0);
-    const [days, setDays] = useState(0);
-    const [months, setMonth] = useState(0);
-    const [weeks, setWeeks] = useState(0)
-
-    const [dateState, setDateState] = useState([
-        {
-          startDate: new Date(),
-          endDate: addDays(new Date(), 0),
-          key: 'selection'
-        }
-    ]);
-
-    const [isOpen, setIsOpen] = useState(false)
-    const [isMethod, setIsMethod] = useState("")
-    
-    const [bookedDates, setBookedDates] = useState([]); 
-
-    useEffect(() => {
-
-        fetchBookedDates();
-            
-        const start = dateState[0].startDate;
-        const end = dateState[0].endDate;
-
-        // Calculate the number of days between start and end date
-        const numOfDays = calculateDays(start, end)
-        setDays(numOfDays)
-        
-        const numOfMonths = calculateMonths(start, end)
-        setMonth(numOfMonths)
-
-        const numberOfWeeks = calculateWeeks(start, end)
-        setWeeks(numberOfWeeks)
-        
-        if(item.stayType == "month"){
-            const calculatedPrice = numOfMonths * item.price;
-            setTotalPrice(calculatedPrice);
-        }else if(item.stayType == "week"){
-            const calculatedPrice = numberOfWeeks * item.price;
-            setTotalPrice(calculatedPrice);
-        }else{
-            const calculatedPrice = numOfDays * item.price;
-            setTotalPrice(calculatedPrice);  // Update the total price state
-        }
-    }, [dateState]);
-
-    //Function to fetch already booked dates 
-    const fetchBookedDates = async () => {
-        try {
-            const response = await axios.get('http://seafarerdorm.scarlet2.io/Rooms/retrieve_booking_dates.php');
-            setBookedDates(response.data);  // Assuming the response contains a list of booked dates
-        } catch (error) {
-            console.error('Error fetching booked dates:', error);
-        }
+    if (error) {
+      setError(error.message)
+      setLoading(false)
+      return
     }
 
-    function calculateWeeks(startDate, endDate){
+    // Send payment method info to your server to create the payment intent
+    const response = await fetch("/create-payment-intent", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        amount: totalPrice,
+        payment_method_id: paymentMethod.id,
+      }),
+    })
 
-        const start = new Date(startDate);
-        const end = new Date(endDate);
+    const paymentIntent = await response.json()
 
-        if (isBefore(end, start)) return 0;
+    // Confirm the payment with Stripe
+    const { error: confirmError } = await stripe.confirmCardPayment(paymentIntent.client_secret, {
+      payment_method: paymentMethod.id,
+    })
 
-        const weekDifference = differenceInWeeks(end, start);
-
-        return weekDifference
-
+    if (confirmError) {
+      setError(confirmError.message)
+      setLoading(false)
+      return
     }
 
-    //Function calculate days
-    function calculateDays(startDate, endDate) {
+    // onSuccess(paymentIntent);
+    setLoading(false)
+    handleReservation("paid", "Stripe", "Paid", "")
+  }
 
-        const start = new Date(startDate);
-        const end = new Date(endDate);
-        
-        // If the end date is before the start date, return 0 months
-        if (isBefore(end, start)) return 0;
-        
-        // Calculate the difference in full months
-        const daysDifference = differenceInDays(end, start);
-        
-        return daysDifference;
-    };
+  //Function for Maya
+  // const handleMayaPayment = async (amount) => {
+  //     setLoading(true);
 
-    //function to calculate months
-    function calculateMonths(startDate, endDate) {
-        const start = new Date(startDate);
-        const end = new Date(endDate);
-        
-        // If the end date is before the start date, return 0 months
-        if (isBefore(end, start)) return 0;
-        
-        // Calculate the difference in full months
-        const monthsDifference = differenceInMonths(end, start);
-        
-        return monthsDifference;
-    };
+  //     try {
+  //       const response = await fetch('/api/create-maya-payment', {
+  //         method: 'POST',
+  //         headers: {
+  //           'Content-Type': 'application/json',
+  //         },
+  //         body: JSON.stringify({ amount: amount }), // Example amount
+  //       });
 
-    //function to handle inputs change
-    function handleInputChange(e){
-        const name = e.target.name;
-        const value = e.target.value;
-        setInputs(inputs =>({...inputs, [name]: value}))
-    };
+  //       const data = await response.json();
+  //       if (data.paymentUrl) {
+  //         // Redirect to Maya's checkout page
+  //         handleSubmitInfo("paid", "maya", "Paid", "")
+  //         window.location.href = data.paymentUrl;
+  //       }
+  //     } catch (error) {
+  //       console.error('Error initiating Maya payment:', error);
+  //     } finally {
+  //       setLoading(false);
+  //     }
+  // };
 
-    //Function for Stripe
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-        if (!stripe || !elements) return;
+  //Function for GCash payment
+  // const handleGCashPayment = async (amount) => {
+  //     setLoading(true);
 
-        setLoading(true);
+  //     try {
+  //       const response = await fetch('/api/create-gcash-payment', {
+  //         method: 'POST',
+  //         headers: {
+  //           'Content-Type': 'application/json',
+  //         },
+  //         body: JSON.stringify({ amount: amount }), // Example amount
+  //       });
 
-        const cardElement = elements.getElement(CardElement);
+  //       const data = await response.json();
+  //       if (data.paymentUrl) {
+  //         // Redirect to the GCash payment page
+  //         handleSubmitInfo("paid", "gcash", "Paid", "")
+  //         window.location.href = data.paymentUrl;
 
-        // Create a payment method with Stripe
-        const { error, paymentMethod } = await stripe.createPaymentMethod({
-            type: 'card',
-            card: cardElement,
-        });
+  //       }
+  //     } catch (error) {
+  //       console.error('Error initiating GCash payment:', error);
+  //     } finally {
+  //       setLoading(false);
+  //     }
+  // };
 
-        if (error) {
-            setError(error.message);
-            setLoading(false);
-            return;
-        }
+  function handleCloseModal() {
+    handleSubmitInfo("reservation", isMethod, "Reserve", item.name + " reserved")
+    setIsOpen(false)
+    setIsMethod("")
+  }
 
-        // Send payment method info to your server to create the payment intent
-        const response = await fetch('/create-payment-intent', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                amount: totalPrice,
-                payment_method_id: paymentMethod.id,
-            }),
-        });
+  //Function for reservation
+  function handleReservation() {
+    handleSubmitInfo("reservation", "walkin", "Reserve", item.name + " reserved")
+  }
 
-        const paymentIntent = await response.json();
+  //Function to submit info
+  const handleSubmitInfo = async (status, modeOfPayment, title, message) => {
+    const fd = new FormData()
+    fd.append("name", inputs.name)
+    fd.append("phone", inputs.contactNumber)
+    fd.append("email", inputs.email)
+    fd.append("tower", item.tower)
+    fd.append("days", days)
+    fd.append("totalprice", totalPrice)
+    fd.append("roomId", item.id)
+    fd.append("paymentStatus", status)
+    fd.append("modeOfPayment", modeOfPayment)
+    fd.append("imageFiles", inputs.idImage[0])
+    fd.append("idType", inputs.idType)
 
-        // Confirm the payment with Stripe
-        const { error: confirmError } = await stripe.confirmCardPayment(paymentIntent.client_secret, {
-            payment_method: paymentMethod.id,
-        });
+    // fd.append("startDate", dateState.startDate)
+    // fd.append("endDate", dateState.endDate)
 
-        if (confirmError) {
-            setError(confirmError.message);
-            setLoading(false);
-            return;
-        }
+    fd.append("startDate", format(dateState[0].startDate, "yyyy-MM-dd hh:mm:ss a"))
+    fd.append("endDate", format(dateState[0].endDate, "yyyy-MM-dd HH:mm:ss a"))
 
-        // onSuccess(paymentIntent);
-        setLoading(false);
-        handleReservation("paid", "Stripe", "Paid", "")
-    };
-
-    //Function for Maya
-    // const handleMayaPayment = async (amount) => {
-    //     setLoading(true);
-    
-    //     try {
-    //       const response = await fetch('/api/create-maya-payment', {
-    //         method: 'POST',
-    //         headers: {
-    //           'Content-Type': 'application/json',
-    //         },
-    //         body: JSON.stringify({ amount: amount }), // Example amount
-    //       });
-    
-    //       const data = await response.json();
-    //       if (data.paymentUrl) {
-    //         // Redirect to Maya's checkout page
-    //         handleSubmitInfo("paid", "maya", "Paid", "")
-    //         window.location.href = data.paymentUrl;
-    //       }
-    //     } catch (error) {
-    //       console.error('Error initiating Maya payment:', error);
-    //     } finally {
-    //       setLoading(false);
-    //     }
-    // };
-
-    //Function for GCash payment
-    // const handleGCashPayment = async (amount) => {
-    //     setLoading(true);
-        
-    //     try {
-    //       const response = await fetch('/api/create-gcash-payment', {
-    //         method: 'POST',
-    //         headers: {
-    //           'Content-Type': 'application/json',
-    //         },
-    //         body: JSON.stringify({ amount: amount }), // Example amount
-    //       });
-    
-    //       const data = await response.json();
-    //       if (data.paymentUrl) {
-    //         // Redirect to the GCash payment page
-    //         handleSubmitInfo("paid", "gcash", "Paid", "")
-    //         window.location.href = data.paymentUrl;
-            
-    //       }
-    //     } catch (error) {
-    //       console.error('Error initiating GCash payment:', error);
-    //     } finally {
-    //       setLoading(false);
-    //     }
-    // };
-
-    function handleMayaPayment(){
-        if(!inputs.email == "" && !inputs.contactNumber == "" && !inputs.name == ""){
-            setIsMethod("maya")
-            setIsOpen(true)
-        }else{
-            withReactContent(Swal).fire({
-                icon: "error",
-                title: "Empty Fields",
-                text: "Please fill in missing inputs",
-                confirmButtonColor: "#3085d6",
-            })
-        }
-       
-       
-    }
-
-    function handleGCashPayment(){
-        if(!inputs.email == "" && !inputs.contactNumber == "" && !inputs.name == ""){
-            setIsMethod("gcash")
-            setIsOpen(true)
-        }else{
-            withReactContent(Swal).fire({
-                icon: "error",
-                title: "Empty Fields",
-                text: "Please fill in missing inputs",
-                confirmButtonColor: "#3085d6",
-            })
-        }
-        
-        
-    }
-
-    function handleCloseModal(){
-        handleSubmitInfo("reservation", isMethod, "Reserve", item.name + " reserved")
-        setIsOpen(false)
-        setIsMethod("")
-        
-    }
-
-
-    //Function for reservation
-    function handleReservation(){
-        handleSubmitInfo("reservation", "walkin", "Reserve", item.name + " reserved")
-    };
-
-    //Function to submit info
-    const handleSubmitInfo = async (status, modeOfPayment, title, message) =>{
-        const fd = new FormData()
-        fd.append("name", inputs.name);
-        fd.append("phone", inputs.contactNumber);
-        fd.append("email", inputs.email)
-        fd.append("tower", item.tower)
-        fd.append("days", days)
-        fd.append("totalprice", totalPrice)
-        fd.append("roomId", item.id)
-        fd.append("paymentStatus", status)
-        fd.append("modeOfPayment", modeOfPayment)
-        // fd.append("startDate", dateState.startDate)
-        // fd.append("endDate", dateState.endDate)
-
-        fd.append("startDate", format(dateState[0].startDate, 'yyyy-MM-dd hh:mm:ss a'));
-        fd.append("endDate", format(dateState[0].endDate, 'yyyy-MM-dd HH:mm:ss a'));
-
-        console.log(format(dateState[0].startDate, 'yyyy-MM-dd HH:mm:ss'))
-        try{
-            const response = await axios.post("https://seafarerdorm.scarlet2.io/Rooms/book-room.php", fd);
-            if(response.data.status == "success"){
-                withReactContent(Swal).fire({
-                    icon: "success",
-                    title: title + " successfully",
-                    text: message,
-                    confirmButtonColor: "#3085d6",
-                }).then((result) => {
-                    if(result.isConfirmed){
-                        window.location.href = "/"
-                    }
-                })
-                console.log(response.data.message)
-                
-            }else{
-                withReactContent(Swal).fire({
-                    icon: response.data.status,
-                    title: response.data.status,
-                    text: response.data.message,
-                    confirmButtonColor: "#3085d6",
-                })
-                console.log(response.data.message)
+    console.log(format(dateState[0].startDate, "yyyy-MM-dd HH:mm:ss"))
+    console.log(inputs)
+    try {
+      const response = await axios.post("https://seafarerdorm.scarlet2.io/Rooms/book-room.php", fd)
+      if (response.data.status == "success") {
+        withReactContent(Swal)
+          .fire({
+            icon: "success",
+            title: title + " successfully",
+            text: message,
+            confirmButtonColor: "#3085d6",
+          })
+          .then((result) => {
+            if (result.isConfirmed) {
+              window.location.href = "/"
             }
-        }catch(err){
-            console.error(err)
-            console.log(err)
-        }
-        console.log(item)
-        // console.log(dateState)
-    };
+          })
+        console.log(response.data.message)
+      } else {
+        withReactContent(Swal).fire({
+          icon: response.data.status,
+          title: response.data.status,
+          text: response.data.message,
+          confirmButtonColor: "#3085d6",
+        })
+        console.log(response.data.message)
+      }
+    } catch (err) {
+      console.error(err)
+      console.log(err)
+    }
+    console.log(item)
+    // console.log(dateState)
+  }
 
-    //Function to change the booked dates to red
-    const dayClassName = (date) => {
-        const formattedDate = format(date, 'yyyy-MM-dd');
-        if (bookedDates.includes(formattedDate)) {
-            return 'booked-date';  // Class for booked dates
-        }
-        return '';
-    };
+  //Function to change the booked dates to red
+  const dayClassName = (date) => {
+    const formattedDate = format(date, "yyyy-MM-dd")
+    if (bookedDates.includes(formattedDate)) {
+      return "booked-date" // Class for booked dates
+    }
+    return ""
+  }
 
-    return (
-        <div className='pb-24 font-outfit'>
-            <div className='w-4/6 mx-auto'>
-                <TopNavUser/>
-                <Link to="/" className='items-center flex mt-4'><BiChevronLeft/>Back</Link>
-                <div>
-                    <form className='flex w-full' onSubmit={handleSubmit}>
-                        <div className='flex flex-col w-2/4 p-4 gap-y-2'>
-                            <p className='font-bold text-2xl'>Application Form</p>
-                            <p className='mt-2'>Identification</p>
-                            <input onChange={handleInputChange} className='rounded-lg bg-[#D3D3E7] border border-[#595BD4] text-[#1E1E1E8C]' type="text" placeholder='Full Name' name='name' required/>
-                            <input onChange={handleInputChange} className='rounded-lg bg-[#D3D3E7] border border-[#595BD4] text-[#1E1E1E8C]' type="number" placeholder='Contact Number' name='contactNumber' required/>
-                            <input onChange={handleInputChange} className='rounded-lg bg-[#D3D3E7] border border-[#595BD4] text-[#1E1E1E8C]' type="email" placeholder='Email' name='email' required/>
-                            <p className='mt-2 text-lg font-semibold'>Choose how to pay</p>
-                            <p><span className='font-bold'>Apartment: </span>{item.name}</p>
-                            <p><span className='font-bold'>Tower: </span>{item.tower}</p>
-                            {days != 0 && (<p><span className='font-bold'>Total: </span>{item.stayType == "month" ? months : days} {item.stayType} X ₱{item.price} = ₱{totalPrice}</p>)}
-                            <CardElement className="w-full mb-4 p-2 rounded-lg bg-[#D3D3E7] border border-[#595BD4] text-[#1E1E1E8C]" />
-                            <button
-                                type={isMethod? "button": "submit"}
-                                className="rounded-lg bg-primary text-white py-2 w-full"
-                                disabled={loading || !stripe}
-                            >
-                                {loading ? 'Processing...' : 'Pay Now'}
-                            </button>
-                            <button
-                                onClick={handleReservation}
-                                type={isMethod? "submit": "button"}
-                                className="rounded-lg bg-primary text-white py-2 w-full"
-                            >
-                                {loading ? 'Processing...' : 'Reserve'}
-                            </button>
-                            {error && <p className="text-red-500 mt-2">{error}</p>}
-                            <button
-                                onClick={handleGCashPayment}
-                                type="button"
-                                className="rounded-lg bg-white text-black border-primary items-center ps-2 gap-x-2 border py-2 w-full flex"
-                            >
-                                <img src={GCash} className='w-6 h-6 rounded'/>
-                                {loading ? 'Processing...' : 'GCash'}
-                            </button>
-                            <button
-                                onClick={handleMayaPayment}
-                                type="button"
-                                className="rounded-lg bg-white text-black border-primary items-center ps-2 gap-x-2 border py-2 w-full flex"
-                            >
-                                <img src={Maya} className='w-6 h-6 rounded'/>
-                                {loading ? 'Processing...' : 'Maya'}
-                            </button>
-                        </div>
-                        {/* {displaySelector} */}
-                        <div className='w-2/4 flex flex-col items-start justify-center overflow-hidden'>
-                            <p className='font-outfit text-2xl font-bold'>Days Duration</p>
-                            <p className='font-outfit'>Enter Days how long is your stay</p>
-                            <DateRange
-                                editableDateInputs={true}
-                                onChange={item => setDateState([item.selection])}
-                                moveRangeOnFirstSelection={false}
-                                ranges={dateState}
-                                minDate={new Date()}
-                                className="w-full flex justify-center p-2 border border-gray-300 rounded-lg shadow-sm"
-                                dayClassName={dayClassName}
-                            />
-                        </div>
-                    </form>
-                </div>
-                <div></div>
+  const handlePaymentMethodChange = (e) => {
+    setPaymentMethod(e.target.value)
+  }
+
+  const handlePayment = () => {
+    if (!inputs.email || !inputs.contactNumber || !inputs.name) {
+      withReactContent(Swal).fire({
+        icon: "error",
+        title: "Empty Fields",
+        text: "Please fill in all required inputs",
+        confirmButtonColor: "#3085d6",
+      })
+      return
+    }
+
+    switch (paymentMethod) {
+        case "stripe":
+                if (!inputs.email == "" && !inputs.contactNumber == "" && !inputs.name == "" && !inputs.idType == "" && !inputs.idImage == "") {
+                    handleSubmit()
+                } else {
+                    withReactContent(Swal).fire({
+                    icon: "error",
+                    title: "Empty Fields",
+                    text: "Please fill in missing inputs",
+                    confirmButtonColor: "#3085d6",
+                    })
+                }
+            
+                break
+        case "gcash":
+                if (!inputs.email == "" && !inputs.contactNumber == "" && !inputs.name == "" && !inputs.idType == "" && !inputs.idImage == "") {
+                    setIsMethod("gcash")
+                    setIsOpen(true)
+                } else {
+                    withReactContent(Swal).fire({
+                    icon: "error",
+                    title: "Empty Fields",
+                    text: "Please fill in missing inputs",
+                    confirmButtonColor: "#3085d6",
+                    })
+                }
+                break
+        case "maya":
+                if (!inputs.email == "" && !inputs.contactNumber == "" && !inputs.name == "" && !inputs.idType == "" && !inputs.idImage == "") {
+                    setIsMethod("maya")
+                    setIsOpen(true)
+                } else {
+                    withReactContent(Swal).fire({
+                    icon: "error",
+                    title: "Empty Fields",
+                    text: "Please fill in missing inputs",
+                    confirmButtonColor: "#3085d6",
+                    })
+                }
+                break
+        case "walk-in":
+                if (!inputs.email == "" && !inputs.contactNumber == "" && !inputs.name == "" && !inputs.idType == "" && !inputs.idImage == "") {
+                    handleReservation()
+                } else {
+                    withReactContent(Swal).fire({
+                    icon: "error",
+                    title: "Empty Fields",
+                    text: "Please fill in missing inputs",
+                    confirmButtonColor: "#3085d6",
+                    })
+                }
+            
+                break
+        default:
+            withReactContent(Swal).fire({
+            icon: "error",
+            title: "Payment Method Required",
+            text: "Please select a payment method",
+            confirmButtonColor: "#3085d6",
+            })
+    }
+  }
+
+    function nameButton(){
+        if(loading){
+            return "Proccessing..."
+        }else if(paymentMethod == "walk-in"){
+            return "Reserve"
+        }else{
+            return "Pay Now"
+        }
+    }
+
+  return (
+    <div className="pb-24 font-outfit">
+      <div className="w-4/6 mx-auto">
+        <TopNavUser />
+        <Link to="/" className="items-center flex mt-4">
+          <BiChevronLeft />
+          Back
+        </Link>
+        <div>
+          <form className="flex w-full" onSubmit={(e) => e.preventDefault()}>
+            <div className="flex flex-col w-2/4 p-4 gap-y-2">
+              <p className="font-bold text-2xl">Application Form</p>
+              <p className="mt-2">Identification</p>
+              <input
+                onChange={handleInputChange}
+                className="rounded-lg bg-[#D3D3E7] border border-[#595BD4] text-[#1E1E1E8C]"
+                type="text"
+                placeholder="Full Name"
+                name="name"
+                required
+              />
+              <input
+                onChange={handleInputChange}
+                className="rounded-lg bg-[#D3D3E7] border border-[#595BD4] text-[#1E1E1E8C]"
+                type="number"
+                placeholder="Contact Number"
+                name="contactNumber"
+                required
+              />
+              <input
+                onChange={handleInputChange}
+                className="rounded-lg bg-[#D3D3E7] border border-[#595BD4] text-[#1E1E1E8C]"
+                type="email"
+                placeholder="Email"
+                name="email"
+                required
+              />
+              {/* <label className="rounded-lg bg-primary p-2 text-white w-full text-center cursor-pointer hover:bg-primary-dark transition-all">
+                                Choose Files
+                               
+                            </label> */}
+
+              <label className="mt-4">Identification Card</label>
+              <select
+                onChange={handleInputChange}
+                name="idType"
+                className="rounded-lg border border-[#595BD4] bg-[#D3D3E7] p-2"
+                required
+              >
+                <option value="">Select ID type</option>
+                <option value="student">Student ID</option>
+                <option value="national">National ID</option>
+                <option value="drivers">Driver's License</option>
+                <option value="nbi">NBI Clearance</option>
+              </select>
+              <input
+                type="file"
+                name="idImage"
+                accept="image/*"
+                onChange={handleInputChange}
+                disabled={inputs.idType === ""}
+                className={`mt-2 ${inputs.idType === "" ? "cursor-not-allowed opacity-50" : ""}`}
+                required
+              />
+
+              <p className="mt-2 text-lg font-semibold">Choose how to pay</p>
+              <p>
+                <span className="font-bold">Apartment: </span>
+                {item.name}
+              </p>
+              <p>
+                <span className="font-bold">Tower: </span>
+                {item.tower}
+              </p>
+              {days != 0 && (
+                <p>
+                  <span className="font-bold">Total: </span>
+                  {item.stayType == "month" ? months : days} {item.stayType} X ₱{item.price} = ₱{totalPrice}
+                </p>
+              )}
+
+              <select
+                value={paymentMethod}
+                onChange={handlePaymentMethodChange}
+                className="w-full mb-4 p-2 rounded-lg bg-[#D3D3E7] border border-[#595BD4] text-[#1E1E1E8C]"
+              >
+                <option value="">Select Payment Method</option>
+                <option value="stripe">Credit Card (Stripe)</option>
+                <option value="gcash">GCash</option>
+                <option value="maya">Maya</option>
+                <option value="walk-in">Walk In</option>
+              </select>
+
+              {paymentMethod === "stripe" && (
+                <CardElement className="w-full mb-4 p-2 rounded-lg bg-[#D3D3E7] border border-[#595BD4] text-[#1E1E1E8C]" />
+              )}
+
+              <button
+                onClick={handlePayment}
+                type="button"
+                className="rounded-lg bg-primary text-white py-2 w-full"
+                disabled={loading || (paymentMethod === "stripe" && !stripe)}
+              >
+                {nameButton()}
+              </button>
+
+              {error && <p className="text-red-500 mt-2">{error}</p>}
             </div>
-            {isMethod && <NewApartments isOpen={isOpen} onClose={handleCloseModal} method={isMethod}/>}
+            {/* {displaySelector} */}
+            <div className="w-2/4 flex flex-col items-start justify-center overflow-hidden">
+              <p className="font-outfit text-2xl font-bold">Days Duration</p>
+              <p className="font-outfit">Enter Days how long is your stay</p>
+              <DateRange
+                editableDateInputs={true}
+                onChange={(item) => setDateState([item.selection])}
+                moveRangeOnFirstSelection={false}
+                ranges={dateState}
+                minDate={new Date()}
+                className="w-full flex justify-center p-2 border border-gray-300 rounded-lg shadow-sm"
+                dayClassName={dayClassName}
+              />
+            </div>
+          </form>
         </div>
-    )
+        <div></div>
+      </div>
+      {isMethod && <NewApartments isOpen={isOpen} onClose={handleCloseModal} method={isMethod} />}
+    </div>
+  )
 }
 
 export default Booking
+
+
+
+
+// import { Link, useLocation } from 'react-router-dom'; 
+
+
+
+// import TopNavUser from '../components/Nav/TopNavUser';
+// import { useState, useEffect } from 'react';
+// import { DateRange } from 'react-date-range';
+// import 'react-date-range/dist/styles.css'; 
+// import 'react-date-range/dist/theme/default.css'; 
+// import { useStripe, useElements, CardElement } from '@stripe/react-stripe-js';
+// import Maya from '../assets/maya.png'
+// import GCash from '../assets/gcash.png'
+// import { addDays, differenceInDays, format, differenceInMonths, isBefore, differenceInWeeks } from 'date-fns';
+// import { BiChevronLeft } from 'react-icons/bi';
+// import axios from 'axios';
+// import Swal from 'sweetalert2'
+// import withReactContent from 'sweetalert2-react-content'
+// import NewApartments from '../components/Modals/NewApartments';
+
+// function Booking() {
+
+//     const stripe = useStripe();
+//     const elements = useElements();
+//     const [loading, setLoading] = useState(false);
+//     const [error, setError] = useState(null);
+//     const location = useLocation();
+//     const item = location.state;
+//     const [inputs, setInputs] = useState({
+//         name: "",
+//         contactNumber: "",
+//         email: "",
+//         idType: "",
+//         imageFiles: ""
+//     })
+
+//     const [totalPrice, setTotalPrice] = useState(0);
+//     const [days, setDays] = useState(0);
+//     const [months, setMonth] = useState(0);
+//     const [weeks, setWeeks] = useState(0)
+
+//     const [imgObject, setImgObject] = useState([]);
+
+//     const [dateState, setDateState] = useState([
+//         {
+//           startDate: new Date(),
+//           endDate: addDays(new Date(), 0),
+//           key: 'selection'
+//         }
+//     ]);
+
+//     const [isOpen, setIsOpen] = useState(false)
+//     const [isMethod, setIsMethod] = useState("")
+    
+//     const [bookedDates, setBookedDates] = useState([]); 
+
+//     useEffect(() => {
+
+//         fetchBookedDates();
+            
+//         const start = dateState[0].startDate;
+//         const end = dateState[0].endDate;
+
+//         // Calculate the number of days between start and end date
+//         const numOfDays = calculateDays(start, end)
+//         setDays(numOfDays)
+        
+//         const numOfMonths = calculateMonths(start, end)
+//         setMonth(numOfMonths)
+
+//         const numberOfWeeks = calculateWeeks(start, end)
+//         setWeeks(numberOfWeeks)
+        
+//         if(item.stayType == "month"){
+//             const calculatedPrice = numOfMonths * item.price;
+//             setTotalPrice(calculatedPrice);
+//         }else if(item.stayType == "week"){
+//             const calculatedPrice = numberOfWeeks * item.price;
+//             setTotalPrice(calculatedPrice);
+//         }else{
+//             const calculatedPrice = numOfDays * item.price;
+//             setTotalPrice(calculatedPrice);  // Update the total price state
+//         }
+//     }, [dateState]);
+
+//     //Function to fetch already booked dates 
+//     const fetchBookedDates = async () => {
+//         try {
+//             const response = await axios.get('http://seafarerdorm.scarlet2.io/Rooms/retrieve_booking_dates.php');
+//             setBookedDates(response.data);  // Assuming the response contains a list of booked dates
+//         } catch (error) {
+//             console.error('Error fetching booked dates:', error);
+//         }
+//     }
+
+//     function calculateWeeks(startDate, endDate){
+
+//         const start = new Date(startDate);
+//         const end = new Date(endDate);
+
+//         if (isBefore(end, start)) return 0;
+
+//         const weekDifference = differenceInWeeks(end, start);
+
+//         return weekDifference
+
+//     }
+
+//     //Function calculate days
+//     function calculateDays(startDate, endDate) {
+
+//         const start = new Date(startDate);
+//         const end = new Date(endDate);
+        
+//         // If the end date is before the start date, return 0 months
+//         if (isBefore(end, start)) return 0;
+        
+//         // Calculate the difference in full months
+//         const daysDifference = differenceInDays(end, start);
+        
+//         return daysDifference;
+//     };
+
+//     //function to calculate months
+//     function calculateMonths(startDate, endDate) {
+//         const start = new Date(startDate);
+//         const end = new Date(endDate);
+        
+//         // If the end date is before the start date, return 0 months
+//         if (isBefore(end, start)) return 0;
+        
+//         // Calculate the difference in full months
+//         const monthsDifference = differenceInMonths(end, start);
+        
+//         return monthsDifference;
+//     };
+
+//     //function to handle inputs change
+//     function handleInputChange(e){
+//         const name = e.target.name;
+//         const value = e.target.value;
+       
+
+//         if(name == 'imageFiles'){
+//             const files = Array.from(e.target.files);
+//             const imageUrls = files.map(file => URL.createObjectURL(file));
+//             setInputs(inputs => ({...inputs, [name]: files}));
+//             setImgObject(image => [...image, ...imageUrls]);
+//         }else{
+//             setInputs(inputs =>({...inputs, [name]: value}))
+//         } 
+//     };
+
+//     //Function for Stripe
+//     const handleSubmit = async (e) => {
+//         e.preventDefault();
+//         if (!stripe || !elements) return;
+
+//         setLoading(true);
+
+//         const cardElement = elements.getElement(CardElement);
+
+//         // Create a payment method with Stripe
+//         const { error, paymentMethod } = await stripe.createPaymentMethod({
+//             type: 'card',
+//             card: cardElement,
+//         });
+
+//         if (error) {
+//             setError(error.message);
+//             setLoading(false);
+//             return;
+//         }
+
+//         // Send payment method info to your server to create the payment intent
+//         const response = await fetch('/create-payment-intent', {
+//             method: 'POST',
+//             headers: {
+//                 'Content-Type': 'application/json',
+//             },
+//             body: JSON.stringify({
+//                 amount: totalPrice,
+//                 payment_method_id: paymentMethod.id,
+//             }),
+//         });
+
+//         const paymentIntent = await response.json();
+
+//         // Confirm the payment with Stripe
+//         const { error: confirmError } = await stripe.confirmCardPayment(paymentIntent.client_secret, {
+//             payment_method: paymentMethod.id,
+//         });
+
+//         if (confirmError) {
+//             setError(confirmError.message);
+//             setLoading(false);
+//             return;
+//         }
+
+//         // onSuccess(paymentIntent);
+//         setLoading(false);
+//         handleReservation("paid", "Stripe", "Paid", "")
+//     };
+
+//     //Function for Maya
+//     // const handleMayaPayment = async (amount) => {
+//     //     setLoading(true);
+    
+//     //     try {
+//     //       const response = await fetch('/api/create-maya-payment', {
+//     //         method: 'POST',
+//     //         headers: {
+//     //           'Content-Type': 'application/json',
+//     //         },
+//     //         body: JSON.stringify({ amount: amount }), // Example amount
+//     //       });
+    
+//     //       const data = await response.json();
+//     //       if (data.paymentUrl) {
+//     //         // Redirect to Maya's checkout page
+//     //         handleSubmitInfo("paid", "maya", "Paid", "")
+//     //         window.location.href = data.paymentUrl;
+//     //       }
+//     //     } catch (error) {
+//     //       console.error('Error initiating Maya payment:', error);
+//     //     } finally {
+//     //       setLoading(false);
+//     //     }
+//     // };
+
+//     //Function for GCash payment
+//     // const handleGCashPayment = async (amount) => {
+//     //     setLoading(true);
+        
+//     //     try {
+//     //       const response = await fetch('/api/create-gcash-payment', {
+//     //         method: 'POST',
+//     //         headers: {
+//     //           'Content-Type': 'application/json',
+//     //         },
+//     //         body: JSON.stringify({ amount: amount }), // Example amount
+//     //       });
+    
+//     //       const data = await response.json();
+//     //       if (data.paymentUrl) {
+//     //         // Redirect to the GCash payment page
+//     //         handleSubmitInfo("paid", "gcash", "Paid", "")
+//     //         window.location.href = data.paymentUrl;
+            
+//     //       }
+//     //     } catch (error) {
+//     //       console.error('Error initiating GCash payment:', error);
+//     //     } finally {
+//     //       setLoading(false);
+//     //     }
+//     // };
+
+//     function handleMayaPayment(){
+//         if(!inputs.email == "" && !inputs.contactNumber == "" && !inputs.name == ""){
+//             setIsMethod("maya")
+//             setIsOpen(true)
+//         }else{
+//             withReactContent(Swal).fire({
+//                 icon: "error",
+//                 title: "Empty Fields",
+//                 text: "Please fill in missing inputs",
+//                 confirmButtonColor: "#3085d6",
+//             })
+//         }
+       
+       
+//     }
+
+//     function handleGCashPayment(){
+//         if(!inputs.email == "" && !inputs.contactNumber == "" && !inputs.name == ""){
+//             setIsMethod("gcash")
+//             setIsOpen(true)
+//         }else{
+//             withReactContent(Swal).fire({
+//                 icon: "error",
+//                 title: "Empty Fields",
+//                 text: "Please fill in missing inputs",
+//                 confirmButtonColor: "#3085d6",
+//             })
+//         }
+        
+        
+//     }
+
+//     function handleCloseModal(){
+//         handleSubmitInfo("reservation", isMethod, "Reserve", item.name + " reserved")
+//         setIsOpen(false)
+//         setIsMethod("")
+        
+//     }
+
+
+//     //Function for reservation
+//     function handleReservation(){
+//         handleSubmitInfo("reservation", "walkin", "Reserve", item.name + " reserved")
+//     };
+
+//     //Function to submit info
+//     const handleSubmitInfo = async (status, modeOfPayment, title, message) =>{
+//         const fd = new FormData()
+//         fd.append("name", inputs.name);
+//         fd.append("phone", inputs.contactNumber);
+//         fd.append("email", inputs.email)
+//         fd.append("tower", item.tower)
+//         fd.append("days", days)
+//         fd.append("totalprice", totalPrice)
+//         fd.append("roomId", item.id)
+//         fd.append("paymentStatus", status)
+//         fd.append("modeOfPayment", modeOfPayment)
+//         fd.append("identification", inputs.imageFiles)
+//         fd.append("idType", inputs.idType)
+
+//         // fd.append("startDate", dateState.startDate)
+//         // fd.append("endDate", dateState.endDate)
+
+//         fd.append("startDate", format(dateState[0].startDate, 'yyyy-MM-dd hh:mm:ss a'));
+//         fd.append("endDate", format(dateState[0].endDate, 'yyyy-MM-dd HH:mm:ss a'));
+
+//         console.log(format(dateState[0].startDate, 'yyyy-MM-dd HH:mm:ss'))
+//         try{
+//             const response = await axios.post("https://seafarerdorm.scarlet2.io/Rooms/book-room.php", fd);
+//             if(response.data.status == "success"){
+//                 withReactContent(Swal).fire({
+//                     icon: "success",
+//                     title: title + " successfully",
+//                     text: message,
+//                     confirmButtonColor: "#3085d6",
+//                 }).then((result) => {
+//                     if(result.isConfirmed){
+//                         window.location.href = "/"
+//                     }
+//                 })
+//                 console.log(response.data.message)
+                
+//             }else{
+//                 withReactContent(Swal).fire({
+//                     icon: response.data.status,
+//                     title: response.data.status,
+//                     text: response.data.message,
+//                     confirmButtonColor: "#3085d6",
+//                 })
+//                 console.log(response.data.message)
+//             }
+//         }catch(err){
+//             console.error(err)
+//             console.log(err)
+//         }
+//         console.log(item)
+//         // console.log(dateState)
+//     };
+
+//     //Function to change the booked dates to red
+//     const dayClassName = (date) => {
+//         const formattedDate = format(date, 'yyyy-MM-dd');
+//         if (bookedDates.includes(formattedDate)) {
+//             return 'booked-date';  // Class for booked dates
+//         }
+//         return '';
+//     };
+
+//     return (
+//         <div className='pb-24 font-outfit'>
+//             <div className='w-4/6 mx-auto'>
+//                 <TopNavUser/>
+//                 <Link to="/" className='items-center flex mt-4'><BiChevronLeft/>Back</Link>
+//                 <div>
+//                     <form className='flex w-full' onSubmit={handleSubmit}>
+//                         <div className='flex flex-col w-2/4 p-4 gap-y-2'>
+//                             <p className='font-bold text-2xl'>Application Form</p>
+//                             <p className='mt-2'>Identification</p>
+//                             <input onChange={handleInputChange} className='rounded-lg bg-[#D3D3E7] border border-[#595BD4] text-[#1E1E1E8C]' type="text" placeholder='Full Name' name='name' required/>
+//                             <input onChange={handleInputChange} className='rounded-lg bg-[#D3D3E7] border border-[#595BD4] text-[#1E1E1E8C]' type="number" placeholder='Contact Number' name='contactNumber' required/>
+//                             <input onChange={handleInputChange} className='rounded-lg bg-[#D3D3E7] border border-[#595BD4] text-[#1E1E1E8C]' type="email" placeholder='Email' name='email' required/>
+//                             {/* <label className="rounded-lg bg-primary p-2 text-white w-full text-center cursor-pointer hover:bg-primary-dark transition-all">
+//                                 Choose Files
+                               
+//                             </label> */}
+
+//                             <lable className="mt-4">Identification Card</lable>
+//                             <select onChange={handleInputChange} name="stayType" id="" className='rounded-lg border border-[#595BD4] bg-[#D3D3E7] p-2' required>
+//                                 <option value="">Select ID type</option>
+//                                 <option value="day">Student ID</option>
+//                                 <option value="night">National ID</option>
+//                                 <option value="week">Drivers License</option>
+//                                 <option value="month">NBI Clearance</option>
+//                             </select>
+//                             <input type="file" name="imageFiles" accept="image/*" onChange={handleInputChange} disabled />
+                            
+//                             <p className='mt-2 text-lg font-semibold'>Choose how to pay</p>
+//                             <p><span className='font-bold'>Apartment: </span>{item.name}</p>
+//                             <p><span className='font-bold'>Tower: </span>{item.tower}</p>
+//                             {days != 0 && (<p><span className='font-bold'>Total: </span>{item.stayType == "month" ? months : days} {item.stayType} X ₱{item.price} = ₱{totalPrice}</p>)}
+//                             <CardElement className="w-full mb-4 p-2 rounded-lg bg-[#D3D3E7] border border-[#595BD4] text-[#1E1E1E8C]" />
+//                             <button
+//                                 type={isMethod? "button": "submit"}
+//                                 className="rounded-lg bg-primary text-white py-2 w-full"
+//                                 disabled={loading || !stripe}
+//                             >
+//                                 {loading ? 'Processing...' : 'Pay Now'}
+//                             </button>
+//                             <button
+//                                 onClick={handleReservation}
+//                                 type={isMethod? "submit": "button"}
+//                                 className="rounded-lg bg-primary text-white py-2 w-full"
+//                             >
+//                                 {loading ? 'Processing...' : 'Reserve'}
+//                             </button>
+//                             {error && <p className="text-red-500 mt-2">{error}</p>}
+//                             <button
+//                                 onClick={handleGCashPayment}
+//                                 type="button"
+//                                 className="rounded-lg bg-white text-black border-primary items-center ps-2 gap-x-2 border py-2 w-full flex"
+//                             >
+//                                 <img src={GCash} className='w-6 h-6 rounded'/>
+//                                 {loading ? 'Processing...' : 'GCash'}
+//                             </button>
+//                             <button
+//                                 onClick={handleMayaPayment}
+//                                 type="button"
+//                                 className="rounded-lg bg-white text-black border-primary items-center ps-2 gap-x-2 border py-2 w-full flex"
+//                             >
+//                                 <img src={Maya} className='w-6 h-6 rounded'/>
+//                                 {loading ? 'Processing...' : 'Maya'}
+//                             </button>
+//                         </div>
+//                         {/* {displaySelector} */}
+//                         <div className='w-2/4 flex flex-col items-start justify-center overflow-hidden'>
+//                             <p className='font-outfit text-2xl font-bold'>Days Duration</p>
+//                             <p className='font-outfit'>Enter Days how long is your stay</p>
+//                             <DateRange
+//                                 editableDateInputs={true}
+//                                 onChange={item => setDateState([item.selection])}
+//                                 moveRangeOnFirstSelection={false}
+//                                 ranges={dateState}
+//                                 minDate={new Date()}
+//                                 className="w-full flex justify-center p-2 border border-gray-300 rounded-lg shadow-sm"
+//                                 dayClassName={dayClassName}
+//                             />
+//                         </div>
+//                     </form>
+//                 </div>
+//                 <div></div>
+//             </div>
+//             {isMethod && <NewApartments isOpen={isOpen} onClose={handleCloseModal} method={isMethod}/>}
+//         </div>
+//     )
+// }
+
+// export default Booking
