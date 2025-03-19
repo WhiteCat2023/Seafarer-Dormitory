@@ -1,5 +1,3 @@
-"use client"
-
 import { Link, useLocation } from "react-router-dom"
 import TopNavUser from "../components/Nav/TopNavUser"
 import { useState, useEffect } from "react"
@@ -15,6 +13,7 @@ import withReactContent from "sweetalert2-react-content"
 import NewApartments from "../components/Modals/NewApartments"
 
 function Booking() {
+
   const stripe = useStripe()
   const elements = useElements()
   const [loading, setLoading] = useState(false)
@@ -27,6 +26,7 @@ function Booking() {
     email: "",
     idType: "",
     idImage: "",
+    termAgreement: false
   })
 
   const [totalPrice, setTotalPrice] = useState(0)
@@ -314,7 +314,7 @@ function Booking() {
   }
 
   const handlePayment = () => {
-    if (!inputs.email || !inputs.contactNumber || !inputs.name) {
+    if (!inputs.email || !inputs.contactNumber || !inputs.name && !inputs.termAgreement) {
       withReactContent(Swal).fire({
         icon: "error",
         title: "Empty Fields",
@@ -493,6 +493,8 @@ function Booking() {
               {paymentMethod === "stripe" && (
                 <CardElement className="w-full mb-4 p-2 rounded-lg bg-[#D3D3E7] border border-[#595BD4] text-[#1E1E1E8C]" />
               )}
+
+              <label><input onChange={handleInputChange} name="termAgreement" type="checkbox" required/> By clicking on this checkbox you agree to the Terms and Regulations of our establishment.</label>
 
               <button
                 onClick={handlePayment}
