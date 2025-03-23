@@ -129,6 +129,29 @@ function Booking() {
     }
   }
 
+  //Function to ensure 11 digit limit
+  function handleInputChange(e) {
+    const { name, value } = e.target;
+  
+    if (name === "contactNumber") {
+      // Ensure only numbers are entered
+      if (!/^\d*$/.test(value)) return;
+  
+      // Limit to 11 digits
+      if (value.length > 11) {
+        setError("Phone number cannot exceed 11 digits.");
+        return;
+      } else {
+        setError(null); // Clear error when valid
+      }
+    }
+  
+    setInputs((prevInputs) => ({
+      ...prevInputs,
+      [name]: value,
+    }));
+  }
+
   //Function for Stripe
   const handleSubmit = async (e) => {
     e.preventDefault()
@@ -410,6 +433,7 @@ function Booking() {
             <div className="flex flex-col w-2/4 p-4 gap-y-2">
               <p className="font-bold text-2xl">Application Form</p>
               <p className="mt-2">Identification</p>
+              
               <input
                 onChange={handleInputChange}
                 className="rounded-lg bg-[#D3D3E7] border border-[#595BD4] text-[#1E1E1E8C]"
@@ -418,14 +442,18 @@ function Booking() {
                 name="name"
                 required
               />
+
               <input
-                onChange={handleInputChange}
-                className="rounded-lg bg-[#D3D3E7] border border-[#595BD4] text-[#1E1E1E8C]"
-                type="number"
-                placeholder="Contact Number"
+                type="text"
                 name="contactNumber"
-                required
-              />
+                value={inputs.contactNumber}
+                onChange={handleInputChange}
+                placeholder="Contact Number"
+                className="rounded-lg bg-[#D3D3E7] border border-[#595BD4] text-[#1E1E1E8C]"
+                 // Prevents typing more than 11 characters
+                />
+                {error && <p className="text-red-500 text-sm mt-1">{error}</p>}
+
               <input
                 onChange={handleInputChange}
                 className="rounded-lg bg-[#D3D3E7] border border-[#595BD4] text-[#1E1E1E8C]"
